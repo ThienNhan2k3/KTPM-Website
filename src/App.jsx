@@ -2,25 +2,48 @@ import React from 'react';
 import { Stack, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './pages/Layout';
+import userManagementIcon from "./assets/images/quan-ly-nguoi-dung-icon.png"
+import gameManagementIcon from "./assets/images/quan-ly-tro-choi-icon.png"
+import reportsIcon from "./assets/images/thong-ke-icon.png"
+import voucherManagementIcon from "./assets/images/quan-ly-voucher-icon.png"
+import GameManagementPage from './pages/Admin/GameManagementPage';
+import UserManagementPage from './pages/Admin/UserManagementPage';
+import AdminReportsPage from './pages/Admin/AdminReportsPage';
+import VoucherManagementPage from './pages/Brand/VoucherManagementPage';
+import BrandReportsPage from './pages/Brand/BrandReportsPage';
+
 
 function App() {
+  const adminPages = [
+    {id: 1, name: "Quản lý người dùng", image: userManagementIcon, link: ""},
+    {id: 2, name: "Quản lý trò chơi", image: gameManagementIcon, link: "gamemanagement"},
+    {id: 3, name: "Báo cáo thống kê", image: reportsIcon, link: "report"},
+  ]
+
+  const brandPages = [
+    {id: 1, name: "Quản lý sự kiện", image: voucherManagementIcon, link: ""},
+    {id: 2, name: "Quản lý voucher", image: voucherManagementIcon, link: "vouchermanagement"},
+    {id: 3, name: "Báo cáo thống kê", image: reportsIcon, link: "report"},
+  ]
+
   return (
-    <div className="container-fluid p-0 m-0 vh-100 d-flex flex-column justify-content-center">
-      <div className="row h-100 m-0">
-        <div className="col-md-4 d-none d-md-block p-0 m-0"></div> {/* Empty column for left spacing on larger screens */}
-        <div className="col-md-8 custom-rounded d-flex flex-column justify-content-center align-items-center p-0 m-0" style={{ backgroundColor: '#d3d3d3', height: '100vh' }}>
-          <h1>Installed Bootstrap successfully!</h1>
-          <Stack direction="horizontal" gap={2} className="mb-3">
-            <Button as="a" variant="primary">
-              Button as link
-            </Button>
-            <Button as="a" variant="success">
-              Button as link
-            </Button>
-          </Stack>
-        </div>
-      </div>
-    </div>
+    
+    <BrowserRouter>
+      <Routes>
+        <Route path="/admin" element={<Layout linkArray={adminPages} />}>
+            <Route index element={<UserManagementPage />} />
+            <Route path="gamemanagement" element={<GameManagementPage />} />
+            <Route path="report" element={<AdminReportsPage />} />
+        </Route>
+        <Route path="/brand" element={<Layout linkArray={brandPages} />}>
+            <Route index element={<UserManagementPage />} />
+            <Route path="vouchermanagement" element={<VoucherManagementPage />} />
+            <Route path="report" element={<BrandReportsPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
