@@ -1,4 +1,5 @@
 import React from 'react';
+import Login from './pages/login screen/Login';
 import { Stack, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -32,6 +33,7 @@ function App() {
     
     <BrowserRouter>
       <Routes>
+        <Route path='/' element={<Login/>} />
         <Route path="/admin" element={<Layout linkArray={adminPages} />}>
             <Route index element={<UserManagementPage />} />
             <Route path="gamemanagement" element={<GameManagementPage />} />
