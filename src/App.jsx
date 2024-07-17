@@ -14,6 +14,7 @@ import UserManagementPage from './pages/Admin/UserManagementPage';
 import AdminReportsPage from './pages/Admin/AdminReportsPage';
 import VoucherManagementPage from './pages/Brand/VoucherManagementPage';
 import BrandReportsPage from './pages/Brand/BrandReportsPage';
+import EventManagementPage from './pages/Brand/EventManagementPage';
 
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
             <Route path="report" element={<AdminReportsPage />} />
         </Route>
         <Route path="/brand" element={<Layout linkArray={brandPages} />}>
-            <Route index element={<UserManagementPage />} />
+            <Route index element={<EventManagementPage />} />
             <Route path="vouchermanagement" element={<VoucherManagementPage />} />
             <Route path="report" element={<BrandReportsPage />} />
         </Route>
