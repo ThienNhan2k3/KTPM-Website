@@ -1,17 +1,66 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Login from "./views/login-screen";
-import Admin from "./views/admin";
-import Brand from "./views/brand";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import userManagementIcon from "@assets/images/quan-ly-nguoi-dung-icon.png";
+import gameManagementIcon from "@assets/images/quan-ly-tro-choi-icon.png";
+import reportsIcon from "@assets/images/thong-ke-icon.png";
+import voucherManagementIcon from "@assets/images/quan-ly-voucher-icon.png";
+import GameManagement from "@views/admin/game-management";
+import GameDetail from "@views/admin/game-management/game-detail";
+import GameIntroduce from "@views/admin/game-management/game-introduce";
+import UserManagement from "@views/admin/user-management";
+import AdminReports from "@views/admin/report";
+import VoucherManagement from "@views/brand/voucher-management";
+import BrandReports from "@views/brand/report";
+import EventManagement from "@views/brand/event-management";
+import GameInstruction from "@views/admin/game-management/game-instruction";
+import GameItems from "@views/admin/game-management/game-items";
+
+import Layout from "@views/layout";
 
 function App() {
+  const adminPages = [
+    { id: 1, name: "Quản lý người dùng", image: userManagementIcon, link: "" },
+    {
+      id: 2,
+      name: "Quản lý trò chơi",
+      image: gameManagementIcon,
+      link: "gamemanagement",
+    },
+    { id: 3, name: "Báo cáo thống kê", image: reportsIcon, link: "report" },
+  ];
+
+  const brandPages = [
+    { id: 1, name: "Quản lý sự kiện", image: voucherManagementIcon, link: "" },
+    {
+      id: 2,
+      name: "Quản lý voucher",
+      image: voucherManagementIcon,
+      link: "vouchermanagement",
+    },
+    { id: 3, name: "Báo cáo thống kê", image: reportsIcon, link: "report" },
+  ];
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/admin/*" element={<Admin />} />
-        <Route path="/brand/*" element={<Brand />} />
+        <Route path="/admin" element={<Layout linkArray={adminPages} />}>
+          <Route index element={<UserManagement />} />
+          <Route path="gamemanagement" element={<GameManagement />} />
+          <Route path="gamemanagement/gamedetail" element={<GameDetail />}>
+            <Route index element={<GameIntroduce />} />
+            <Route path="instruction" element={<GameInstruction />} />
+            <Route path="items" element={<GameItems />} />
+          </Route>
+          <Route path="report" element={<AdminReports />} />
+        </Route>
+        <Route path="/brand" element={<Layout linkArray={brandPages} />}>
+          <Route index element={<EventManagement />} />
+          <Route path="vouchermanagement" element={<VoucherManagement />} />
+          <Route path="report" element={<BrandReports />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
