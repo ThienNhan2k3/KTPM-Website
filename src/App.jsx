@@ -13,7 +13,7 @@ import GameManagementPage from './pages/Admin/GameManagementPage/GameManagementP
 import GameDetailPage from './pages/Admin/GameManagementPage/GameDetailPage';
 import GameIntroduce from './pages/Admin/GameManagementPage/GameIntroduce';
 import UserManagementPage from './pages/Admin/UserManagementPage';
-import AdminReportsPage from './pages/Admin/AdminReportsPage';
+import AdminReportsPage from './pages/Admin/AdminReportsPage/AdminReportsPage';
 import VoucherManagementPage from './pages/Brand/VoucherManagementPage';
 import BrandReportsPage from './pages/Brand/BrandReportsPage';
 import EventManagementPage from './pages/Brand/EventManagementPage';
