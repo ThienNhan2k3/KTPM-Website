@@ -1,5 +1,6 @@
-.input-group-custom {
-  width: 100%;
+.input-group{
+  flex-grow: 0 !important ;
+  flex-wrap: nowrap;
 }
 
 .form-control {
@@ -13,6 +14,7 @@
 
 .input-group {
   flex-grow: 1;
+  width: 500px !important;
 }
 
 .quiz-button {
@@ -22,9 +24,9 @@
 }
 
 .lx-button {
-  flex-grow: 0 !important ;
-  width: 200px;
-  background-color: #687eff;
+  flex-grow: 0.1 !important ;
+  width: fit-content;
+  background-color: #ff6868;
 }
 
 .add-button {
@@ -32,3 +34,18 @@
   width: fit-content;
   background-color: #009626;
 }
+.table-bordered {
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.table-bordered th {
+  background-color: #f2f2f2;
+}
+
