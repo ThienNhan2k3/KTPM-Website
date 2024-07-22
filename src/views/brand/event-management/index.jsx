@@ -6,18 +6,18 @@ import EventModal from "../../../components/EventModal/Modal";
 import "./styles.css";
 
 const data = [
-  { id: 1, name: "Marathon", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 2, name: "Marathon2", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 3, name: "Marathon3", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 4, name: "Marathon4", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 5, name: "Marathon5", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 6, name: "Marathon6", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 7, name: "Marathon7", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 8, name: "Marathon8", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 9, name: "Marathon9", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 10, name: "Marathon10", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 11, name: "Marathon11", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  { id: 12, name: "Marathon12", type: "Donate", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 1, name: "Marathon", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 2, name: "Marathon2", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 3, name: "Marathon3", type: "Lắc xì", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 4, name: "Marathon4", type: "Lắc xì", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 5, name: "Marathon5", type: "Lắc xì", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 6, name: "Marathon6", type: "Lắc xì", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 7, name: "Marathon7", type: "Lắc xì", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 8, name: "Marathon8", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 9, name: "Marathon9", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 10, name: "Marathon10", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 11, name: "Marathon11", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  { id: 12, name: "Marathon12", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
   // Add more rows as needed
 ];
 
@@ -26,6 +26,7 @@ const ITEMS_PER_PAGE = 10;
 export default function EventManagement() {
   const [currentPage, setCurrentPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
@@ -35,12 +36,14 @@ export default function EventManagement() {
   const currentPageData = data.slice(offset, offset + ITEMS_PER_PAGE);
   const pageCount = Math.ceil(data.length / ITEMS_PER_PAGE);
 
-  const handleSearchClick = () => {
+  const handleSearchClick = (item) => {
+    setSelectedItem(item);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setSelectedItem(null);
   };
 
   return (
@@ -85,7 +88,8 @@ export default function EventManagement() {
               <td>{item.dateEnd}</td>
               <td>
                 <button
-                type="button" onClick={handleSearchClick}
+                  type="button"
+                  onClick={() => handleSearchClick(item)}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -125,7 +129,7 @@ export default function EventManagement() {
           activeClassName={"active"}
         />
       </div>
-      <EventModal show={showModal} onClose={handleCloseModal} />
+      <EventModal show={showModal} onClose={handleCloseModal} itemData={selectedItem} />
     </div>
   );
 }
