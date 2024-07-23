@@ -16,7 +16,8 @@ import BrandReports from "@views/brand/report";
 import EventManagement from "@views/brand/event-management";
 import GameInstruction from "@views/admin/game-management/game-instruction";
 import GameItems from "@views/admin/game-management/game-items";
-
+import AdminUserReports from "@views/admin/report/user-report";
+import AdminGameReports from "@views/admin/report/game-report";
 import Layout from "@views/layout";
 
 function App() {
@@ -55,6 +56,8 @@ function App() {
             <Route path="items" element={<GameItems />} />
           </Route>
           <Route path="report" element={<AdminReports />} />
+          <Route path="report/userreport" element={<AdminUserReports />} />
+          <Route path="report/gamereport" element={<AdminGameReports />} />
         </Route>
         <Route path="/brand" element={<Layout linkArray={brandPages} />}>
           <Route index element={<EventManagement />} />

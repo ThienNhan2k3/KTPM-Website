@@ -1,0 +1,19 @@
+
+
+.user-figures-wrapper .horizontal-card-container .horizontal-card-content {
+    background-color: blue;
+}
+
+.user-figures-wrapper .horizontal-card-container .horizontal-card-footer {
+    background-color: #00177B;
+}
+
+
+.brand-figures-wrapper .horizontal-card-container .horizontal-card-content {
+    background-color: #00FF5E;
+}
+
+
+.brand-figures-wrapper .horizontal-card-container .horizontal-card-footer {
+    background-color: #007B3E;
+}
