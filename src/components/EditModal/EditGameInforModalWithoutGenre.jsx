@@ -10,7 +10,7 @@ export default function EditGameInforModalWithoutGenre({
   content,
 }) {
   return (
-    <Modal centered show={show} onHide={handleClose}>
+    <Modal className="edit-game-infor-modal-without-genre-container" centered show={show} onHide={handleClose}>
       <Modal.Title className="d-flex justify-content-center mt-4">
         {title}
       </Modal.Title>
