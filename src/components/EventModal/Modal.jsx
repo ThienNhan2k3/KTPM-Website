@@ -36,8 +36,9 @@ const Modal = ({ show, onClose, itemData }) => {
           {itemData && (
             <div>
               <div className="form-group">
-                <label><strong>ID:</strong></label>
-                <p>{itemData.id}</p>
+                <label>
+                  <strong>ID:</strong> <span style={{ display: 'inline' }}>{itemData.id}</span>
+                </label>
               </div>
               <div className="form-group">
                 <label><strong>Name:</strong></label>
@@ -48,18 +49,25 @@ const Modal = ({ show, onClose, itemData }) => {
                 />
               </div>
               <div className="form-group">
-                <label><strong>Type:</strong></label>
-                <select className="form-control" defaultValue={itemData.type}>
-                  <option value="Quiz">Quiz</option>
-                  <option value="Lắc xì">Lắc xì</option>
-                </select>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <label style={{ marginRight: '10px' }}>
+                    <strong>Type:</strong>
+                  </label>
+                  <select className="form-control" defaultValue={itemData.type}>
+                    <option value="Quiz">Quiz</option>
+                    <option value="Lắc xì">Lắc xì</option>
+                  </select>
+                </div>
               </div>
               <div className="form-group">
-                <label><strong>Date Created:</strong></label>
-                <p>{itemData.dateCreate}</p>
+                <label>
+                  <strong style={{ marginRight: '10px' }}>Date Created:</strong>
+                  <span style={{ display: 'inline' }}>{itemData.dateCreate}</span>
+                </label>
+                
               </div>
               <div className="form-group">
-                <label><strong>Date End:</strong></label>
+                <label><strong >Date End:</strong></label>
                 <input
                   type="date"
                   className="form-control"

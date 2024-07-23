@@ -13,8 +13,8 @@
   
   .modal-content {
     background: white;
-    width: 680px;
-    height: 780px;
+    width: 550px;
+    height: 600px;
     padding: 20px;
     position: relative;
     border-radius: 8px;
@@ -33,5 +33,9 @@
   
   .modal-body {
     margin-top: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 30px;
   }
   

@@ -30,7 +30,6 @@
 }
 
 .add-button {
-  flex-grow: 0 !important ;
   width: fit-content;
   background-color: #009626;
 }
