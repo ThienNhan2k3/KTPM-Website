@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import "./Modal.css";
+import PlusIcon from "@assets/images/plus-icon.png";
 
 const convertDateFormat = (dateStr) => {
   const [day, month, year] = dateStr.split("/");
@@ -11,6 +12,11 @@ const Modal = ({ show, onClose, itemData }) => {
     return null;
   }
 
+  const data = [
+    { id: 1, name: "Voucher1", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+    { id: 2, name: "Vouhcer2", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+    { id: 3, name: "Voucher3", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  ]
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (event.target.classList.contains("modal-overlay")) {
@@ -32,47 +38,119 @@ const Modal = ({ show, onClose, itemData }) => {
           &times;
         </button>
         <div className="modal-body">
-          <h2>EDIT EVENT</h2>
           {itemData && (
             <div>
               <div className="form-group">
-                <label>
-                  <strong>ID:</strong> <span style={{ display: 'inline' }}>{itemData.id}</span>
-                </label>
-              </div>
-              <div className="form-group">
-                <label><strong>Name:</strong></label>
+                <label><strong>Tên sự kiện:</strong></label>
                 <input
                   type="text"
                   className="form-control"
                   defaultValue={itemData.name}
                 />
               </div>
-              <div className="form-group">
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <label style={{ marginRight: '10px' }}>
-                    <strong>Type:</strong>
+
+              <div className="row form-group container" style={{ display: 'flex', alignItems: 'center' }}>
+                <div className="Date-created">
+                  <strong style={{ marginRight: '10px' }}>Ngày bắt đầu:</strong>
+                  <input
+                    type="date"
+                    className="form-control"
+                    defaultValue={convertDateFormat(itemData.dateCreate)}
+                    style={{
+                      width: "150px",
+                      padding: "10px",
+                    }}
+                  />
+                </div>
+                <div className="Date-end">
+                  <label>
+                    <strong>Ngày kết thúc:</strong>
                   </label>
-                  <select className="form-control" defaultValue={itemData.type}>
-                    <option value="Quiz">Quiz</option>
-                    <option value="Lắc xì">Lắc xì</option>
-                  </select>
+                  <input
+                    type="date"
+                    className="form-control"
+                    defaultValue={convertDateFormat(itemData.dateEnd)}
+                    style={{
+                      width: "150px",
+                      padding: "10px",
+                    }}
+                  />
                 </div>
               </div>
+
               <div className="form-group">
-                <label>
-                  <strong style={{ marginRight: '10px' }}>Date Created:</strong>
-                  <span style={{ display: 'inline' }}>{itemData.dateCreate}</span>
-                </label>
-                
+                <label><strong>hình ảnh:</strong></label>
+                <div className="image-input ">
+                    <button className="add-image-button">
+                      Thêm ảnh
+                    </button>
+                    <span style={{ display: 'inline' }}> file...name.jpg</span>
+                </div>
               </div>
+
+              <div className="row voucher form-group container">
+                <strong style={{width:"fit-content"}}>
+                  VOUCHER
+                </strong>
+                <button className="add-voucher-button">
+                  <img src={PlusIcon} alt="Add" style={{ marginRight: '5px' }} />
+                    Thêm voucher
+                </button>
+              </div>
+
               <div className="form-group">
-                <label><strong >Date End:</strong></label>
-                <input
-                  type="date"
-                  className="form-control"
-                  defaultValue={convertDateFormat(itemData.dateEnd)}
-                />
+                <table className="table table-bordered my-3" style={{ fontSize: '10px', width: '100%' }}>
+                  <thead>
+                    <tr>
+                      <th scope="col" style={{ width: '10%', height }}>ID</th>
+                      <th scope="col" style={{ width: '45%' }}>Quantity</th>
+                      <th scope="col" style={{ width: '45%' }}>Sale</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.map((item) => (
+                      <tr key={item.id}>
+                        <th scope="row">{item.id}</th>
+                        <td>{item.quantity}</td>
+                        <td>{item.sale}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="row form-group">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <label style={{ marginRight: '10px' }}>
+                    <strong>Loại trò chơi:</strong>
+                  </label>
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <label style={{marginRight: "15px"}}>
+                      <input
+                        type="radio"
+                        name="type"
+                        value="Quiz"
+                        defaultChecked={itemData.type === "Quiz"}
+                      />
+                      Quiz
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="type"
+                        value="Lắc xì"
+                        defaultChecked={itemData.type === "Lắc xì"}
+                      />
+                      Lắc xì
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="save form-group">
+                  <button className="save-button">
+                    Cập nhật sự kiện
+                  </button>
               </div>
             </div>
           )}

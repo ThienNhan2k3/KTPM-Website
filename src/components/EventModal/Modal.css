@@ -1,3 +1,4 @@
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -14,7 +15,7 @@
   .modal-content {
     background: white;
     width: 550px;
-    height: 600px;
+    height: 100%;
     padding: 20px;
     position: relative;
     border-radius: 8px;
@@ -38,4 +39,48 @@
   .form-group {
     margin-bottom: 30px;
   }
+
+  .Date-created {
+    width: 200px;
+    margin-right: 50px;
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
   
+  .image-input {
+    height: 50px;
+    align-content: center;
+    width: 100%;
+    border-radius: 25px;
+    background-color: #EDF3FF;
+  }
+  .add-image-button {
+    margin-left: 30px;
+    margin-right: 10px;
+    border-color: #3FA2F6;
+    border-radius: 5%;
+    background-color: #ffffff7a;
+    color: #69B4F3;;
+  }
+  
+  .voucher {
+    justify-content: space-between !important;
+  }
+
+  .add-voucher-button {
+    height: 50px;
+    width: fit-content;
+    align-content: center;
+    border-radius: 30px;
+    background-color: #96C9F4;
+    color: black;
+  }
+  
+  .save {
+    display: flex;
+    justify-content: center;
+  }

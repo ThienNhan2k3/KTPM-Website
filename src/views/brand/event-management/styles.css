@@ -9,7 +9,7 @@
 
 .row {
   display: flex;
-  justify-content: start !important;
+  justify-content: start;
 }
 
 .input-group {
