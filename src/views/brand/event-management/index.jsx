@@ -4,6 +4,7 @@ import SearchIcon from "@assets/images/search-icon.png";
 import EditIcon from "@assets/images/edit-icon.png";
 import PlusIcon from "@assets/images/plus-icon.png";
 import EventModal from "../../../components/EventModal/Modal";
+import AddEventModal from "../../../components/AddEventModal/Modal";
 import "./styles.css";
 
 
@@ -90,6 +91,7 @@ const ITEMS_PER_PAGE = 10;
 export default function EventManagement() {
   const [currentPage, setCurrentPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [showAddEventModal, setShowAddEventModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
   const handlePageClick = (event) => {
@@ -108,6 +110,14 @@ export default function EventManagement() {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedItem(null);
+  };
+
+  const handleOpenAddEventModal = () => {
+    setShowAddEventModal(true);
+  };
+
+  const handleCloseAddEventModal = () => {
+    setShowAddEventModal(false);
   };
 
   return (
@@ -136,7 +146,10 @@ export default function EventManagement() {
           </div>
           <button className="col mx-2 quiz-button">Quiz</button>
           <button className="col mx-2 lx-button">Lắc Xì</button>
-          <button className="add-button" style={{ marginLeft: "10px", display: 'flex', alignItems: 'center' }}>
+          <button className="add-button" 
+            style={{ marginLeft: "10px", display: 'flex', alignItems: 'center' }}
+            onClick={handleOpenAddEventModal}
+          >
               <img src={PlusIcon} alt="Add" style={{ marginRight: '5px' }} /> Thêm
           </button>
       </div>
@@ -203,6 +216,7 @@ export default function EventManagement() {
         />
       </div>
       <EventModal show={showModal} onClose={handleCloseModal} itemData={selectedItem} />
+      <AddEventModal show={showAddEventModal} onClose={handleCloseAddEventModal} />
     </div>
   );
 }

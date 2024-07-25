@@ -7,17 +7,12 @@ const convertDateFormat = (dateStr) => {
   return `${year}-${month}-${day}`;
 };
 
-const Modal = ({ show, onClose, itemData }) => {
+const Modal = ({ show, onClose}) => {
   if (!show) {
     return null;
   }
 
   const data = [
-    { id: 1, name: "Voucher1", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 2, name: "Vouhcer2", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 3, name: "Voucher3", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 4, name: "Voucher4", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 5, name: "Voucher5", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
     // Add more items if needed
   ];
 
@@ -62,14 +57,12 @@ const Modal = ({ show, onClose, itemData }) => {
           &times;
         </button>
         <div className="modal-body">
-          {itemData && (
-            <div>
+        <div>
               <div className="form-group">
                 <label><strong>Tên sự kiện:</strong></label>
                 <input
                   type="text"
                   className="form-control"
-                  defaultValue={itemData.name}
                 />
               </div>
 
@@ -79,7 +72,7 @@ const Modal = ({ show, onClose, itemData }) => {
                   <input
                     type="date"
                     className="form-control"
-                    defaultValue={convertDateFormat(itemData.dateCreate)}
+                    defaultValue={convertDateFormat("25/7/2024")}
                     style={{
                       width: "150px",
                       padding: "10px",
@@ -93,7 +86,7 @@ const Modal = ({ show, onClose, itemData }) => {
                   <input
                     type="date"
                     className="form-control"
-                    defaultValue={convertDateFormat(itemData.dateEnd)}
+                    defaultValue={convertDateFormat("25/7/2024")}
                     style={{
                       width: "150px",
                       padding: "10px",
@@ -162,16 +155,14 @@ const Modal = ({ show, onClose, itemData }) => {
                         type="radio"
                         name="type"
                         value="Quiz"
-                        defaultChecked={itemData.type === "Quiz"}
                       />
                       Quiz
                     </label>
                     <label>
                       <input
                         type="radio"
-                        name="type"
+                        name="type"s
                         value="Lắc xì"
-                        defaultChecked={itemData.type === "Lắc xì"}
                       />
                       Lắc xì
                     </label>
@@ -181,11 +172,10 @@ const Modal = ({ show, onClose, itemData }) => {
 
               <div className="save form-group" style={{ display: 'flex', justifyContent: 'center' }}>
                 <button className="save-button">
-                  Cập nhật sự kiện
+                  Thêm sự kiện
                 </button>
               </div>
             </div>
-          )}
         </div>
       </div>
     </div>
