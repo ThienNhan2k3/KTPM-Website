@@ -1,18 +1,4 @@
 
-.admin-user-report-container .dropdown-toggle {
-    background-color: transparent;
-    color: black;
-    border: 1px solid black;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.admin-user-report-container .dropdown-toggle:active {
-    background-color: transparent;
-    color: black;
-}
 
 .admin-user-report-container .search-button {
     width: 80%;
