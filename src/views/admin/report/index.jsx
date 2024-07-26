@@ -15,7 +15,7 @@ export default function AdminReports() {
           </Link>
         </div>
         <div className="brand-figures-wrapper col-8 col-sm-6 col-xl-4 justify-content-center">
-          <Link>
+          <Link to={"brandreport"}>
             <HorizontalCard number={5} desciption="Tổng số thương hiệu" image={buildingIcon} />
           </Link>
         </div>

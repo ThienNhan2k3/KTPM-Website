@@ -1,7 +1,7 @@
 import editIcon from "@assets/images/edit-icon.png";
 import "./styles.css";
 import { useState } from "react";
-import EditGameInforModalWithoutGenre from "@/components/EditModal/EditGameInforModalWithoutGenre";
+import EditGameModal from "@components/edit-game-modal";
 
 export default function GameInstruction() {
   const [show, setShow] = useState(false);
@@ -23,7 +23,7 @@ export default function GameInstruction() {
           Chỉnh sửa
         </button>
       </div>
-      <EditGameInforModalWithoutGenre
+      <EditGameModal
         show={show}
         handleClose={handleClose}
         title="Hướng dẫn"
