@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import "./styles.css";
 
 export default function DatePicker({title}) {
   const [date, setDate] = useState()
@@ -23,9 +24,10 @@ export default function DatePicker({title}) {
         <Button
           variant={"outline"}
           className={cn(
-            "tw-w-[100%] tw-justify-start tw-text-left tw-font-normal tw-px-0",
+            "date-picker-button tw-w-[100%] tw-justify-start tw-text-left tw-font-normal tw-px-0",
             !date && "text-muted-foreground"
           )}
+          
         >
           <CalendarIcon className=" tw-mr-2 tw-h-4 tw-w-4" />
           {date ? format(date, "PPP") : <span>{title}</span>}

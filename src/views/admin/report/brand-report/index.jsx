@@ -6,68 +6,52 @@ import DatePicker from "@components/date-picker";
 
 
 export default function BrandReport() {
+    const rows = [];
+    for (let i = 0; i < 5; i++) {
+        const row = <tr>
+                        <td>{i}</td>
+                        <td>Table cell</td>
+                        <td>Table cell</td>
+                        <td>Table cell</td>
+                    </tr>
+        rows.push(row);
+    }
+
     return (
         <>
             <div className="container d-flex flex-column justify-content-center">
                 <div className="row mb-3">
-                <div className="col-6 col-md-3 col-lg-2">
+                    <div className="col-6 col-md-3 col-xl-2">
                         <CustomDropdown title="Trò chơi" items={["Quizz", "Lắc xì"]}/>
                     </div>
 
-                    <div className="col-6 col-md-3 col-lg-2">
+                    <div className="col-6 col-md-3 col-xl-3 col-xll-2">
                         <DatePicker title="Ngày bắt đầu" />
                     </div>
 
-                    <div className="col-6 col-md-3 col-lg-2">
+                    <div className="col-6 col-md-3 col-xl-3 col-xll-2">
                         <DatePicker title="Ngày kết thúc" />
                     </div>
 
-                    <div className="col-6 col-md-3 col-lg-2">
+                    <div className="col-6 col-md-3 col-xl-2">
                         <Button className="tw-w-full tw-bg-green-700">Tìm kiếm</Button>
                     </div>
-                    
                 </div>
                 <div className="row">
                     <Table responsive="sm" className="admin-brand-report-container" >
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Table heading</th>
-                            <th>Table heading</th>
-                            <th>Table heading</th>
-                            <th>Table heading</th>
-                            <th>Table heading</th>
-                            <th>Table heading</th>
+                            <th>Thương hiệu</th>
+                            <th>Sự kiện đã tạo</th>
+                            <th>Voucher đã thêm</th>
                         </tr>
+                        
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                            <td>Table cell</td>
-                        </tr>
+                            {rows.map(item => (
+                                item
+                            ))}
                         </tbody>
                     </Table>
                 </div>

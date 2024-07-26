@@ -1,6 +1,6 @@
 import { Button } from '@components/ui/button';
 import "./styles.css";
-import BaseChart from '../../../../components/base-chart';
+import BaseChart from '@components/base-chart';
 import CustomDropdown from "@components/custom-dropdown";
 import DatePicker from '@/components/date-picker';
 
@@ -28,9 +28,16 @@ export default function GameReport() {
             </div>
         </div>
 
+        {/*<div className="content d-flex flex-column align-items-center mt-3">
+             <BaseChart title="Lượt chơi hàng ngày/tuần/tháng"/>
+            <BaseChart title="Số lượng thương hiệu tham gia "/> 
+            
+        </div>*/}
+
         <div className="content d-flex flex-column align-items-center mt-3">
-            <BaseChart title="Lượt chơi hàng ngày/tuần/tháng"/>
-            <BaseChart title="Số lượng thương hiệu tham gia "/>
+            <BaseChart title="Số lượng người chơi tham gia"/>
+            <BaseChart title="Thời gian tham gia trung bình của mỗi người chơi"/>
+
         </div>
 
     </div>

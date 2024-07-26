@@ -16,8 +16,9 @@
   width: calc(100vw - 276px);
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 576px) {
   .seller-layout-container.wide {
     transform: translateX(0px);
+    width: 100%;
   }
 }

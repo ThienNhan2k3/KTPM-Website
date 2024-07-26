@@ -1,6 +1,6 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Editor from "../Editor/Editor";
+import Editor from "@/components/editor";
 import "./styles.css";
 
 export default function EditGameModal({
