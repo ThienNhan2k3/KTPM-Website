@@ -2,7 +2,7 @@ import "./styles.css";
 import { useState } from "react";
 import removeIcon from "@assets/images/remove-icon.png";
 
-export default function TypeInput({disabled=false, intialTypes=[]}) {
+export default function TypeInput({disabled=false, intialTypes=[], placeholder="Type here"}) {
     const [types, setTypes] = useState(intialTypes);
     const [currentValue, setCurrentValue] = useState("");
 
@@ -22,7 +22,9 @@ export default function TypeInput({disabled=false, intialTypes=[]}) {
     }
 
     function handleRemoveType(type) {
-        setTypes(types.filter(t => t != type));
+        if (!disabled) {
+            setTypes(types.filter(t => t != type));
+        }
     }
 
     function handleInputChange(event) {
@@ -45,8 +47,8 @@ export default function TypeInput({disabled=false, intialTypes=[]}) {
                 type="text" 
                 value={currentValue} 
                 onKeyDown={(event) => handleKeyDown(event)} 
-                onChange={(event) => handleInputChange(event)} />
-            
+                onChange={(event) => handleInputChange(event)} 
+                placeholder={!disabled ? placeholder : ""} />
         </div>
     )
 }
