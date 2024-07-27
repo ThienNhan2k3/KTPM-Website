@@ -3,8 +3,13 @@ import "./styles.css";
 import BaseChart from '@components/base-chart';
 import CustomDropdown from "@components/custom-dropdown";
 import DatePicker from '@/components/date-picker';
+import { changeHeaderTitle } from '@/lib/utils';
+import { useContext } from "react"
+import { HeaderTitleContext } from '@/services/state/headerTitleContext';
 
 export default function GameReport() {
+    changeHeaderTitle("Thống kê trò chơi");
+    
     return (
         <div className='admin-game-report-container  d-flex flex-column justify-content-center'>
         <div className="container">

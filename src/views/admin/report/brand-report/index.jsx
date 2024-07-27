@@ -3,9 +3,11 @@ import Table from 'react-bootstrap/Table';
 import { Button } from '@components/ui/button';
 import CustomDropdown from "@components/custom-dropdown";
 import DatePicker from "@components/date-picker";
+import { changeHeaderTitle } from "@/lib/utils";
 
 
 export default function BrandReport() {
+    changeHeaderTitle("Thống kê thương hiệu");
     const rows = [];
     for (let i = 0; i < 5; i++) {
         const row = <tr>

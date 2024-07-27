@@ -20,6 +20,7 @@ import AdminUserReports from "@views/admin/report/user-report";
 import AdminGameReports from "@views/admin/report/game-report";
 import AdminBrandReports from "@views/admin/report/brand-report";
 import Layout from "@views/layout";
+import HeaderTitleProvider from "./services/providers/HeaderTitleProvider";
 
 function App() {
   const adminPages = [
@@ -44,7 +45,9 @@ function App() {
     { id: 3, name: "Báo cáo thống kê", image: reportsIcon, link: "report" },
   ];
 
+
   return (
+  <HeaderTitleProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -68,6 +71,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+  </HeaderTitleProvider>
   );
 }
 

@@ -44,7 +44,7 @@ export default function BaseChart({title}) {
 
     return (
       <div className="chart-wrapper">
-          <h3 className='text-center mt-2 mb-3'>{title}</h3>
+          <h3 className='fw-bold fs-5 text-center mt-2 mb-3'>{title}</h3>
           <ResponsiveContainer width="100%" height="94%">
           <AreaChart
             width={500}

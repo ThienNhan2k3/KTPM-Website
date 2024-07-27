@@ -3,8 +3,10 @@ import BaseChart from '../../../../components/base-chart';
 import CustomDropdown from "@components/custom-dropdown";
 import DatePicker from '@/components/date-picker';
 import { Button } from '@/components/ui/button';
+import { changeHeaderTitle } from "@/lib/utils";
 
 export default function UserReport() {
+    changeHeaderTitle("Thống kê người dùng");
     return (
         <div className='admin-user-report-container  d-flex flex-column justify-content-center'>
             <div className="container">
