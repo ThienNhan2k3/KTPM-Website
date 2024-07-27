@@ -2,8 +2,11 @@ import Card from "react-bootstrap/Card";
 import cardImage from "@assets/images/tay-cam-console.png";
 import "./styles.css";
 import { Link } from "react-router-dom";
+import { changeHeaderTitle } from "@/lib/utils";
+
 
 export default function GameManagement() {
+  changeHeaderTitle("Quản lý trò chơi")
   return (
     <div className="container container-md game-management-page-container">
       <div className="row g-3">

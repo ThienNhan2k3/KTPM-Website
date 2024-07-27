@@ -1,6 +1,6 @@
 import editIcon from "@assets/images/edit-icon.png";
 import "./styles.css";
-import EditGameInforModalWithoutGenre from "@/components/EditModal/EditGameInforModalWithoutGenre";
+import EditGameModal from "@components/edit-game-modal";
 import { useState } from "react";
 
 export default function GameItems() {
@@ -23,7 +23,7 @@ export default function GameItems() {
           Chỉnh sửa
         </button>
       </div>
-      <EditGameInforModalWithoutGenre
+      <EditGameModal
         show={show}
         handleClose={handleClose}
         title="Vật phẩm"

@@ -1,0 +1,34 @@
+
+
+.horizontal-card-container {
+    border-radius: 16px;
+    width: 100%;
+    color: #fff;
+    overflow: hidden;
+    transition: all 500ms;
+    flex-grow: 1;
+}
+
+.horizontal-card-container:hover {
+    transform: scale(1.03);
+}
+
+.horizontal-card-container img {
+    max-width: 120px;
+    max-height: 120px;
+}
+
+.horizontal-card-container .horizontal-card-content {
+    padding: 20px;
+    background-color: #FF5526;
+}
+
+.horizontal-card-container .horizontal-card-footer {
+    padding: 20px;
+    background-color: #940000;
+}
+
+
+
+
+

@@ -1,0 +1,28 @@
+.type-input-container {
+    border: 1px solid rgb(205, 194, 194);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.type-input-container input {
+    height: 36px;
+    outline: none;
+    border: none;
+    flex-grow: 1;
+}
+
+.type-input-container .type-list {
+    padding: 0px 5px;
+    width: max-content;
+}
+.type-input-container .type-list .type-items {
+    height: 80%;
+    padding: 3px 10px;
+    background-color: #EAF7FF;
+    border: none;
+}
+
+.type-input-container .type-list .type-items img {
+    width: 12px;
+    height: 12px;
+}

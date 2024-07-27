@@ -1,0 +1,15 @@
+
+
+.custom-dropdown .dropdown-toggle {
+    background-color: transparent;
+    color: black;
+    border: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.custom-dropdown .dropdown-toggle:active {
+    background-color: transparent;
+    color: black;
+}
