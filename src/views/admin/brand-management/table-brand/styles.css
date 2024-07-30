@@ -1,0 +1,458 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  background-color: #b6fffa;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border: 1px solid white;
+  height: 3.2em;
+}
+
+.title {
+  cursor: pointer;
+}
+
+.edit-id {
+  text-align: center;
+  padding: 3px 0px;
+}
+
+.edit-text {
+  padding: 0px 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-box {
+  width: 350px;
+  height: 40px;
+  padding: 5px 15px;
+  border: 1.5px solid #0f67b1;
+}
+
+.design-margin {
+  display: flex;
+  margin-bottom: 1.5em;
+}
+
+.display-title {
+  display: flex;
+  align-items: center;
+}
+
+.design-title {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  margin-left: 1.5em;
+  font-weight: 500;
+  font-size: 20px;
+  img {
+    width: 20px;
+    margin-right: 5px;
+  }
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.page-number {
+  display: flex;
+  margin-top: 1.5em;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.combo-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 5em;
+}
+
+.design-button {
+  border-color: #0f67b1;
+  color: #0f67b1;
+  margin-left: 5px;
+  padding: 5px 10px;
+  height: fit-content;
+}
+
+.design-button:hover {
+  border-color: white;
+  color: white;
+  background-color: #0f67b1;
+}
+
+.design-page-number {
+  display: flex;
+}
+
+.design-border {
+  border-left: 1px solid black;
+  margin-left: 5px;
+  padding: 0 5px;
+}
+
+.page-number-box {
+  padding: 0 5px;
+  border: 1.5px solid #0f67b1;
+  margin-left: 5px;
+}
+
+.show-page-number {
+  display: flex;
+}
+
+.ContextMenuContent {
+  min-width: 220px;
+  background-color: white;
+  border-radius: 6px;
+  overflow: hidden;
+  padding: 5px;
+  box-shadow:
+    10px 15px 40px -8px rgba(22, 23, 24, 0.5),
+    -10px -10px 30px -10px rgba(22, 23, 24, 0.5);
+}
+
+.ContextMenuItem {
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  padding: 0 5px;
+  position: relative;
+  padding-left: 25px;
+  user-select: none;
+  outline: none;
+}
+
+.ContextMenuItem:hover {
+  background-color: #0f67b1;
+  color: white;
+}
+
+button,
+fieldset,
+input {
+  all: unset;
+}
+
+/*Dialog*/
+.DialogOverlay {
+  background-color: rgba(0, 0, 0, 0.04);
+  position: fixed;
+  z-index: 15;
+  inset: 0;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.DialogContent {
+  background-color: white;
+  border-radius: 6px;
+  position: fixed;
+  z-index: 15;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 450px;
+  max-height: 90vh;
+  padding: 25px;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: auto;
+}
+
+.DialogContent:focus {
+  outline: none;
+}
+
+.DialogTitle {
+  margin: 0;
+  font-weight: 500;
+  color: black;
+  font-size: 17px;
+}
+
+.IconButton {
+  font-family: inherit;
+  border-radius: 100%;
+  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f67b1;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border: none;
+}
+
+.IconButton:hover {
+  background-color: rgba(63, 162, 246, 0.3);
+}
+
+.IconButton:focus {
+  box-shadow: 0 0 0 2px #96c9f4;
+}
+
+.design-cancel-button {
+  display: flex;
+  align-items: center;
+  background-color: #ff5526;
+  color: white;
+  padding: 5px 15px;
+}
+
+.custom-layout-submit {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+/*Alert*/
+.AlertDialogOverlay {
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  z-index: 15;
+  inset: 0;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.AlertDialogContent {
+  background-color: white;
+  border-radius: 6px;
+  box-shadow:
+    hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
+    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+  position: fixed;
+  z-index: 15;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 500px;
+  max-height: 85vh;
+  padding: 25px;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.AlertDialogContent:focus {
+  outline: none;
+}
+
+.AlertDialogTitle {
+  display: flex;
+  justify-content: center;
+}
+
+.AlertDialogDescription {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.Button {
+  padding: 5px 15px;
+  border: 1.5px solid black;
+
+  background-color: white;
+  color: black;
+}
+
+.Button:hover {
+  background-color: black;
+  color: white;
+}
+
+/*Select*/
+.SelectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 10em;
+  padding: 5px 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: white;
+  border-color: #9d9d9d;
+}
+
+.SelectTrigger:hover {
+  border-color: #0f67b1;
+  color: #0f67b1;
+}
+
+.SelectTrigger:focus {
+  box-shadow: 0 0 0 0px black;
+}
+
+.SelectTrigger[data-disabled] {
+  color: #757575;
+  pointer-events: none;
+}
+
+.SelectIcon:hover {
+  color: #0f67b1;
+}
+
+.SelectIcon[data-disabled] {
+  color: #757575;
+  pointer-events: none;
+}
+
+.SelectContent {
+  overflow: hidden;
+  background-color: white;
+  border-radius: 6px;
+  position: relative;
+  z-index: 15;
+  box-shadow:
+    0px 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+}
+
+.SelectViewport {
+  padding: 5px;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: white;
+  border: 1px solid #d9d9d9;
+}
+
+.SelectItem {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  padding: 5px 30px 5px 20px;
+  position: relative;
+  user-select: none;
+  background-color: white;
+}
+
+.SelectItem[data-highlighted] {
+  outline: none;
+  background-color: #3fa2f6;
+  color: #faffaf;
+  cursor: pointer;
+}
+
+.SelectItemIndicator {
+  position: absolute;
+  left: 0;
+  width: 25px;
+  padding-right: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*Form*/
+input,
+button {
+  all: unset;
+  box-sizing: border-box;
+}
+
+.FormRoot {
+  margin-top: 10px;
+  overflow: auto;
+}
+
+.FormField {
+  display: grid;
+  margin-bottom: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.FormLabel {
+  color: black;
+  pointer-events: none;
+}
+
+.FormMessage,
+.FormIcon {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: red;
+  opacity: 0.8;
+}
+
+.FormIcon {
+  margin-right: 3px;
+}
+
+.Input {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 5px;
+  border: 1px solid #49454f;
+  border-radius: 4px;
+  font-size: 15px;
+  color: black;
+  background-color: #e6e0e9;
+  padding: 0 10px;
+  height: 35px;
+  line-height: 1;
+}
+
+.Input:hover {
+  border: 1px solid white;
+  box-shadow: 0 0 0 2px #0f67b1;
+}
+
+.Input:focus {
+  border: 1px solid white;
+  box-shadow: 0 0 0 2px #0f67b1;
+}
+
+.Input::selection {
+  background-color: #3fa2f6;
+  color: #faffaf;
+}
+
+.Input:disabled {
+  color: #49454f;
+  background-color: #e6e0e9;
+  pointer-events: none;
+}
+
+.design-save-button {
+  display: flex;
+  align-items: center;
+  background-color: #1fab89;
+  color: white;
+  padding: 5px 15px;
+}
+
+/*Check Box*/
+.CheckboxRoot {
+  background-color: white;
+  height: 25px;
+  width: 25px;
+  padding: 0;
+  border-radius: 90px;
+  border: 2px solid #0f67b1;
+}
+
+.CheckboxRoot:hover {
+  box-shadow: 0 0 0 2px #0f67b1;
+}
+
+.CheckboxIndicator {
+  color: #0f67b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Label {
+  color: black;
+  padding-left: 10px;
+  font-size: 15px;
+}
