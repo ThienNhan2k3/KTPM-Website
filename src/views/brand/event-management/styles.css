@@ -1,5 +1,6 @@
-.input-group-custom {
-  width: 100%;
+.input-group{
+  flex-grow: 0 !important ;
+  flex-wrap: nowrap;
 }
 
 .form-control {
@@ -8,11 +9,12 @@
 
 .row {
   display: flex;
-  justify-content: start !important;
+  justify-content: start;
 }
 
 .input-group {
   flex-grow: 1;
+  width: 500px !important;
 }
 
 .quiz-button {
@@ -22,13 +24,55 @@
 }
 
 .lx-button {
-  flex-grow: 0 !important ;
-  width: 200px;
-  background-color: #687eff;
+  flex-grow: 0.1 !important ;
+  width: fit-content;
+  background-color: #ff6868;
 }
 
 .add-button {
-  flex-grow: 0 !important ;
   width: fit-content;
   background-color: #009626;
 }
+.table-bordered {
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.table-bordered th {
+  background-color: #f2f2f2;
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.pagination li {
+  margin: 0 5px; /* Adjust this value to add more space */
+}
+
+.pagination li a {
+  text-decoration: none;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  color: #007bff;
+}
+
+.pagination li.active a {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+}
+
+.pagination li a:hover {
+  background-color: #ddd;
+}
+
+

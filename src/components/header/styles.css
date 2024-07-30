@@ -1,6 +1,8 @@
 .header-bar {
   display: flex;
   justify-content: flex-end;
+  height: 100%;
+  align-items: center;
 }
 
 .seller-header-container {
@@ -8,6 +10,7 @@
   justify-content: space-between;
   width: calc(100vw - 256px);
   padding: 20px;
+  transition: all 500ms;
 }
 
 .user-placeholder img {
@@ -50,8 +53,14 @@
   background-color: black;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 576px) {
   .seller-header-container {
     padding: 0px 20px;
+    flex-grow: 1;
   }
+
+  .header-bar {
+    justify-content: start;
+  }
+  
 }

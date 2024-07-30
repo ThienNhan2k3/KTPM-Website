@@ -1,0 +1,12 @@
+
+
+.admin-brand-report-container thead tr th {
+    background-color: #BAFFFA;
+}
+
+.admin-brand-report-container tbody tr td {
+    background-color: #EDF3FF;
+    margin-bottom: 10px !important;
+}
+
+

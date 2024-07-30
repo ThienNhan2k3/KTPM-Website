@@ -1,0 +1,7 @@
+.edit-game-infor-modal-without-genre-container .modal-dialog {
+    max-width: 80% !important;
+}
+
+.edit-game-infor-modal-without-genre-container .modal-content {
+    max-width: 100% !important;
+}
