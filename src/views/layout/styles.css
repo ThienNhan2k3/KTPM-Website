@@ -3,17 +3,18 @@
 }
 
 .seller-layout-container {
-  /* height: calc(100vh - 62px); */
+  height: calc(100vh - 82px);
   transition: all 500ms;
-  padding: 20px;
+  margin: 20px 40px;
   z-index: 0;
-  background-color: #fff;
-  min-height: calc(100vh - 62px);
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
 }
 
 .seller-layout-container.wide {
   transform: translateX(256px);
-  width: calc(100vw - 276px);
+  width: calc(100vw - 346px);
 }
 
 @media screen and (max-width: 576px) {

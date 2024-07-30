@@ -1,9 +1,9 @@
-import TableVoucher from "./table-voucher";
+import TablePlayer from "./table-player";
 
 export default function PlayerManagement() {
   return (
     <>
-      <TableVoucher />
+      <TablePlayer />
     </>
   );
 }

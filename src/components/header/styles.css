@@ -8,9 +8,8 @@
 .seller-header-container {
   display: flex;
   justify-content: space-between;
-  width: calc(100vw - 256px);
-  padding: 20px;
-  transition: all 500ms;
+  width: calc(100vw - 276px);
+  padding: 20px 25px;
 }
 
 .user-placeholder img {
@@ -19,8 +18,9 @@
 }
 
 .seller-header-container.wide {
-  padding: 20px;
   width: calc(100vw - 10px);
+  margin: 20px 40px;
+  padding: 0%;
 }
 
 .seller-header-container .seller-header-title {
@@ -34,23 +34,16 @@
   font-weight: 600;
   font-size: 1.15rem;
   color: black;
+  margin: auto;
 }
 
-.seller-header-container .seller-header-title .hamburger-button {
+.seller-header-container .seller-header-title .three-line {
   width: 30px;
   height: 30px;
   padding: 3px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  cursor: pointer;
-}
-
-.seller-header-container .seller-header-title .hamburger-button span {
-  display: block;
-  height: 3px;
-  width: 100%;
-  background-color: black;
 }
 
 @media screen and (max-width: 576px) {
@@ -62,5 +55,4 @@
   .header-bar {
     justify-content: start;
   }
-  
 }

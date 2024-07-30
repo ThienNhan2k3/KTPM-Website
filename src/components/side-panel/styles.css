@@ -72,6 +72,9 @@
 
 .side-panel-body .main-menu a:hover {
   background-color: #faffaf;
+  span {
+    color: black;
+  }
 }
 
 .side-panel-body .main-menu a.active {
