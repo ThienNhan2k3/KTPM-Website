@@ -17,6 +17,7 @@
     font-size: xx-large;
     letter-spacing: 2px;
     margin: 20px;
+    pointer-events: none;
   }
 }
 
@@ -67,6 +68,7 @@
   .link {
     margin-left: 3px;
     color: #0f67b1;
+    cursor: pointer;
   }
 }
 
