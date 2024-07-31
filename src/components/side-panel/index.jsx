@@ -29,7 +29,7 @@ export default function SidePanel({
                     className={({ isActive }) => (isActive ? "active" : "")}
                   >
                     <img src={item.image} alt="" />
-                    <span>{item.name}</span>
+                    <span style={{ textAlign: "left" }}>{item.name}</span>
                   </NavLink>
                 </li>
               );
@@ -41,7 +41,7 @@ export default function SidePanel({
                     className={({ isActive }) => (isActive ? "active" : "")}
                   >
                     <img src={item.image} alt="" />
-                    <span>{item.name}</span>
+                    <span style={{ textAlign: "left" }}>{item.name}</span>
                   </NavLink>
                 </li>
               );

@@ -29,6 +29,7 @@
   height: 40px;
   padding: 5px 15px;
   border: 1.5px solid #0f67b1;
+  text-align: left;
 }
 
 .design-margin {
@@ -73,7 +74,8 @@ table {
 }
 
 .design-button {
-  border-color: #0f67b1;
+  border: 1px solid #0f67b1;
+  border-radius: 6px;
   color: #0f67b1;
   margin-left: 5px;
   padding: 5px 10px;
@@ -81,7 +83,7 @@ table {
 }
 
 .design-button:hover {
-  border-color: white;
+  border: 1px solid white;
   color: white;
   background-color: #0f67b1;
 }
@@ -100,6 +102,7 @@ table {
   padding: 0 5px;
   border: 1.5px solid #0f67b1;
   margin-left: 5px;
+  text-align: left;
 }
 
 .show-page-number {
@@ -390,6 +393,7 @@ button {
 .Input {
   display: inline-flex;
   align-items: center;
+  text-align: left;
   margin-top: 5px;
   border: 1px solid #49454f;
   border-radius: 4px;

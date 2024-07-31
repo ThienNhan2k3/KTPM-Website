@@ -5,40 +5,92 @@
   background-color: #ffffff;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-.custom-rounded {
+.right-part {
   border-top-left-radius: 50px;
   border-bottom-left-radius: 50px;
   height: 100%;
-  background-color: #0f67b1;
+  background-color: rgba(150, 210, 244, 0.5);
+  border: 2px solid #0f67b1;
+
+  .title {
+    font-weight: 800;
+    font-size: xx-large;
+    letter-spacing: 2px;
+    margin: 20px;
+  }
+}
+
+.combo-login-button {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 10px;
+}
+
+.login-button {
+  display: flex;
+  border: 1px solid #0f67b1;
+  border-radius: 6px;
+  color: #5a5a5a;
+  background-color: white;
+  padding: 10px;
+  width: 240px;
+
+  img {
+    width: 24px;
+    margin-right: 10px;
+  }
+}
+
+.or {
+  margin: 20px;
+  font-size: x-large;
+}
+
+.FormRootLogin {
+  width: 350px;
+}
+
+.Login {
+  background-color: #3fa2f6;
+  color: white;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  padding: 8px 0;
+  width: 240px;
+}
+
+.link-to-logup-screen {
+  display: flex;
+
+  .link {
+    margin-left: 3px;
+    color: #0f67b1;
+  }
+}
+
+.welcome {
+  margin-top: 2.5em;
+  height: 4em;
+  width: 16em;
+}
+
+.logo {
+  padding: 0;
+  margin-top: 24px;
+  margin-bottom: 14px;
+}
+
+.logo1 {
+  padding: 30px;
+  height: 350px;
+  width: 400px;
+}
+
+.logo2 {
+  margin-top: -250px;
+  padding: 30px;
+  height: 350px;
+  width: 350px;
 }
