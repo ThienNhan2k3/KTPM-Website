@@ -1,3 +1,9 @@
-export default function VoucherManagement() {
-  return;
+import TableVoucher from "./table-voucher";
+
+export default function PlayerManagement() {
+  return (
+    <>
+      <TableVoucher />
+    </>
+  );
 }

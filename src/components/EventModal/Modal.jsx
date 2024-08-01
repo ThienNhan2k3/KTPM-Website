@@ -55,6 +55,40 @@ const Modal = ({ show, onClose, itemData }) => {
     };
   }, [onClose]);
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // Validate all fields manually
+    const form = event.target;
+    let hasError = false;
+
+    // Check all required fields
+    form.querySelectorAll("[required]").forEach((input) => {
+      if (!input.value) {
+        input.setCustomValidity("Trường này không được để trống!");
+        hasError = true;
+      } else {
+        input.setCustomValidity("");
+      }
+    });
+
+    // Validate image specifically
+    if (!prevImage) {
+      setImageError(true);
+      hasError = true;
+    } else {
+      setImageError(false);
+    }
+
+    if (hasError) {
+      // Trigger native validation messages
+      form.reportValidity();
+    } else {
+      // Submit the form
+      console.log("Form submitted");
+      setOpen1(false);
+    }
+  };
   return (
     <div className="editevent-modal-overlay">
       <div className="editevent-modal-content">
