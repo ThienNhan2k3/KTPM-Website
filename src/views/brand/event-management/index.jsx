@@ -7,7 +7,6 @@ import EventModal from "../../../components/EventModal/Modal";
 import AddEventModal from "../../../components/AddEventModal/Modal";
 import "./styles.css";
 
-
 const data = [
   { id: 1, name: "Marathon", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
   { id: 2, name: "Marathon2", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
@@ -83,7 +82,6 @@ const data = [
   { id: 72, name: "Marathon10", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
   { id: 73, name: "Marathon11", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
   { id: 74, name: "Marathon12", type: "Quiz", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-  // Add more rows as needed
 ];
 
 const ITEMS_PER_PAGE = 10;
@@ -93,14 +91,40 @@ export default function EventManagement() {
   const [showModal, setShowModal] = useState(false);
   const [showAddEventModal, setShowAddEventModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [pageInput, setPageInput] = useState("");
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
+    setPageInput((event.selected + 1).toString()); // Synchronize input field with current page
   };
 
+  const handlePageInputChange = (e) => {
+    setPageInput(e.target.value);
+  };
+
+  const handlePageInputSubmit = () => {
+    const pageNumber = parseInt(pageInput, 10) - 1;
+    if (!isNaN(pageNumber) && pageNumber >= 0 && pageNumber < pageCount) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(0); // Reset to first page on new search
+    setPageInput("1"); // Reset input field to 1
+  };
+
+  const filteredData = data.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.type.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const offset = currentPage * ITEMS_PER_PAGE;
-  const currentPageData = data.slice(offset, offset + ITEMS_PER_PAGE);
-  const pageCount = Math.ceil(data.length / ITEMS_PER_PAGE);
+  const currentPageData = filteredData.slice(offset, offset + ITEMS_PER_PAGE);
+  const pageCount = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
 
   const handleSearchClick = (item) => {
     setSelectedItem(item);
@@ -122,52 +146,55 @@ export default function EventManagement() {
 
   return (
     <div className="col">
-      <div className="row mb-3">
-          <div className="col input-group mx-2">
-              <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search"
-                  name="search"
-                  style={{
-                      width: "500px",
-                      height: "fit-content",
-                      borderColor: "#0F67B1",
-                      backgroundColor: "#ECE6F0",
-                      borderRadius: "35px",
-                      padding: "10px",
-                  }}
-              />
-              <div className="input-group-btn">
-                  <button className="btn btn-default" type="submit">
-                      <img src={SearchIcon} alt="Search" />
-                  </button>
-              </div>
+      <div className="EventManagement-row mb-3">
+        <div className="EventManagement-input-group mx-2">
+          <input
+            type="text"
+            className="EventManagement-form-control"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            style={{
+              width: "400px",
+              height: "fit-content",
+              borderColor: "#0F67B1",
+              color: "#000000",
+              backgroundColor: "#ECE6F0",
+              borderRadius: "35px",
+              padding: "10px",
+            }}
+          />
+          <div className="input-group-btn">
+            <button className="btn btn-default" type="submit">
+              <img src={SearchIcon} alt="Search" />
+            </button>
           </div>
-          <button className="col mx-2 quiz-button">Quiz</button>
-          <button className="col mx-2 lx-button">Lắc Xì</button>
-          <button className="add-button" 
-            style={{ marginLeft: "10px", display: 'flex', alignItems: 'center' }}
-            onClick={handleOpenAddEventModal}
-          >
-              <img src={PlusIcon} alt="Add" style={{ marginRight: '5px' }} /> Thêm
-          </button>
+        </div>
+        <button className="mx-2 EventManagement-quiz-button">Quiz</button>
+        <button className="mx-2 EventManagement-lx-button">Lắc Xì</button>
+        <button
+          className="EventManagement-add-button"
+          style={{ marginLeft: "10px", display: 'flex', alignItems: 'center' }}
+          onClick={handleOpenAddEventModal}
+        >
+          <img src={PlusIcon} alt="Add" style={{ marginRight: '5px' }} /> Thêm
+        </button>
       </div>
-      <table className="table table-bordered my-3">
+      <table className="table EventManagement-table-bordered my-3">
         <thead>
           <tr>
-            <th scope="col">ID</th>
+            <th scope="col" style={{ width: "7%" }}>ID</th>
             <th scope="col">Name</th>
-            <th scope="col">Type</th>
-            <th scope="col">Date create</th>
-            <th scope="col">Date end</th>
-            <th scope="col"></th>
+            <th scope="col" style={{ width: "20%" }}>Type</th>
+            <th scope="col" style={{ width: "15%" }}>Date create</th>
+            <th scope="col" style={{ width: "15%" }}>Date end</th>
+            <th scope="col" style={{ width: "5%" }}></th>
           </tr>
         </thead>
         <tbody>
           {currentPageData.map((item) => (
             <tr key={item.id}>
-              <th scope="row">{item.id}</th>
+              <th className="EventManagement-table-id" scope="row">{item.id}</th>
               <td>{item.name}</td>
               <td>{item.type}</td>
               <td>{item.dateCreate}</td>
@@ -200,7 +227,23 @@ export default function EventManagement() {
           ))}
         </tbody>
       </table>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <input
+            className="EventManagement-pagination-textbox"
+            type="text"
+            value={pageInput}
+            onChange={handlePageInputChange}
+            placeholder="Go to page"
+          />
+          <button
+            className="EventManagement-pagination-button"
+            onClick={handlePageInputSubmit}
+            style={{ padding: "5px 10px" }}
+          >
+            Go to
+          </button>
+        </div>
         <ReactPaginate
           previousLabel={"previous"}
           nextLabel={"next"}
@@ -210,9 +253,10 @@ export default function EventManagement() {
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageClick}
-          containerClassName={"pagination"}
+          containerClassName={"EventManagement-pagination"}
           subContainerClassName={"pages pagination"}
           activeClassName={"active"}
+          forcePage={currentPage} // Force the component to reflect the currentPage
         />
       </div>
       <EventModal show={showModal} onClose={handleCloseModal} itemData={selectedItem} />

@@ -1,28 +1,28 @@
 
-.modal-overlay {
+.addevent-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.addevent-5);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
   }
   
-  .modal-content {
+  .addevent-modal-content {
     background: white;
     width: 550px;
     height: 100%;
     padding: 20px;
     position: relative;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.addevent-1);
   }
   
-  .modal-close {
+  .addevent-modal-close {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -32,32 +32,32 @@
     cursor: pointer;
   }
   
-  .modal-body {
+  .addevent-modal-body {
   }
 
-  .form-group {
+  .addevent-form-group {
     margin-bottom: 10px;
   }
 
-  .Date-created {
+  .addevent-Date-created {
     width: 200px;
     margin-right: 50px;
   }
 
-  .container {
+  .addevent-container {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
   }
   
-  .image-input {
+  .addevent-image-input {
     height: 50px;
     align-content: center;
     width: 100%;
     border-radius: 25px;
     background-color: #EDF3FF;
   }
-  .add-image-button {
+  .addevent-add-image-button {
     margin-left: 30px;
     margin-right: 10px;
     border-color: #3FA2F6;
@@ -66,11 +66,11 @@
     color: #69B4F3;;
   }
   
-  .voucher {
+  .addevent-voucher {
     justify-content: space-between !important;
   }
 
-  .add-voucher-button {
+  .addevent-add-voucher-button {
     height: 50px;
     width: fit-content;
     align-content: center;
@@ -79,19 +79,30 @@
     color: black;
   }
 
-  .table-button{
+  .addevent-table-button{
     font-size: 10px;
     background-color: #ffffff7a;
     color: black;
   }
   
-  .save {
+  .addevent-save {
     display: flex;
     justify-content: center;
   }
 
-  .save-button {
+  .addevent-save-button {
     width: fit-content;
     color: #65558F;
     background-color: #5DEE81;
+  }
+
+  .addevent-hiddent-box {
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+  }
+  
+
+  .addevent-hidden-button {
+    background-color: #5da5ee;
   }

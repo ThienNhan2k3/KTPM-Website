@@ -1,0 +1,101 @@
+.brand-report-screen-type-button-group {
+  gap: 15px;
+  position: absolute;
+  left: 30px;
+}
+
+.brand-report-screen-select-group {
+ gap: 15px;
+ position: absolute;
+ right: 35px; 
+}
+
+.brand-report-screen-type-button {
+  width: fit-content;
+  margin-right: 15px;
+}
+
+.brand-report-select {
+  margin-left: 20px;
+  width: 200px;
+  border-radius: 10px;
+  background-color: white;
+  color: black;
+
+}
+
+.brand-report-screen-chart {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+.brand-report-screen-col {
+}
+
+.brand-report-screen-row {
+  margin-bottom: 50px;
+  display: flex;
+}
+
+.brand-report-screen-box-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-report-screen-box {
+  margin-bottom: 10px;
+}
+
+.brand-report-screen-box1-content {
+  background-color: #FF5526;
+  border-radius: 20px;
+  width: 500px;
+  height: 150px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 300px;
+}
+
+.brand-report-screen-box2-content {
+  background-color: #7DEA98;
+  border-radius: 20px;
+  width: 600px;
+  height: 150px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 300px;
+}
+
+.box-text {
+  display: flex;
+  align-items: center;
+}
+
+.brand-report-screen-box-number {
+  font-size: 40px;
+  font-weight: bold;
+  margin-right: 5px;
+  color: #ffffff;
+}
+
+.brand-report-screen-box-label {
+  font-size: 25px;
+  color: #ffffff;
+}
+
+.brand-report-screen-box-icon {
+  fill: currentColor;
+  margin-left: 10px;
+  width: 45px;
+  height: 45px;
+}
+
