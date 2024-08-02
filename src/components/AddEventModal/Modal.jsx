@@ -15,6 +15,10 @@ const Modal = ({ show, onClose }) => {
   const data = [
     // Add more items if needed
   ];
+  
+  const [, setImage] = React.useState(null);
+  const [prevImage, setPrevImage] = React.useState(null);
+  const [imageError, setImageError] = React.useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
@@ -40,6 +44,14 @@ const Modal = ({ show, onClose }) => {
 
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
+  };
+
+  const handleChangeImage = (event) => {
+    const [file] = event.target.files;
+    if (file) {
+      setImage(file);
+      setPrevImage(URL.createObjectURL(file));
+    }
   };
 
   useEffect(() => {
@@ -111,9 +123,68 @@ const Modal = ({ show, onClose }) => {
               <label>
                 <strong>Hình ảnh:</strong>
               </label>
-              <div className="addevent-image-input">
-                <button className="addevent-add-image-button">Thêm ảnh</button>
-                <span style={{ display: "inline" }}> file...name.jpg</span>
+              <div className="row addevent-image-input">
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    border: "1px solid #3FA2F6",
+                    padding: "5px 15px",
+                    width: "fit-content",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                  }}
+                  htmlFor="thumbnail-image"
+                >
+                  {prevImage == null ? (
+                    <>
+                      <div className="addevent-add-image-button">
+                        Thêm ảnh
+                      </div>
+                    </>
+                  ) : (
+                      <img
+                        src={prevImage}
+                        alt=""
+                        style={{ width: "150px" }}
+                      />
+                  )}
+                </label>
+
+                <label
+                  style={{
+                    marginLeft: "15px",
+                    display: "flex",
+                    alignItems: "end",
+                    width: "180px",
+                    pointerEvents: "none",
+                  }}
+                  htmlFor="thumbnail-image"
+                >
+                  {prevImage == null ? (
+                    <>
+                      <div>file...name.jpg</div>
+                    </>
+                  ) : (
+                    <span
+                      style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      height: "24px",
+                      }}
+                    >
+                      {prevImage}
+                    </span>
+                  )}
+                </label>
+                <input
+                  type="file"
+                  id="thumbnail-image"
+                  name="thumbnail-image"
+                  accept="image/*"
+                  onChange={(event) => handleChangeImage(event)}
+                  style={{ display: "none" }}
+                />
               </div>
             </div>
 

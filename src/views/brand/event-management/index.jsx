@@ -144,6 +144,7 @@ export default function EventManagement() {
                     style={{
                       width: "20px",
                       height: "20px",
+                      color: "black",
                     }}
                   />
                 </button>
