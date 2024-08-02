@@ -13,11 +13,11 @@ const newPerson = () => {
   const dateEnd = faker.date.future(undefined, dateCreate);
 
   return {
-    id: faker.datatype.uuid(),
-    name: faker.internet.userName(),
-    type: faker.helpers.randomize(['Quiz', 'Lắc xì']),
-    dateCreate: dateCreate.toISOString().split("T")[0],
-    dateEnd: dateEnd.toISOString().split("T")[0],
+    id: faker.number.int({ min: 1, max: 500 }),
+    name: faker.internet.userName(15),
+    type: faker.helpers.arrayElement(["Quiz", "Lắc xì"]),
+    dateCreate: dateCreate.toISOString().split("/")[0],
+    dateEnd: dateEnd.toISOString().split("/")[0],
   };
 };
 
