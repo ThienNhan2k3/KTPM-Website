@@ -1,78 +1,100 @@
-.input-group{
+.EventManagement-input-group{
   flex-grow: 0 !important ;
   flex-wrap: nowrap;
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: stretch;
 }
 
-.form-control {
+.EventManagement-form-control {
   flex-grow: 0 !important;
 }
 
-.row {
+.EventManagement-row {
   display: flex;
   justify-content: start;
 }
 
-.input-group {
+.EventManagement-input-group {
   flex-grow: 1;
   width: 500px !important;
 }
 
-.quiz-button {
+.EventManagement-quiz-button {
   flex-grow: 0 !important ;
   width: fit-content;
   background-color: #80b3ff;
 }
 
-.lx-button {
-  flex-grow: 0.1 !important ;
+.EventManagement-lx-button {
+  flex-grow: 0.EventManagement-1 !important ;
   width: fit-content;
   background-color: #ff6868;
 }
 
-.add-button {
+.EventManagement-add-button {
   width: fit-content;
   background-color: #009626;
 }
-.table-bordered {
+
+.EventManagement-table-bordered {
   border: 1px solid #ddd;
   border-collapse: collapse;
 }
 
-.table-bordered th,
-.table-bordered td {
+.EventManagement-table-bordered th,
+.EventManagement-table-bordered td {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-.table-bordered th {
+.EventManagement-table-bordered th {
   background-color: #f2f2f2;
 }
 
-.pagination {
+
+
+.EventManagement-pagination {
   display: flex;
   list-style: none;
   padding: 0;
 }
 
-.pagination li {
+.EventManagement-pagination li {
   margin: 0 5px; /* Adjust this value to add more space */
 }
 
-.pagination li a {
+.EventManagement-pagination li a {
   text-decoration: none;
   padding: 8px 12px;
   border: 1px solid #ddd;
   color: #007bff;
 }
 
-.pagination li.active a {
+.EventManagement-pagination li.active a {
   background-color: #007bff;
   color: white;
   border: 1px solid #007bff;
 }
 
-.pagination li a:hover {
+.EventManagement-pagination li a:hover {
   background-color: #ddd;
+}
+
+
+.EventManagement-pagination-textbox {
+  width: 100px;
+  height: fit-content;
+  background-color: #ECE6F0;
+  color: black;
+  border-radius: 8px;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.EventManagement-pagination-button {
+  background-color: #18a4e5;
 }
 
 

@@ -14,7 +14,7 @@ const Modal = ({ show, onClose, itemData }) => {
 
   const data = [
     { id: 1, name: "Voucher1", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 2, name: "Vouhcer2", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+    { id: 2, name: "Voucher2", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
     { id: 3, name: "Voucher3", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
     { id: 4, name: "Voucher4", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
     { id: 5, name: "Voucher5", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
@@ -43,7 +43,7 @@ const Modal = ({ show, onClose, itemData }) => {
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
-      if (event.target.classList.contains("modal-overlay")) {
+      if (event.target.classList.contains("editevent-modal-overlay")) {
         onClose();
       }
     };
@@ -55,16 +55,50 @@ const Modal = ({ show, onClose, itemData }) => {
     };
   }, [onClose]);
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // Validate all fields manually
+    const form = event.target;
+    let hasError = false;
+
+    // Check all required fields
+    form.querySelectorAll("[required]").forEach((input) => {
+      if (!input.value) {
+        input.setCustomValidity("Trường này không được để trống!");
+        hasError = true;
+      } else {
+        input.setCustomValidity("");
+      }
+    });
+
+    // Validate image specifically
+    if (!prevImage) {
+      setImageError(true);
+      hasError = true;
+    } else {
+      setImageError(false);
+    }
+
+    if (hasError) {
+      // Trigger native validation messages
+      form.reportValidity();
+    } else {
+      // Submit the form
+      console.log("Form submitted");
+      setOpen1(false);
+    }
+  };
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <button className="modal-close" onClick={onClose}>
+    <div className="editevent-modal-overlay">
+      <div className="editevent-modal-content">
+        <button className="editevent-modal-close" onClick={onClose}>
           &times;
         </button>
-        <div className="modal-body">
+        <div className="editevent-modal-body">
           {itemData && (
             <div>
-              <div className="form-group">
+              <div className="editevent-form-group">
                 <label><strong>Tên sự kiện:</strong></label>
                 <input
                   type="text"
@@ -73,8 +107,8 @@ const Modal = ({ show, onClose, itemData }) => {
                 />
               </div>
 
-              <div className="row form-group container" style={{ display: 'flex', alignItems: 'center' }}>
-                <div className="Date-created">
+              <div className="row editevent-form-group container" style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
+                <div className="editevent-Date-created">
                   <strong style={{ marginRight: '10px' }}>Ngày bắt đầu:</strong>
                   <input
                     type="date"
@@ -102,27 +136,27 @@ const Modal = ({ show, onClose, itemData }) => {
                 </div>
               </div>
 
-              <div className="form-group">
+              <div className="editevent-form-group">
                 <label><strong>Hình ảnh:</strong></label>
-                <div className="image-input">
-                  <button className="add-image-button">
+                <div className="editevent-image-input">
+                  <button className="editevent-add-image-button">
                     Thêm ảnh
                   </button>
                   <span style={{ display: 'inline' }}> file...name.jpg</span>
                 </div>
               </div>
 
-              <div className="row voucher form-group container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="row editevent-voucher editevent-form-group container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <strong style={{ width: "fit-content" }}>
                   VOUCHER
                 </strong>
-                <button className="add-voucher-button">
+                <button className="editevent-add-voucher-button">
                   <img src={PlusIcon} alt="Add" style={{ marginRight: '5px' }} />
                   Thêm voucher
                 </button>
               </div>
 
-              <div className="form-group">
+              <div className="editevent-form-group">
                 <table className="table table-bordered my-3" style={{ fontSize: '12px', width: '100%' }}>
                   <thead>
                     <tr>
@@ -142,45 +176,33 @@ const Modal = ({ show, onClose, itemData }) => {
                   </tbody>
                 </table>
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <button className="table-button" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                  <button className="editevent-table-button" onClick={handlePreviousPage} disabled={currentPage === 1}>
                     Previous
                   </button>
-                  <button className= "table-button" onClick={handleNextPage} disabled={currentPage === totalPages} style={{ marginLeft: '10px' }}>
+                  <button className= "editevent-table-button" onClick={handleNextPage} disabled={currentPage === totalPages} style={{ marginLeft: '10px' }}>
                     Next
                   </button>
                 </div>
               </div>
 
-              <div className="row form-group">
+              <div className="row editevent-form-group">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <label style={{ marginRight: '10px' }}>
                     <strong>Loại trò chơi:</strong>
                   </label>
-                  <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <label style={{ marginRight: "15px" }}>
-                      <input
-                        type="radio"
-                        name="type"
-                        value="Quiz"
-                        defaultChecked={itemData.type === "Quiz"}
-                      />
-                      Quiz
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="type"
-                        value="Lắc xì"
-                        defaultChecked={itemData.type === "Lắc xì"}
-                      />
-                      Lắc xì
-                    </label>
-                  </div>
+                  <span>{itemData.type}</span>
+                  {itemData.type === "Quiz" && (
+                    <div className="editevent-hiddent-box editevent-form-group">
+                      <button className="editevent-hidden-button">Câu hỏi</button>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="save form-group" style={{ display: 'flex', justifyContent: 'center' }}>
-                <button className="save-button">
+
+
+              <div className="editevent-save editevent-form-group" style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className="editevent-save-button">
                   Cập nhật sự kiện
                 </button>
               </div>
