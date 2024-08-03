@@ -1,0 +1,104 @@
+#root {
+  margin: 0;
+  padding: 0rem;
+  text-align: center;
+  background-color: #ffffff;
+}
+
+.sign-up-conatiner .right-part {
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  min-height: 100%;
+  background-color: rgba(150, 210, 244, 0.5);
+  border: 2px solid #0f67b1;
+  height: auto;
+
+  .title {
+    font-weight: 800;
+    font-size: xx-large;
+    letter-spacing: 2px;
+    margin: 20px;
+    pointer-events: none;
+  }
+}
+
+
+
+.sign-up-conatiner .login-button {
+  display: flex;
+  border: 1px solid #0f67b1;
+  border-radius: 6px;
+  color: #5a5a5a;
+  background-color: white;
+  padding: 10px;
+  width: 240px;
+
+  img {
+    width: 24px;
+    margin-right: 10px;
+  }
+}
+
+.sign-up-conatiner .or {
+  margin: 20px;
+  font-size: x-large;
+}
+
+.sign-up-conatiner .FormRootLogin {
+  width: 80%;
+}
+
+.sign-up-conatiner .row {
+  width: 100% !important;
+}
+
+.sign-up-conatiner .SignUp {
+  background-color: #3fa2f6;
+  color: white;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  padding: 8px 0;
+  width: 240px;
+}
+
+.sign-up-conatiner .link-to-login-screen {
+  display: flex;
+
+  .link {
+    margin-left: 3px;
+    color: #0f67b1;
+    cursor: pointer;
+  }
+}
+
+.sign-up-conatiner .welcome {
+  margin-top: 2.5em;
+  height: 4em;
+  width: 16em;
+}
+
+.sign-up-conatiner .logo {
+  padding: 0;
+  margin-top: 24px;
+  margin-bottom: 14px;
+}
+
+.sign-up-conatiner .logo1 {
+  padding: 30px;
+  height: 350px;
+  width: 400px;
+}
+
+.sign-up-conatiner .logo2 {
+  margin-top: -250px;
+  padding: 30px;
+  height: 350px;
+  width: 350px;
+}
+
+.leaflet-container {
+  height: 340px;
+  width: 100%;
+  display: block;
+}

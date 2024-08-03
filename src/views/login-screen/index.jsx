@@ -10,6 +10,8 @@ import logo from "@assets/images/logo.png";
 import logo1 from "@assets/images/logo-icon-1.png";
 import logo2 from "@assets/images/logo-icon-2.png";
 
+import { Link } from "react-router-dom";
+
 import "./styles.css";
 
 function Login() {
@@ -107,7 +109,9 @@ function Login() {
 
           <div className="link-to-logup-screen">
             <span>Chưa có tài khoản?</span>
-            <span className="link">Đăng ký</span>
+            <Link to="signup">
+              <span className="link">Đăng ký</span>
+            </Link>
           </div>
         </div>
       </div>

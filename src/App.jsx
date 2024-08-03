@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Login from "./views/login-screen";
+import SignUp from "./views/signup-screen";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import playerManagementIcon from "@assets/images/quan-ly-nguoi-choi-icon.png";
 import brandManagementIcon from "@assets/images/quan-ly-thuong-hieu-icon.png";
@@ -65,6 +66,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/admin" element={<Layout linkArray={adminPages} />}>
             <Route index element={<BrandManagement />} />
             <Route path="playermanagement" element={<PlayerManagement />} />
