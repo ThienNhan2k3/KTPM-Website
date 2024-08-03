@@ -21,7 +21,7 @@ export default function BrandReport() {
 
     return (
         <>
-            <div className="container d-flex flex-column justify-content-center">
+            <div className="container d-flex flex-column flex-grow-1">
                 <div className="row mb-3">
                     <div className="col-6 col-md-3 col-xl-2">
                         <CustomDropdown title="Trò chơi" items={["Quizz", "Lắc xì"]}/>
