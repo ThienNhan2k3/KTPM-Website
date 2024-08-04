@@ -197,7 +197,7 @@ export default function TableVoucher() {
         accessorKey: "maxDiscount",
         size: 180,
         cell: (info) => (
-          <div className="edit-text" id="maxDiscount">
+          <div className="edit-id" id="maxDiscount">
             {info.getValue()}
           </div>
         ),
