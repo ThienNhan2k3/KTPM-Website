@@ -243,7 +243,6 @@ function SignUp() {
               <Map markerPos={markerPos}>
                 <LocationMarker onMove={setMarkerPos} pos={markerPos} />
               </Map>
-              asdkfjsk
             </div>
 
             <Form.Submit asChild>

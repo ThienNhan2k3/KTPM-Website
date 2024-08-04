@@ -11,7 +11,7 @@ export default function GameReport() {
     changeHeaderTitle("Thống kê trò chơi");
     
     return (
-        <div className='admin-game-report-container  d-flex flex-column justify-content-center'>
+        <div className='admin-game-report-container  d-flex flex-column flex-grow-1'>
         <div className="container">
             <div className="row">
                 <div className="col-6 col-md-3 col-xl-2">

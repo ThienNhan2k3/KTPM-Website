@@ -8,7 +8,7 @@ import { changeHeaderTitle } from "@/lib/utils";
 export default function UserReport() {
     changeHeaderTitle("Thống kê người dùng");
     return (
-        <div className='admin-user-report-container  d-flex flex-column justify-content-center'>
+        <div className='admin-user-report-container  d-flex flex-column flex-grow-1'>
             <div className="container">
                 <div className="row">
                     <div className="col-6 col-md-3 col-xl-2">
