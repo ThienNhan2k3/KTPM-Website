@@ -158,7 +158,7 @@ export default function TableVoucher() {
   const columns = React.useMemo(
     () => [
       {
-        header: () => <span className="title">ID</span>,
+        header: () => <span className="title-table-voucher">ID</span>,
         accessorKey: "id",
         size: 60,
         cell: (info) => <div className="edit-text">{info.getValue()}</div>,
@@ -166,7 +166,7 @@ export default function TableVoucher() {
         sortingFn: "alphanumeric",
       },
       {
-        header: () => <span className="title">Mã Voucher</span>,
+        header: () => <span className="title-table-voucher">Mã Voucher</span>,
         accessorKey: "voucherCode",
         id: "voucherCode",
         size: 100,
@@ -179,7 +179,7 @@ export default function TableVoucher() {
         sortingFn: fuzzySort,
       },
       {
-        header: () => <span className="title">Giá trị (%)</span>,
+        header: () => <span className="title-table-voucher">Giá trị (%)</span>,
         accessorKey: "value",
         size: 80,
         cell: (info) => (
@@ -191,7 +191,9 @@ export default function TableVoucher() {
         sortingFn: fuzzySort,
       },
       {
-        header: () => <span className="title">Giảm giá tối đa (VND)</span>,
+        header: () => (
+          <span className="title-table-voucher">Giảm giá tối đa (VND)</span>
+        ),
         accessorKey: "maxDiscount",
         size: 180,
         cell: (info) => (
@@ -203,7 +205,7 @@ export default function TableVoucher() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Mô tả</span>,
+        header: () => <span className="title-table-voucher">Mô tả</span>,
         accessorKey: "description",
         size: 180,
         cell: (info) => (
@@ -215,7 +217,7 @@ export default function TableVoucher() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Hỉnh ảnh</span>,
+        header: () => <span className="title-table-voucher">Hỉnh ảnh</span>,
         accessorKey: "image",
         size: 120,
         cell: (info) => (
@@ -227,7 +229,7 @@ export default function TableVoucher() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Mã QR</span>,
+        header: () => <span className="title-table-voucher">Mã QR</span>,
         accessorKey: "qrCode",
         size: 120,
         cell: (info) => (
@@ -239,7 +241,7 @@ export default function TableVoucher() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Ngày hết hạn</span>,
+        header: () => <span className="title-table-voucher">Ngày hết hạn</span>,
         accessorKey: "expDate",
         size: 130,
         cell: (info) => (
@@ -251,7 +253,7 @@ export default function TableVoucher() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Trạng thái</span>,
+        header: () => <span className="title-table-voucher">Trạng thái</span>,
         accessorKey: "status",
         size: 80,
         cell: (info) => (
@@ -781,7 +783,7 @@ export default function TableVoucher() {
         </div>
       </div>
       <div className="h-2" />
-      <table>
+      <table className="table-voucher">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -799,7 +801,7 @@ export default function TableVoucher() {
                         <div
                           {...{
                             className: header.column.getCanSort()
-                              ? "cursor-pointer select-none header title"
+                              ? "cursor-pointer select-none header-table-voucher title-table-voucher"
                               : "",
                             onClick: header.column.getToggleSortingHandler(),
                           }}

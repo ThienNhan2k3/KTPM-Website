@@ -84,7 +84,7 @@ export default function TableBrand() {
   const columns = React.useMemo(
     () => [
       {
-        header: () => <span className="title">ID</span>,
+        header: () => <span className="title-table-brand">ID</span>,
         accessorKey: "id",
         size: 50,
         cell: (info) => (
@@ -96,7 +96,9 @@ export default function TableBrand() {
         sortingFn: "alphanumeric",
       },
       {
-        header: () => <span className="title">Tên thương hiệu</span>,
+        header: () => (
+          <span className="title-table-brand">Tên thương hiệu</span>
+        ),
         accessorKey: "brandName",
         id: "brandName",
         size: 160,
@@ -109,7 +111,7 @@ export default function TableBrand() {
         sortingFn: fuzzySort,
       },
       {
-        header: () => <span className="title">Lĩnh vực</span>,
+        header: () => <span className="title-table-brand">Lĩnh vực</span>,
         accessorKey: "industry",
         size: 200,
         cell: (info) => (
@@ -121,7 +123,7 @@ export default function TableBrand() {
         sortingFn: fuzzySort,
       },
       {
-        header: () => <span className="title">Địa chỉ</span>,
+        header: () => <span className="title-table-brand">Địa chỉ</span>,
         accessorKey: "address",
         size: 180,
         cell: (info) => (
@@ -133,7 +135,7 @@ export default function TableBrand() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">GPS(Lat/Long)</span>,
+        header: () => <span className="title-table-brand">GPS(Lat/Long)</span>,
         accessorKey: "gps",
         size: 150,
         cell: (info) => (
@@ -145,7 +147,7 @@ export default function TableBrand() {
         sortingFn: "alphanumeric", //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Email</span>,
+        header: () => <span className="title-table-brand">Email</span>,
         accessorKey: "email",
         size: 200,
         cell: (info) => (
@@ -157,7 +159,7 @@ export default function TableBrand() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Số điện thoại</span>,
+        header: () => <span className="title-table-brand">Số điện thoại</span>,
         accessorKey: "phone",
         size: 130,
         cell: (info) => (
@@ -169,7 +171,7 @@ export default function TableBrand() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Trạng thái</span>,
+        header: () => <span className="title-table-brand">Trạng thái</span>,
         accessorKey: "status",
         size: 90,
         cell: (info) => (
@@ -237,7 +239,7 @@ export default function TableBrand() {
         </div>
       </div>
       <div className="h-2" />
-      <table>
+      <table className="table-brand">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -255,7 +257,7 @@ export default function TableBrand() {
                         <div
                           {...{
                             className: header.column.getCanSort()
-                              ? "cursor-pointer select-none header title"
+                              ? "cursor-pointer select-none header-table-brand title-table-brand"
                               : "",
                             onClick: header.column.getToggleSortingHandler(),
                           }}

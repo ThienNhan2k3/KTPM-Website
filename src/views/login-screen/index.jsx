@@ -103,7 +103,7 @@ function Login() {
             </Form.Field>
 
             <Form.Submit asChild>
-              <button className="Login">Đăng nhập</button>
+              <button className="LoginTitle">Đăng nhập</button>
             </Form.Submit>
           </Form.Root>
 
