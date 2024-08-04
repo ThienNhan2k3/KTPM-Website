@@ -1,4 +1,4 @@
-.header {
+.header-table-brand {
   display: flex;
   flex-direction: column;
   background-color: #b6fffa;
@@ -9,7 +9,7 @@
   height: 3.2em;
 }
 
-.title {
+.title-table-brand {
   cursor: pointer;
 }
 
@@ -55,7 +55,7 @@
   }
 }
 
-table {
+.table-brand {
   width: 100%;
   table-layout: fixed;
 }

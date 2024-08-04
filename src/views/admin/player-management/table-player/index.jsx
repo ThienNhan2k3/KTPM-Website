@@ -118,7 +118,7 @@ export default function TablePlayer() {
   const columns = React.useMemo(
     () => [
       {
-        header: () => <span className="title">ID</span>,
+        header: () => <span className="title-table-player">ID</span>,
         accessorKey: "id",
         size: 50,
         cell: (info) => (
@@ -130,7 +130,7 @@ export default function TablePlayer() {
         sortingFn: "alphanumeric",
       },
       {
-        header: () => <span className="title">Họ và tên</span>,
+        header: () => <span className="title-table-player">Họ và tên</span>,
         accessorKey: "fullName",
         id: "fullName",
         size: 135,
@@ -143,7 +143,7 @@ export default function TablePlayer() {
         sortingFn: fuzzySort,
       },
       {
-        header: () => <span className="title">Tên đăng nhập</span>,
+        header: () => <span className="title-table-player">Tên đăng nhập</span>,
         accessorKey: "userName",
         size: 135,
         cell: (info) => (
@@ -156,7 +156,7 @@ export default function TablePlayer() {
       },
 
       {
-        header: () => <span className="title">Email</span>,
+        header: () => <span className="title-table-player">Email</span>,
         accessorKey: "email",
         size: 170,
         cell: (info) => (
@@ -168,7 +168,7 @@ export default function TablePlayer() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Số điện thoại</span>,
+        header: () => <span className="title-table-player">Số điện thoại</span>,
         accessorKey: "phone",
         size: 115,
         cell: (info) => (
@@ -180,7 +180,7 @@ export default function TablePlayer() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Ngày sinh</span>,
+        header: () => <span className="title-table-player">Ngày sinh</span>,
         accessorKey: "dob",
         size: 90,
         cell: (info) => (
@@ -192,7 +192,7 @@ export default function TablePlayer() {
         sortingFn: "alphanumeric", //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Giới tính</span>,
+        header: () => <span className="title-table-player">Giới tính</span>,
         accessorKey: "gender",
         size: 80,
         cell: (info) => (
@@ -204,7 +204,7 @@ export default function TablePlayer() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Facebook</span>,
+        header: () => <span className="title-table-player">Facebook</span>,
         accessorKey: "facebookacc",
         size: 130,
         cell: (info) => (
@@ -216,7 +216,7 @@ export default function TablePlayer() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Người dùng</span>,
+        header: () => <span className="title-table-player">Người dùng</span>,
         accessorKey: "type",
         size: 100,
         cell: (info) => (
@@ -228,7 +228,7 @@ export default function TablePlayer() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title">Trạng thái</span>,
+        header: () => <span className="title-table-player">Trạng thái</span>,
         accessorKey: "status",
         size: 90,
         cell: (info) => (
@@ -813,7 +813,7 @@ export default function TablePlayer() {
         </div>
       </div>
       <div className="h-2" />
-      <table>
+      <table className="table-player">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -831,7 +831,7 @@ export default function TablePlayer() {
                         <div
                           {...{
                             className: header.column.getCanSort()
-                              ? "cursor-pointer select-none header title"
+                              ? "cursor-pointer select-none header-table-player title-table-player"
                               : "",
                             onClick: header.column.getToggleSortingHandler(),
                           }}
