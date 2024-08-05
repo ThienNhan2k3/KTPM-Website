@@ -7,6 +7,8 @@ import EventModal from "../../../components/EventModal/Modal";
 import AddEventModal from "../../../components/AddEventModal/Modal";
 import "./styles.css";
 import { makeData } from "./table-event/makeData";
+import { fa } from "@faker-js/faker";
+
 
 const ITEMS_PER_PAGE = 10;
 
@@ -18,6 +20,10 @@ export default function EventManagement() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [pageInput, setPageInput] = useState("");
+  const [sortedData, setSortedData] = useState(data);
+  const [quiz, setQuiz] = useState(false);
+  const [lx, setLx] = useState(false);
+
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
@@ -37,11 +43,44 @@ export default function EventManagement() {
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
-    setCurrentPage(0); // Reset to first page on new search
-    setPageInput("1"); // Reset input field to 1
+    setCurrentPage(0); 
+    setPageInput("1"); 
   };
 
-  const filteredData = data.filter(
+  const handleSort = (type) => {
+    // Filter data based on search term
+    const filtered = data.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.type.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  
+    let sorted;
+    if ((type === 'Quiz' && !quiz) || (type === 'Lắc Xì' && !lx)) {
+      // If the type is selected and not active, activate it
+      if (type === 'Quiz') {
+        setQuiz(true);
+        setLx(false);
+      } else if (type === 'Lắc Xì') {
+        setQuiz(false);
+        setLx(true);
+      }
+      // Filter data based on the selected type
+      sorted = filtered.filter((item) => item.type === type);
+    } else {
+      // If the type is deselected or no specific type, show all items
+      setQuiz(false);
+      setLx(false);
+      sorted = filtered; // No specific type filtering
+    }
+  
+    setSortedData(sorted);
+    setCurrentPage(0); // Reset to first page on sort
+    setPageInput("1"); // Reset input field to 1
+  };
+  
+
+  const filteredData = sortedData.filter(
     (item) =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.type.toLowerCase().includes(searchTerm.toLowerCase())
@@ -69,6 +108,7 @@ export default function EventManagement() {
     setShowAddEventModal(false);
   };
 
+
   return (
     <div className="col">
       <div className="EventManagement-row mb-3">
@@ -95,8 +135,8 @@ export default function EventManagement() {
             </button>
           </div>
         </div>
-        <button className="mx-2 EventManagement-quiz-button">Quiz</button>
-        <button className="mx-2 EventManagement-lx-button">Lắc Xì</button>
+        <button className="mx-2 EventManagement-quiz-button" onClick={() => handleSort("Quiz")}>Quiz</button>
+        <button className="mx-2 EventManagement-lx-button" onClick={() => handleSort("Lắc Xì")}>Lắc Xì</button>
         <button
           className="EventManagement-add-button"
           style={{ marginLeft: "10px", display: 'flex', alignItems: 'center' }}
@@ -170,6 +210,7 @@ export default function EventManagement() {
             Go to
           </button>
         </div>
+
         <ReactPaginate
           previousLabel={"previous"}
           nextLabel={"next"}

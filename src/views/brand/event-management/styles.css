@@ -7,6 +7,7 @@
   align-items: stretch;
 }
 
+
 .EventManagement-form-control {
   flex-grow: 0 !important;
 }
@@ -62,7 +63,8 @@
 }
 
 .EventManagement-pagination li {
-  margin: 0 5px; /* Adjust this value to add more space */
+  margin: 0 5px; 
+  border-radius: 15px;
 }
 
 .EventManagement-pagination li a {
@@ -70,6 +72,7 @@
   padding: 8px 12px;
   border: 1px solid #ddd;
   color: #007bff;
+  border-radius: 8px;
 }
 
 .EventManagement-pagination li.active a {

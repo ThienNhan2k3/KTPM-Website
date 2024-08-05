@@ -15,7 +15,7 @@ const newPerson = () => {
   return {
     id: faker.number.int({ min: 1, max: 500 }),
     name: faker.internet.userName(15),
-    type: faker.helpers.arrayElement(["Quiz", "Lắc xì"]),
+    type: faker.helpers.arrayElement(["Quiz", "Lắc Xì"]),
     dateCreate: dateCreate.toISOString().split("/")[0],
     dateEnd: dateEnd.toISOString().split("/")[0],
   };

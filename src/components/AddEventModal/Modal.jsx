@@ -201,7 +201,11 @@ const Modal = ({ show, onClose }) => {
                 <img
                   src={PlusIcon}
                   alt="Add"
-                  style={{ marginRight: "5px" }}
+                  style={{ 
+                    marginRight: "5px",
+                    display: "inline",
+
+                  }}
                 />
                 Thêm voucher
               </button>

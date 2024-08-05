@@ -23,7 +23,7 @@ function Login() {
   };
 
   return (
-    <div className="container-fluid p-0 m-0 vh-100 d-flex flex-column justify-content-center">
+    <div className="login-screen container-fluid p-0 m-0 vh-100 d-flex flex-column justify-content-center">
       <div className="row h-100 m-0">
         <div className="col-md-4 left-part d-flex flex-column align-items-center p-0 m-0">
           <img className="welcome" src={welcome} alt="" />

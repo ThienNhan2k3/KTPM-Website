@@ -14,7 +14,7 @@
   
   .addevent-modal-content {
     background: white;
-    width: 550px;
+    width: 600px;
     height: 100%;
     padding: 20px;
     position: relative;
@@ -33,6 +33,7 @@
   }
   
   .addevent-modal-body {
+    margin-top: 20px;
   }
 
   .addevent-form-group {
