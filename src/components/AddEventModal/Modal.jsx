@@ -12,13 +12,23 @@ const Modal = ({ show, onClose }) => {
     return null;
   }
 
-  const data = [
-    // Add more items if needed
-  ];
-  
-  const [, setImage] = React.useState(null);
+  const [data, setData] = useState([]);
+  const [image, setImage] = React.useState(null);
   const [prevImage, setPrevImage] = React.useState(null);
   const [imageError, setImageError] = React.useState(false);
+  const [selectedType, setSelectedType] = useState("");
+  const [eventName, setEventName] = useState("");
+  const [startDate, setStartDate] = useState(convertDateFormat("25/7/2024"));
+  const [endDate, setEndDate] = useState(convertDateFormat("25/7/2024"));
+  
+  // Validation states
+  const [errors, setErrors] = useState({
+    data: "",
+    eventName: "",
+    startDate: "",
+    endDate: "",
+    image: "",
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
@@ -40,8 +50,6 @@ const Modal = ({ show, onClose }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
-  const [selectedType, setSelectedType] = useState(""); // State to track selected type
-
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
   };
@@ -51,6 +59,28 @@ const Modal = ({ show, onClose }) => {
     if (file) {
       setImage(file);
       setPrevImage(URL.createObjectURL(file));
+      setImageError(false);
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      data: data.length === 0 ? " Chưa có voucher cho sự kiện" : "",
+      eventName: eventName.trim() === "" ? "Tên sự kiện không được bỏ trống" : "",
+      startDate: startDate.trim() === "" ? "Ngày bắt đầu không được bỏ trống" : "",
+      endDate: endDate.trim() === "" ? "Ngày kết thúc không được bỏ trống" : "",
+      image: !image ? "Trường này không được để trống!" : "",
+    };
+
+    setErrors(newErrors);
+
+    return !Object.values(newErrors).some((error) => error !== "");
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      // Submit form data
+      console.log("Form submitted");
     }
   };
 
@@ -80,7 +110,13 @@ const Modal = ({ show, onClose }) => {
               <label>
                 <strong>Tên sự kiện:</strong>
               </label>
-              <input type="text" className="form-control" />
+              <input
+                type="text"
+                className="form-control"
+                value={eventName}
+                onChange={(e) => setEventName(e.target.value)}
+              />
+              {errors.eventName && <span className="error-text">{errors.eventName}</span>}
             </div>
 
             <div
@@ -96,12 +132,14 @@ const Modal = ({ show, onClose }) => {
                 <input
                   type="date"
                   className="form-control"
-                  defaultValue={convertDateFormat("25/7/2024")}
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
                   style={{
                     width: "150px",
                     padding: "10px",
                   }}
                 />
+                {errors.startDate && <span className="error-text">{errors.startDate}</span>}
               </div>
               <div className="Date-end">
                 <label>
@@ -110,12 +148,14 @@ const Modal = ({ show, onClose }) => {
                 <input
                   type="date"
                   className="form-control"
-                  defaultValue={convertDateFormat("25/7/2024")}
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
                   style={{
                     width: "150px",
                     padding: "10px",
                   }}
                 />
+                {errors.endDate && <span className="error-text">{errors.endDate}</span>}
               </div>
             </div>
 
@@ -126,10 +166,11 @@ const Modal = ({ show, onClose }) => {
               <div className="row addevent-image-input">
                 <label
                   style={{
+                    width: "fit-content",
                     display: "flex",
                     alignItems: "center",
                     border: "1px solid #3FA2F6",
-                    padding: "5px 15px",
+                    padding: "10px 20px",
                     width: "fit-content",
                     borderRadius: "8px",
                     cursor: "pointer",
@@ -138,7 +179,11 @@ const Modal = ({ show, onClose }) => {
                 >
                   {prevImage == null ? (
                     <>
-                      <div className="addevent-add-image-button">
+                      <div className="addevent-add-image-button" 
+                        style={{
+                          backgroundColor: "#ffffff00",
+                        }}
+                      >
                         Thêm ảnh
                       </div>
                     </>
@@ -186,6 +231,7 @@ const Modal = ({ show, onClose }) => {
                   style={{ display: "none" }}
                 />
               </div>
+              {errors.image && <span className="error-text">{errors.image}</span>}
             </div>
 
             <div
@@ -204,7 +250,6 @@ const Modal = ({ show, onClose }) => {
                   style={{ 
                     marginRight: "5px",
                     display: "inline",
-
                   }}
                 />
                 Thêm voucher
@@ -293,12 +338,13 @@ const Modal = ({ show, onClose }) => {
               </div>
             </div>
 
-
             <div
               className="addevent-save addevent-form-group"
               style={{ display: "flex", justifyContent: "center" }}
             >
-              <button className="addevent-save-button">Thêm sự kiện</button>
+              <button className="addevent-save-button" onClick={handleSubmit}>
+                Thêm sự kiện
+              </button>
             </div>
           </div>
         </div>

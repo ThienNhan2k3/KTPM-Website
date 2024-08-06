@@ -148,18 +148,18 @@ export default function EventManagement() {
       <table className="table EventManagement-table-bordered my-3">
         <thead>
           <tr>
-            <th scope="col" style={{ width: "7%" }}>ID</th>
-            <th scope="col">Name</th>
-            <th scope="col" style={{ width: "20%" }}>Type</th>
-            <th scope="col" style={{ width: "15%" }}>Date create</th>
-            <th scope="col" style={{ width: "15%" }}>Date end</th>
+            <th scope="col" style={{ width: "5%" }}>ID</th>
+            <th scope="col">Tên sự kiện</th>
+            <th scope="col" style={{ width: "12%" }}>Loại trò chơi</th>
+            <th scope="col" style={{ width: "19%" }}>Ngày tạo</th>
+            <th scope="col" style={{ width: "19%" }}>Ngày kết thúc</th>
             <th scope="col" style={{ width: "5%" }}></th>
           </tr>
         </thead>
         <tbody>
           {currentPageData.map((item) => (
             <tr key={item.id}>
-              <th className="EventManagement-table-id" scope="row">{item.id}</th>
+              <td className="EventManagement-table-id" scope="row">{item.id}</td>
               <td>{item.name}</td>
               <td>{item.type}</td>
               <td>{item.dateCreate}</td>
@@ -200,20 +200,20 @@ export default function EventManagement() {
             type="text"
             value={pageInput}
             onChange={handlePageInputChange}
-            placeholder="Go to page"
+            placeholder="Đi đến trang.."
           />
           <button
             className="EventManagement-pagination-button"
             onClick={handlePageInputSubmit}
             style={{ padding: "5px 10px" }}
           >
-            Go to
+            Đi
           </button>
         </div>
 
         <ReactPaginate
-          previousLabel={"previous"}
-          nextLabel={"next"}
+          previousLabel={"Trước"}
+          nextLabel={"Tiếp"}
           breakLabel={"..."}
           breakClassName={"break-me"}
           pageCount={pageCount}

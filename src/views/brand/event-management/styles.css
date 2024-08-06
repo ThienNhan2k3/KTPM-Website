@@ -40,18 +40,18 @@
 }
 
 .EventManagement-table-bordered {
-  border: 1px solid #ddd;
-  border-collapse: collapse;
+  /*border: 1px solid #ddd;
+  border-collapse: collapse;*/
 }
 
 .EventManagement-table-bordered th,
 .EventManagement-table-bordered td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  background-color: #EDF3FF;
+  border-bottom: 2px solid #ffffff;
 }
 
 .EventManagement-table-bordered th {
-  background-color: #f2f2f2;
+  background-color: #BAFFFA;
 }
 
 
