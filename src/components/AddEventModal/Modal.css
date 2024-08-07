@@ -24,7 +24,7 @@
   
   .addevent-modal-close {
     position: absolute;
-    top: 10px;
+    top: 0px;
     right: 10px;
     background: none;
     border: none;
@@ -33,7 +33,7 @@
   }
   
   .addevent-modal-body {
-    margin-top: 20px;
+    margin-top: 25px;
   }
 
   .addevent-form-group {
@@ -106,4 +106,10 @@
 
   .addevent-hidden-button {
     background-color: #5da5ee;
+  }
+
+  .addevent-error-text {
+    font-size: 10px;
+    color: red;
+    position: absolute;
   }

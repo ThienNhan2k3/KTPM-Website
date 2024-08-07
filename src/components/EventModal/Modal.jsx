@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Modal.css";
 import PlusIcon from "@assets/images/plus-icon.png";
+import { set } from "date-fns";
 
 const convertDateFormat = (dateStr) => {
   const [day, month, year] = dateStr.split("/");
@@ -20,6 +21,72 @@ const Modal = ({ show, onClose, itemData }) => {
     { id: 5, name: "Voucher5", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
     // Add more items if needed
   ];
+
+  const [image, setImage] = useState(null);
+  const [prevImage, setPrevImage] = useState(null);
+  const [imageError, setImageError] = useState(false);
+  const [eventName, setEventName] = useState(itemData.name);
+  const [startDate, setStartDate] = useState(convertDateFormat("01/01/2024")); // Adjust default date
+  const [endDate, setEndDate] = useState(convertDateFormat("01/01/2024")); // Adjust default date
+  
+  const [errors, setErrors] = useState({
+    eventName: "",
+    startDate: "",
+    endDate: "",
+    image: "",
+  });
+
+  
+  const validateDate = (dateStr) => {
+    const dateObj = new Date(dateStr);
+    return dateObj.toString() === 'Invalid Date' ? "Ngày không hợp lệ!" : "";
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      eventName: eventName.trim() === "" ? "Tên sự kiện không được bỏ trống!" : "",
+      startDate: startDate.trim() === "" ? "Ngày bắt đầu không được bỏ trống!" : validateDate(startDate),
+      endDate: endDate.trim() === "" ? "Ngày kết thúc không được bỏ trống!" : validateDate(endDate),
+      image: !image ? "Ảnh không được để trống!" : "",
+    };
+
+    setErrors(newErrors);
+
+    return !Object.values(newErrors).some((error) => error !== "");
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      // Submit form data
+      console.log("Form submitted");
+    }
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (event.target.classList.contains("editevent-modal-overlay")) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [onClose]);
+
+  const handleChangeImage = (event) => {
+    const [file] = event.target.files;
+    if (file) {
+      setImage(file);
+      setPrevImage(URL.createObjectURL(file));
+      setImageError(false);
+    }
+  };
+
+  const handleTypeChange = (event) => {
+    setSelectedType(event.target.value);
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
@@ -41,54 +108,6 @@ const Modal = ({ show, onClose, itemData }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (event.target.classList.contains("editevent-modal-overlay")) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("click", handleOutsideClick);
-
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, [onClose]);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    // Validate all fields manually
-    const form = event.target;
-    let hasError = false;
-
-    // Check all required fields
-    form.querySelectorAll("[required]").forEach((input) => {
-      if (!input.value) {
-        input.setCustomValidity("Trường này không được để trống!");
-        hasError = true;
-      } else {
-        input.setCustomValidity("");
-      }
-    });
-
-    // Validate image specifically
-    if (!prevImage) {
-      setImageError(true);
-      hasError = true;
-    } else {
-      setImageError(false);
-    }
-
-    if (hasError) {
-      // Trigger native validation messages
-      form.reportValidity();
-    } else {
-      // Submit the form
-      console.log("Form submitted");
-      setOpen1(false);
-    }
-  };
   return (
     <div className="editevent-modal-overlay">
       <div className="editevent-modal-content">
@@ -100,10 +119,20 @@ const Modal = ({ show, onClose, itemData }) => {
             <div>
               <div className="editevent-form-group">
                 <label><strong>Tên sự kiện:</strong></label>
+                {errors.eventName && 
+                  <span className="editevent--error-text"
+                    style={{
+                      right: '40px',
+                    }}
+                  >
+                    {errors.eventName}
+                  </span>
+                }
                 <input
                   type="text"
                   className="form-control"
-                  defaultValue={itemData.name}
+                  value={eventName}
+                  onChange={(e) => setEventName(e.target.value)}
                 />
               </div>
 
@@ -202,7 +231,7 @@ const Modal = ({ show, onClose, itemData }) => {
 
 
               <div className="editevent-save editevent-form-group" style={{ display: 'flex', justifyContent: 'center' }}>
-                <button className="editevent-save-button">
+                <button className="editevent-save-button" onClick={handleSubmit}>
                   Cập nhật sự kiện
                 </button>
               </div>

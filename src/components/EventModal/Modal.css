@@ -1,20 +1,20 @@
 
 .editevent-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.addevent-5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
   
   .editevent-modal-content {
     background: white;
-    width: 550px;
+    width: 650px;
     height: 100%;
     padding: 20px;
     position: relative;
@@ -24,7 +24,7 @@
   
   .editevent-modal-close {
     position: absolute;
-    top: 10px;
+    top: 0px;
     right: 10px;
     background: none;
     border: none;
@@ -33,6 +33,7 @@
   }
   
   .editevent-modal-body {
+    margin-top: 25px;
   }
 
   .editevent-form-group {
@@ -105,4 +106,10 @@
 
   .editevent-hidden-button {
     background-color: #5da5ee;
+  }
+
+  .editevent--error-text {
+    font-size: 10px;
+    color: red;
+    position: absolute;
   }
