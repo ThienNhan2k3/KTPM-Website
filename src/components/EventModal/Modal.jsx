@@ -147,8 +147,10 @@ const Modal = ({ show, onClose, itemData }) => {
                       width: "150px",
                       padding: "10px",
                     }}
+                    disabled
                   />
                 </div>
+
                 <div className="Date-end">
                   <label>
                     <strong>Ngày kết thúc:</strong>
@@ -157,33 +159,99 @@ const Modal = ({ show, onClose, itemData }) => {
                     type="date"
                     className="form-control"
                     defaultValue={convertDateFormat(itemData.dateEnd)}
+                    onChange={(e) => setEndDate(e.target.value)}
                     style={{
                       width: "150px",
                       padding: "10px",
                     }}
                   />
+                  {errors.endDate && 
+                    <span className="editevent-error-text"
+                      style={{
+                      }}
+                    >
+                      {errors.endDate}
+                    </span>
+                  }
                 </div>
               </div>
 
               <div className="editevent-form-group">
                 <label><strong>Hình ảnh:</strong></label>
-                <div className="editevent-image-input">
-                  <button className="editevent-add-image-button">
-                    Thêm ảnh
-                  </button>
-                  <span style={{ display: 'inline' }}> file...name.jpg</span>
+                <div className="row editevent-image-input">
+                  <label
+                    style={{
+                      width: "fit-content",
+                      display: "flex",
+                      alignItems: "center",
+                      border: "1px solid #3FA2F6",
+                      padding: "10px 20px",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                    }}
+                    htmlFor="thumbnail-image"
+                  >
+                    {prevImage == null ? (
+                      <div className="editevent-add-image-button">Thêm ảnh</div>
+                    ) : (
+                      <img src={prevImage} alt="Preview" style={{ width: "150px" }} />
+                    )}
+                  </label>
+
+                  <label
+                    style={{
+                      marginLeft: "15px",
+                      display: "flex",
+                      alignItems: "end",
+                      width: "180px",
+                      pointerEvents: "none",
+                    }}
+                    htmlFor="thumbnail-image"
+                  >
+                    {prevImage == null ? (
+                      <div>file...name.jpg</div>
+                    ) : (
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", height: "24px" }}>
+                        {prevImage}
+                      </span>
+                    )}
+                  </label>
+                  <input
+                    type="file"
+                    id="thumbnail-image"
+                    name="thumbnail-image"
+                    accept="image/*"
+                    onChange={handleChangeImage}
+                    style={{ display: "none" }}
+                  />
                 </div>
+                {errors.image && 
+                  <span className="editevent-error-text"
+                    style={{
+                    }}
+                  >
+                    {errors.image}
+                  </span>
+                }
               </div>
 
-              <div className="row editevent-voucher editevent-form-group container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <strong style={{ width: "fit-content" }}>
-                  VOUCHER
-                </strong>
-                <button className="editevent-add-voucher-button">
-                  <img src={PlusIcon} alt="Add" style={{ marginRight: '5px' }} />
-                  Thêm voucher
-                </button>
-              </div>
+
+              <div className="row editevent-voucher editevent-form-group container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <strong style={{ width: "fit-content" }}>VOUCHER</strong>
+            {errors.data && 
+              <span className="editevent-error-text"
+                style={{
+                  left: '100px',
+                }}
+              >
+                {errors.data}
+              </span>
+            }
+            <button className="editevent-add-voucher-button">
+              <img src={PlusIcon} alt="Add" style={{ marginRight: "5px", display: "inline" }} />
+              Thêm voucher
+            </button>
+          </div>
 
               <div className="editevent-form-group">
                 <table className="table table-bordered my-3" style={{ fontSize: '12px', width: '100%' }}>

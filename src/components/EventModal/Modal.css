@@ -52,10 +52,10 @@
   }
   
   .editevent-image-input {
-    height: 50px;
+    height: fit-content;
     align-content: center;
     width: 100%;
-    border-radius: 25px;
+    border-radius: 8px;
     background-color: #EDF3FF;
   }
   .editevent-add-image-button {
@@ -108,7 +108,7 @@
     background-color: #5da5ee;
   }
 
-  .editevent--error-text {
+  .editevent-error-text {
     font-size: 10px;
     color: red;
     position: absolute;
