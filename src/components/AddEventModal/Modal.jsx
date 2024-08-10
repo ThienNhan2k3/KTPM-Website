@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Modal.css";
 import PlusIcon from "@assets/images/plus-icon.png";
+import QuizModal from "../QuizModal/QuizModal";
 
 const convertDateFormat = (dateStr) => {
   const [day, month, year] = dateStr.split("/");
@@ -80,12 +81,15 @@ const Modal = ({ show, onClose }) => {
     setSelectedType(event.target.value);
   };
 
+  
+  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
   const totalPages = Math.ceil(data.length / itemsPerPage);
-  const [currentPage, setCurrentPage] = useState(1);
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const handlePreviousPage = () => {
@@ -95,6 +99,24 @@ const Modal = ({ show, onClose }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
+
+  //For Quiz settings
+  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
+  const [quizData, setQuizData] = useState([{ id: Date.now(), question: '', answers: ['', '', '', ''], correctAnswer: 0 }]);
+
+  const openQuizModal = () => {
+    console.log("Opening Quiz Modal");
+    setIsQuizModalOpen(true);
+  };
+
+  const closeQuizModal = () => {
+    setIsQuizModalOpen(false);
+  };
+
+  const handleQuizDataChange = (updatedQuizData) => {
+    setQuizData(updatedQuizData);
+  };
 
   return (
     <div className="addevent-modal-overlay">
@@ -221,18 +243,19 @@ const Modal = ({ show, onClose }) => {
           </div>
 
           <div className="row addevent-voucher addevent-form-group container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <strong style={{ width: "fit-content" }}>VOUCHER</strong>
+          <div className="col">
+            <div style={{ marginBottom: '4px' }}>
+              <strong>VOUCHER</strong>
+            </div>
             {errors.data && 
-              <span className="addevent-error-text"
-                style={{
-                  left: '100px',
-                }}
-              >
+              <span className="addevent-error-text" style={{ color: 'red', fontSize: '0.875rem' }}>
                 {errors.data}
               </span>
             }
+          </div>
+
             <button className="addevent-add-voucher-button">
-              <img src={PlusIcon} alt="Add" style={{ marginRight: "5px", display: "inline" }} />
+              <img src={PlusIcon} alt="Add" style={{ marginRight: "0px", display: "inline" }} />
               Thêm voucher
             </button>
           </div>
@@ -281,8 +304,19 @@ const Modal = ({ show, onClose }) => {
               </div>
               {selectedType === "Quiz" && (
                 <div className="addevent-hiddent-box addevent-form-group">
-                  <button className="addevent-hidden-button">Câu hỏi</button>
+                  <button className="addevent-hidden-button" onClick={openQuizModal}>
+                    Câu hỏi
+                  </button>
                 </div>
+              )}
+
+              {/* Render the Quiz Modal */}
+              {isQuizModalOpen && (
+                <QuizModal
+                  quizData={quizData}
+                  onQuizDataChange={handleQuizDataChange}
+                  onClose={closeQuizModal}
+                />
               )}
             </div>
           </div>
