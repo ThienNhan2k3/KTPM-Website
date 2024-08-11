@@ -103,7 +103,7 @@ const Modal = ({ show, onClose }) => {
 
   //For Quiz settings
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
-  const [quizData, setQuizData] = useState([{ id: Date.now(), question: '', answers: ['', '', '', ''], correctAnswer: 0 }]);
+  const [quizData, setQuizData] = useState([{ id: 1, question: '', answers: ['', '', '', ''], correctAnswer: 0 }]);
 
   const openQuizModal = () => {
     console.log("Opening Quiz Modal");
@@ -294,11 +294,11 @@ const Modal = ({ show, onClose }) => {
               <label style={{ marginRight: "10px" }}><strong>Loại trò chơi:</strong></label>
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <label style={{ marginRight: "15px" }}>
-                  <input type="radio" name="type" value="Quiz" onChange={handleTypeChange} />
+                  <input type="radio" className="addevent-radio" name="type" value="Quiz" onChange={handleTypeChange} />
                   Quiz
                 </label>
                 <label>
-                  <input type="radio" name="type" value="Lắc xì" onChange={handleTypeChange} />
+                  <input type="radio" className="addevent-radio" name="type" value="Lắc xì" onChange={handleTypeChange} />
                   Lắc xì
                 </label>
               </div>

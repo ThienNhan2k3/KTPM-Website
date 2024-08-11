@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Modal.css";
 import PlusIcon from "@assets/images/plus-icon.png";
 import { set } from "date-fns";
+import QuizModal from "../QuizModal/QuizModal";
 
 const convertDateFormat = (dateStr) => {
   const [day, month, year] = dateStr.split("/");
@@ -107,6 +108,23 @@ const Modal = ({ show, onClose, itemData }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  //For Quiz settings
+  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
+  const [quizData, setQuizData] = useState([{ id: 1, question: '', answers: ['', '', '', ''], correctAnswer: 0 }]);
+
+  const openQuizModal = () => {
+    console.log("Opening Quiz Modal");
+    setIsQuizModalOpen(true);
+  };
+
+  const closeQuizModal = () => {
+    setIsQuizModalOpen(false);
+  };
+
+  const handleQuizDataChange = (updatedQuizData) => {
+    setQuizData(updatedQuizData);
+  };
 
   return (
     <div className="editevent-modal-overlay">
@@ -290,8 +308,17 @@ const Modal = ({ show, onClose, itemData }) => {
                   <span>{itemData.type}</span>
                   {itemData.type === "Quiz" && (
                     <div className="editevent-hiddent-box editevent-form-group">
-                      <button className="editevent-hidden-button">Câu hỏi</button>
+                      <button className="editevent-hidden-button" onClick={openQuizModal}>Câu hỏi</button>
                     </div>
+                  )}
+
+                  {/* Render the Quiz Modal */}
+                  {isQuizModalOpen && (
+                    <QuizModal
+                      quizData={quizData}
+                      onQuizDataChange={handleQuizDataChange}
+                      onClose={closeQuizModal}
+                    />
                   )}
                 </div>
               </div>

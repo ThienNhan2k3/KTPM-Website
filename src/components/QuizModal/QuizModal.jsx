@@ -6,12 +6,27 @@ import { DialogTitle, DialogContent, DialogClose } from '@radix-ui/react-dialog'
 
 const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
 
+  const [nextId, setNextId] = useState(
+    quizData.length > 0 ? Math.max(...quizData.map(quiz => quiz.id)) + 1 : 1
+  );
+
     const handleAddQuiz = () => {
-      onQuizDataChange([...quizData, { id: Date.now(), question: '', answers: ['', '', '', ''], correctAnswer: 0 }]);
+      const newQuiz = { id: nextId, question: '', answers: ['', '', '', ''], correctAnswer: 0 };
+      
+      onQuizDataChange([...quizData, newQuiz]);
+      setNextId(nextId + 1);
     };
   
     const handleDeleteQuiz = (id) => {
-      onQuizDataChange(quizData.filter(quiz => quiz.id !== id));
+      const updatedQuizData = quizData.filter(quiz => quiz.id !== id);
+      
+      const reindexedQuizData = updatedQuizData.map((quiz, index) => ({
+        ...quiz,
+        id: index + 1 
+      }));
+      
+      onQuizDataChange(reindexedQuizData);
+      setNextId(reindexedQuizData.length > 0 ? Math.max(...reindexedQuizData.map(quiz => quiz.id)) + 1 : 1);
     };
   
     const handleQuizChange = (id, field, value) => {
@@ -23,27 +38,32 @@ const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
         <Dialog.Portal>
           <Dialog.Overlay className="DialogOverlay" />
           <Dialog.Content className="DialogContent">
-            <DialogTitle>Manage Quizzes</DialogTitle>
-  
-            <button onClick={handleAddQuiz}>Add Quiz</button>
-  
+            <div className="quizbox-header-container">
+              <DialogTitle>Manage Quizzes</DialogTitle>
+              <button onClick={handleAddQuiz} className="quizbox-add-quiz-button">Add Quiz</button>
+            </div>
+
             {quizData.map((quiz) => (
-              <div key={quiz.id} className="quizBox">
-                <div className="quizHeader">
+              <div key={quiz.id} className="quizbox-quizBox">
+                <div className="quizbox-quizHeader">
+                  <div className="title">Câu hỏi số {quiz.id}:</div>
+                  <button className="quiz-box-delete" onClick={() => handleDeleteQuiz(quiz.id)}>Delete</button>
                   <input
                     type="text"
                     value={quiz.question}
+                    className="quizbox-question"
                     onChange={(e) => handleQuizChange(quiz.id, 'question', e.target.value)}
                     placeholder="Enter quiz question"
                   />
-                  <button onClick={() => handleDeleteQuiz(quiz.id)}>Delete</button>
+                  
                 </div>
   
                 {quiz.answers.map((answer, index) => (
-                  <div key={index} className="answerBox">
+                  <div key={index} className="quizbox-answerBox">
                     <input
                       type="text"
                       value={answer}
+                      className="quizbox-answer"
                       onChange={(e) => {
                         const updatedAnswers = [...quiz.answers];
                         updatedAnswers[index] = e.target.value;
@@ -53,6 +73,7 @@ const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
                     />
                     <input
                       type="radio"
+                      className="quizbox-radio"
                       checked={quiz.correctAnswer === index}
                       onChange={() => handleQuizChange(quiz.id, 'correctAnswer', index)}
                     />
