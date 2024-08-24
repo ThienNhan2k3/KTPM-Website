@@ -5,9 +5,11 @@ import "./styles.css";
 
 export default function EditGameModal({
   show,
-  handleClose,
+  submitForm,
   title,
   content,
+  setContent,
+  handleClose,
   children
 }) {
   return (
@@ -16,7 +18,16 @@ export default function EditGameModal({
         {title}
       </Modal.Title>
       <Modal.Body className="d-flex flex-column justify-content-start gap-3">
-        <Editor content={content} />
+        {/* <Editor content={content} /> */}
+        <div class="d-flex flex-column">
+          <label>Giới thiệu</label>
+          <textarea style={{border: "1px solid black", borderRadius: "6px", padding: "10px"}} rows="5" cols="33"
+            onChange={(event) => {
+              setContent(event.target.value)
+            }}>
+            {content}
+          </textarea>
+        </div>
         {children}
       </Modal.Body>
       <Modal.Footer style={{ border: "none" }}>
@@ -30,7 +41,7 @@ export default function EditGameModal({
         <Button
           variant="primary"
           style={{ backgroundColor: "#1FAB89" }}
-          onClick={handleClose}
+          onClick={submitForm}
         >
           Lưu thay đổi
         </Button>

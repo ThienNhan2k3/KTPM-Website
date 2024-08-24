@@ -3,22 +3,53 @@ import cameraIcon from "@assets/images/camera-icon.png";
 import tayCamConsole from "@assets/images/tay-cam-console.png";
 import editIcon from "@assets/images/edit-icon.png";
 import plusIcon from "@assets/images/plus-icon.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import "./styles.css";
-import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
+import { useEffect, useState } from "react";
+
 export default function GameDetail() {
+  const location = useLocation();
   const [show, setShow] = useState(false);
   const [prevImage, setPrevImage] = useState(null);
-  const [image, setImage] = useState(null);
+  const [newImage, setNewImage] = useState(null);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
+  const [introduce, setIntroduce] = useState("");
+  const [type, setType] = useState("");
+  const [award, setAward] = useState("");
+
+  const {id} = useParams();
+  useEffect(() => {
+    if (id != "") {
+      fetch(`http://localhost:5000/game/${id}`, {
+        method: "GET"
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        if (data.code === 200) {
+          setName(data.metadata.name);
+          setImage(data.metadata.image);
+          setAward(data.metadata.award);
+          setIntroduce(data.metadata.introduce);
+          setType(JSON.parse(data.metadata.type))
+        }
+      })
+      .catch(err => console.log(err));
+    }
+  }, []);
+
 
   const handleChangeImage = (event) => {
     const [file] = event.target.files;
     if (file) {
+      setNewImage(file);
       setPrevImage(URL.createObjectURL(file));
     }
   };
@@ -30,7 +61,7 @@ export default function GameDetail() {
       <div className="d-flex flex-column align-items-center">
         <div className="game-detail-thumbnail">
           <img
-            src={image == null ? tayCamConsole : image}
+            src={image == "" ? tayCamConsole : `http://localhost:5000/${image}`}
             alt=""
             className="game-detail-image"
           />
@@ -42,7 +73,7 @@ export default function GameDetail() {
           </button>
         </div>
         <div className="game-detail-content d-flex justify-content-center">
-          Realtime Quiz
+          {name}
           <img src={editIcon} alt="" />
         </div>
       </div>
@@ -50,9 +81,6 @@ export default function GameDetail() {
       <nav className="d-flex game-detail-navigation">
         <Link to="" style={{ backgroundColor: "#FAFFAF" }}>
           Giới thiệu
-        </Link>
-        <Link to="instruction" style={{ backgroundColor: "#96C9F4" }}>
-          Hướng dẫn
         </Link>
         <Link to="items" style={{ backgroundColor: "#3FA2F6" }}>
           Vật phẩm
@@ -63,13 +91,14 @@ export default function GameDetail() {
           flex: 1,
         }}
       >
-        <Outlet />
+        <Outlet context={[type, setType, introduce, setIntroduce, award, setAward]}/>
       </div>
       <Modal centered show={show} onHide={handleClose}>
         <Modal.Title className="d-flex justify-content-center mt-4">
           Chọn ảnh
         </Modal.Title>
         <Modal.Body className="d-flex justify-content-center">
+        <form>
           <label
             className="btn d-flex flex-row align-items-center"
             style={{
@@ -100,6 +129,8 @@ export default function GameDetail() {
             accept="image/*"
             onChange={(event) => handleChangeImage(event)}
           />
+        </form>
+
         </Modal.Body>
         <Modal.Footer style={{ border: "none" }}>
           <Button
@@ -113,8 +144,27 @@ export default function GameDetail() {
             variant="primary"
             style={{ backgroundColor: "#1FAB89" }}
             onClick={() => {
-              setImage(prevImage);
-              setShow(false);
+
+              const body = new FormData()
+              body.append('image', newImage)
+
+              fetch(`http://localhost:5000/game/${id}/image`, {
+                body,
+                method: 'POST',
+                // headers: {
+                //   'Content-Type': 'multipart/form-data',
+                // },
+              }).then(res => res.json())
+              .then(data => {
+                console.log(data);
+                if (data.code === 200) {
+                  setGame(data.metadata);
+                }
+                setShow(false);
+              })
+              .catch(err => console.log(err));
+
+
             }}
           >
             Lưu thay đổi

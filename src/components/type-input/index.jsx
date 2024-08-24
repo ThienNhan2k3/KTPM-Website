@@ -2,8 +2,7 @@ import "./styles.css";
 import { useState } from "react";
 import removeIcon from "@assets/images/remove-icon.png";
 
-export default function TypeInput({disabled=false, intialTypes=[], placeholder="Type here"}) {
-    const [types, setTypes] = useState(intialTypes);
+export default function TypeInput({disabled=false, types, setTypes, placeholder="Type here"}) {
     const [currentValue, setCurrentValue] = useState("");
 
     function handleKeyDown(event) {

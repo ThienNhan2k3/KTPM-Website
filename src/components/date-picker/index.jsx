@@ -15,9 +15,7 @@ import {
 } from "@/components/ui/popover"
 import "./styles.css";
 
-export default function DatePicker({title}) {
-  const [date, setDate] = useState()
-
+export default function DatePicker({title, date, setDate}) {
   return (
     <Popover>
       <PopoverTrigger asChild>

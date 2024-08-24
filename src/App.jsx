@@ -16,7 +16,6 @@ import AdminReports from "@views/admin/report";
 import VoucherManagement from "@views/brand/voucher-management";
 import BrandReports from "@views/brand/report";
 import EventManagement from "@views/brand/event-management";
-import GameInstruction from "@views/admin/game-management/game-instruction";
 import GameItems from "@views/admin/game-management/game-items";
 
 import BrandManagement from "@views/admin/brand-management";
@@ -71,9 +70,8 @@ function App() {
             <Route index element={<BrandManagement />} />
             <Route path="playermanagement" element={<PlayerManagement />} />
             <Route path="gamemanagement" element={<GameManagement />} />
-            <Route path="gamemanagement/gamedetail" element={<GameDetail />}>
+            <Route path="gamemanagement/gamedetail/:id" element={<GameDetail />}>
               <Route index element={<GameIntroduce />} />
-              <Route path="instruction" element={<GameInstruction />} />
               <Route path="items" element={<GameItems />} />
             </Route>
             <Route path="report" element={<AdminReports />} />

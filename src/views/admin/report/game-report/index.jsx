@@ -4,11 +4,17 @@ import BaseChart from '@components/base-chart';
 import CustomDropdown from "@components/custom-dropdown";
 import DatePicker from '@/components/date-picker';
 import { changeHeaderTitle } from '@/lib/utils';
-import { useContext } from "react"
-import { HeaderTitleContext } from '@/services/state/headerTitleContext';
+import { useState, useEffect } from "react"
+
+import {generateDataForNumBrands} from "./makeData";
+import { convertToChartData } from '@/lib/utils';
 
 export default function GameReport() {
     changeHeaderTitle("Thống kê trò chơi");
+    const [numBrands, setNumBrands] = useState([]);
+    useEffect(() => {
+        setNumBrands(generateDataForNumBrands(30));
+    }, []);
     
     return (
         <div className='admin-game-report-container  d-flex flex-column flex-grow-1'>
@@ -33,15 +39,24 @@ export default function GameReport() {
             </div>
         </div>
 
-        {/*<div className="content d-flex flex-column align-items-center mt-3">
-             <BaseChart title="Lượt chơi hàng ngày/tuần/tháng"/>
-            <BaseChart title="Số lượng thương hiệu tham gia "/> 
+        <div className="content d-flex flex-column align-items-center mt-3">
+             {/* <BaseChart title="Lượt chơi hàng ngày/tuần/tháng"/> */}
+            {/* <BaseChart title="Số lượng thương hiệu tham gia "/>  */}
             
-        </div>*/}
+            <BaseChart 
+                data={convertToChartData(numBrands, "brands")} 
+                title="Số lượng thương hiệu tham gia"
+                yLabels={["quiz", "lacxi"]}
+                xLabel="date"
+                colors={[{name: "quiz", value: "#4F1787"},{name: "lacxi", value: "#EB3678"}]}
+            />
+
+
+        </div>
 
         <div className="content d-flex flex-column align-items-center mt-3">
-            <BaseChart title="Số lượng người chơi tham gia"/>
-            <BaseChart title="Thời gian tham gia trung bình của mỗi người chơi"/>
+            {/* <BaseChart title="Số lượng người chơi tham gia"/>
+            <BaseChart title="Thời gian tham gia trung bình của mỗi người chơi"/> */}
 
         </div>
 
