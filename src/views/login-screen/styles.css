@@ -43,6 +43,8 @@
   }
 }
 
+
+
 .or {
   margin: 20px;
   font-size: x-large;
@@ -60,6 +62,10 @@
   border-radius: 6px;
   padding: 8px 0;
   width: 240px;
+}
+
+.LoginTitle:disabled {
+  background-color: #9ecdf6;
 }
 
 .link-to-logup-screen {

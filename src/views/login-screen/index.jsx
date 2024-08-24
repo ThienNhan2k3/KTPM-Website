@@ -13,14 +13,39 @@ import logo2 from "@assets/images/logo-icon-2.png";
 import { Link } from "react-router-dom";
 
 import "./styles.css";
+import { useState } from "react";
 
 function Login() {
   const navigate = useNavigate();
-
-  const handleSubmit = (event) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleLogin = (event) => {
     event.preventDefault();
-    navigate("/admin");
+    if (email != "" && password != "") {
+      event.target.disabled = true;
+    }
+    
+    fetch(`http://localhost:5000/login`, {
+      body: JSON.stringify({
+        email,
+        password
+      }),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(res => res.json())
+    .then(data => {
+      console.log("introduce:::", data);
+      if (data.code === 200 && data.redirect) {
+        navigate(data.redirect);
+      }
+    })
+    .catch(err => console.log(err));
+
   };
+
+
 
   return (
     <div className="login-screen container-fluid p-0 m-0 vh-100 d-flex flex-column justify-content-center">
@@ -58,7 +83,7 @@ function Login() {
 
           <span className="or">- OR -</span>
 
-          <Form.Root className="FormRootLogin" onSubmit={handleSubmit}>
+          <Form.Root className="FormRootLogin">
             <Form.Field className="FormField" name="email">
               <div
                 style={{
@@ -79,7 +104,9 @@ function Login() {
                 </Form.Message>
               </div>
               <Form.Control asChild>
-                <input className="Input" type="email" required />
+                <input className="Input" type="email" value={email} onChange={(event) => {
+                  setEmail(event.target.value);
+                }} required />
               </Form.Control>
             </Form.Field>
 
@@ -98,12 +125,14 @@ function Login() {
                 </Form.Message>
               </div>
               <Form.Control asChild>
-                <input className="Input" type="password" required />
+                <input className="Input" type="password" required value={password} onChange={(event) => {
+                  setPassword(event.target.value);
+                }} />
               </Form.Control>
             </Form.Field>
 
             <Form.Submit asChild>
-              <button className="LoginTitle">Đăng nhập</button>
+              <button className="LoginTitle" onClick={handleLogin}>Đăng nhập</button>
             </Form.Submit>
           </Form.Root>
 
