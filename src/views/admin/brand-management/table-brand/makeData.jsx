@@ -8,15 +8,16 @@ const range = (len) => {
   return arr;
 };
 
-const newPerson = (num) => {
+const newPerson = () => {
   return {
-    id: num,
+    id: faker.string.alphanumeric(8),
     brandName: faker.company.name(),
     industry: faker.person.jobTitle(),
     address: faker.location.streetAddress(),
     gps: faker.location.nearbyGPSCoordinate(),
+    password: faker.internet.password(),
     email: faker.internet.email(),
-    phone: faker.phone.number(),
+    phone: "0" + faker.string.numeric(9),
     status: faker.helpers.arrayElement(["Active", "Inactive"]),
   };
 };
