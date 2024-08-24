@@ -1,6 +1,4 @@
 import React from "react";
-import search from "@assets/images/search-icon.png";
-import userDelete from "@assets/images/delete-icon.png";
 
 import "./styles.css";
 
@@ -19,19 +17,15 @@ import { compareItems, rankItem } from "@tanstack/match-sorter-utils";
 
 import { makeData } from "./makeData";
 
-import * as ContextMenu from "@radix-ui/react-context-menu";
-
 import * as Dialog from "@radix-ui/react-dialog";
 
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 
-import * as Select from "@radix-ui/react-select";
-
-import * as Form from "@radix-ui/react-form";
-
-import * as Checkbox from "@radix-ui/react-checkbox";
-
-import { Cross2Icon, ChevronDownIcon, CheckIcon } from "@radix-ui/react-icons";
+import SearchBar from "./search-bar";
+import Pagination from "./pagination";
+import TableContextMenu from "./context-menu";
+import EditDialog from "./table-dialog/edit-dialog";
+import RemoveDialog from "./table-dialog/remove-dialog";
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -68,13 +62,7 @@ export default function TableBrand() {
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
-  const [isChecked, setIsChecked] = React.useState(
-    selectedRow?.status === "Active",
-  );
-
-  React.useEffect(() => {
-    setIsChecked(selectedRow?.status === "Active");
-  }, [selectedRow]);
+  const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
   const getDataRow = (row) => {
     console.log(row.original);
@@ -88,7 +76,7 @@ export default function TableBrand() {
         accessorKey: "id",
         size: 50,
         cell: (info) => (
-          <div className="edit-id" id="id">
+          <div className="edit-text" id="id">
             {info.getValue()}
           </div>
         ),
@@ -140,7 +128,9 @@ export default function TableBrand() {
         size: 150,
         cell: (info) => (
           <div className="edit-text" id="gps">
-            {info.getValue()}
+            {Array.isArray(info.getValue())
+              ? info.getValue().join(", ")
+              : info.getValue()}
           </div>
         ),
         filterFn: "equalsString", //using our custom fuzzy filter function
@@ -186,8 +176,8 @@ export default function TableBrand() {
     [],
   );
 
-  const [data] = React.useState(() => makeData(5000));
-  const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
+  const [data] = React.useState(() => makeData(50));
+  // console.log(data);
 
   const table = useReactTable({
     data,
@@ -223,20 +213,10 @@ export default function TableBrand() {
   return (
     <div className="p-2">
       <div className="design-margin">
-        <div className="display-title">
-          <div className="design-title">
-            <img src={search} alt="" />
-            <span>Tìm kiếm</span>
-          </div>
-          <div>
-            <DebouncedInput
-              value={globalFilter ?? ""}
-              onChange={(value) => setGlobalFilter(String(value))}
-              className="search-box rounded-pill"
-              placeholder="Search all columns..."
-            />
-          </div>
-        </div>
+        <SearchBar
+          value={globalFilter ?? ""}
+          onChange={(value) => setGlobalFilter(String(value))}
+        />
       </div>
       <div className="h-2" />
       <table className="table-brand">
@@ -284,296 +264,19 @@ export default function TableBrand() {
             return (
               <Dialog.Root key={row.id} open={open} onOpenChange={setOpen}>
                 <AlertDialog.Root>
-                  <ContextMenu.Root>
-                    <ContextMenu.Trigger asChild>
-                      <tr
-                        style={{
-                          borderBottom: "1px solid #0F67B1",
-                          textWrap: "nowrap",
-                        }}
-                        key={row.id}
-                      >
-                        {row.getVisibleCells().map((cell) => {
-                          return (
-                            <td key={cell.id}>
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext(),
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    </ContextMenu.Trigger>
+                  <TableContextMenu
+                    row={row}
+                    onClick={(row) => getDataRow(row)}
+                  />
+                  <EditDialog
+                    selectedRow={selectedRow}
+                    onSubmit={(event) => {
+                      wait().then(() => setOpen(false));
+                      event.preventDefault();
+                    }}
+                  />
 
-                    <ContextMenu.Portal>
-                      <ContextMenu.Content className="ContextMenuContent">
-                        <Dialog.Trigger asChild>
-                          <ContextMenu.Item
-                            className="ContextMenuItem"
-                            onClick={() => getDataRow(row)}
-                          >
-                            Chỉnh sửa
-                          </ContextMenu.Item>
-                        </Dialog.Trigger>
-
-                        <AlertDialog.Trigger asChild>
-                          <ContextMenu.Item
-                            className="ContextMenuItem"
-                            onClick={() => getDataRow(row)}
-                          >
-                            Xóa
-                          </ContextMenu.Item>
-                        </AlertDialog.Trigger>
-                      </ContextMenu.Content>
-                    </ContextMenu.Portal>
-                  </ContextMenu.Root>
-
-                  <Dialog.Portal>
-                    <Dialog.Overlay className="DialogOverlay" />
-                    <Dialog.Content className="DialogContent">
-                      <Dialog.Title className="DialogTitle">
-                        Loại người dùng
-                      </Dialog.Title>
-
-                      <Select.Root defaultValue="brand" disabled>
-                        <Select.Trigger
-                          className="SelectTrigger"
-                          aria-label="UserType"
-                        >
-                          <Select.Value />
-                          <Select.Icon className="SelectIcon">
-                            <ChevronDownIcon />
-                          </Select.Icon>
-                        </Select.Trigger>
-
-                        <Select.Portal>
-                          <Select.Content className="SelectContent">
-                            <Select.Viewport className="SelectViewport">
-                              <Select.Item value="brand" className="SelectItem">
-                                <Select.ItemText>Thương hiệu</Select.ItemText>
-                              </Select.Item>
-                            </Select.Viewport>
-                          </Select.Content>
-                        </Select.Portal>
-                      </Select.Root>
-
-                      <Form.Root
-                        className="FormRoot"
-                        onSubmit={(event) => {
-                          wait().then(() => setOpen(false));
-                          event.preventDefault();
-                        }}
-                        disabled
-                      >
-                        <Form.Field className="FormField" name="brandName">
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "baseline",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Form.Label className="FormLabel">
-                              Tên thương hiệu
-                            </Form.Label>
-                          </div>
-                          <Form.Control asChild>
-                            <input
-                              className="Input"
-                              type="text"
-                              disabled
-                              defaultValue={selectedRow?.brandName}
-                            />
-                          </Form.Control>
-                        </Form.Field>
-
-                        <Form.Field className="FormField" name="industry">
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "baseline",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Form.Label className="FormLabel">
-                              Lĩnh vực
-                            </Form.Label>
-                          </div>
-                          <Form.Control asChild>
-                            <input
-                              className="Input"
-                              type="text"
-                              disabled
-                              defaultValue={selectedRow?.industry}
-                            />
-                          </Form.Control>
-                        </Form.Field>
-
-                        <Form.Field className="FormField" name="address">
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "baseline",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Form.Label className="FormLabel">
-                              Địa chỉ
-                            </Form.Label>
-                          </div>
-                          <Form.Control asChild>
-                            <input
-                              className="Input"
-                              type="text"
-                              disabled
-                              defaultValue={selectedRow?.address}
-                            />
-                          </Form.Control>
-                        </Form.Field>
-
-                        <Form.Field className="FormField" name="gps">
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "baseline",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Form.Label className="FormLabel">
-                              GPS (Lat/Long)
-                            </Form.Label>
-                          </div>
-                          <Form.Control asChild>
-                            <input
-                              className="Input"
-                              type="text"
-                              disabled
-                              defaultValue={selectedRow?.gps}
-                            />
-                          </Form.Control>
-                        </Form.Field>
-
-                        <Form.Field className="FormField" name="email">
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "baseline",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Form.Label className="FormLabel">Email</Form.Label>
-                          </div>
-                          <Form.Control asChild>
-                            <input
-                              className="Input"
-                              type="email"
-                              disabled
-                              defaultValue={selectedRow?.email}
-                            />
-                          </Form.Control>
-                        </Form.Field>
-
-                        <Form.Field className="FormField" name="phone">
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "baseline",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Form.Label className="FormLabel">
-                              Số điện thoại
-                            </Form.Label>
-                          </div>
-                          <Form.Control asChild>
-                            <input
-                              className="Input"
-                              type="tel"
-                              disabled
-                              defaultValue={selectedRow?.phone}
-                            />
-                          </Form.Control>
-                        </Form.Field>
-
-                        <Form.Field className="FormField" name="status">
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <Checkbox.Root
-                              className="CheckboxRoot"
-                              checked={isChecked}
-                              onCheckedChange={(checked) =>
-                                setIsChecked(checked)
-                              }
-                            >
-                              <Checkbox.Indicator className="CheckboxIndicator">
-                                <CheckIcon />
-                              </Checkbox.Indicator>
-                            </Checkbox.Root>
-                            <label className="Label" htmlFor="c1">
-                              Kích hoạt tài khoản.
-                            </label>
-                          </div>
-                        </Form.Field>
-
-                        <div className="custom-layout-submit">
-                          <Dialog.Close asChild>
-                            <div className="DialogClose">
-                              <button className="design-cancel-button rounded-3">
-                                Hủy
-                              </button>
-                            </div>
-                          </Dialog.Close>
-
-                          <Form.Submit asChild>
-                            <div className="FormSubmit">
-                              <button className="design-save-button rounded-3">
-                                Lưu thay đổi
-                              </button>
-                            </div>
-                          </Form.Submit>
-                        </div>
-                      </Form.Root>
-
-                      <Dialog.Close asChild>
-                        <button className="IconButton" aria-label="Close">
-                          <Cross2Icon />
-                        </button>
-                      </Dialog.Close>
-                    </Dialog.Content>
-                  </Dialog.Portal>
-
-                  <AlertDialog.Portal>
-                    <AlertDialog.Overlay className="AlertDialogOverlay" />
-                    <AlertDialog.Content className="AlertDialogContent">
-                      <AlertDialog.Title className="AlertDialogTitle">
-                        <img src={userDelete} alt="" />
-                      </AlertDialog.Title>
-                      <AlertDialog.Title className="AlertDialogTitle">
-                        <span>Xóa tài khoản</span>
-                      </AlertDialog.Title>
-                      <AlertDialog.Description className="AlertDialogDescription">
-                        <h5>Người dùng: {selectedRow?.brandName}</h5>
-                      </AlertDialog.Description>
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: 25,
-                          justifyContent: "center",
-                        }}
-                      >
-                        <AlertDialog.Cancel asChild>
-                          <button className="Button rounded-pill">Hủy</button>
-                        </AlertDialog.Cancel>
-                        <AlertDialog.Action asChild>
-                          <button className="Button rounded-pill">
-                            Xóa tài khoản
-                          </button>
-                        </AlertDialog.Action>
-                      </div>
-                    </AlertDialog.Content>
-                  </AlertDialog.Portal>
+                  <RemoveDialog selectedRow={selectedRow} />
                 </AlertDialog.Root>
               </Dialog.Root>
             );
@@ -581,90 +284,7 @@ export default function TableBrand() {
         </tbody>
       </table>
       <div className="h-2" />
-      <div className="page-number">
-        <div className="show-page-number">
-          <span className="design-page-number">
-            <div style={{ marginRight: "5px" }}>Page</div>
-            <strong>
-              {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </strong>
-          </span>
-          <span className="design-border">
-            Go to page:
-            <input
-              type="number"
-              defaultValue={table.getState().pagination.pageIndex + 1}
-              min={1} // Xác định giá trị min là 1
-              onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                table.setPageIndex(page);
-              }}
-              className="page-number-box rounded"
-            />
-          </span>
-        </div>
-        <div className="combo-button">
-          <button
-            className="design-button"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-          >
-            {"<<"}
-          </button>
-          <button
-            className="design-button"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            {"<"}
-          </button>
-          <button
-            className="design-button"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            {">"}
-          </button>
-          <button
-            className="design-button"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
-          >
-            {">>"}
-          </button>
-        </div>
-      </div>
+      <Pagination table={table} />
     </div>
-  );
-}
-
-// A typical debounced input react component
-function DebouncedInput({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}) {
-  const [value, setValue] = React.useState(initialValue);
-
-  React.useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value);
-    }, debounce);
-
-    return () => clearTimeout(timeout);
-  }, [value]);
-
-  return (
-    <input
-      {...props}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    />
   );
 }

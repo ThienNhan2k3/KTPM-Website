@@ -11,14 +11,17 @@ const range = (len) => {
 const newPerson = () => {
   return {
     id: faker.string.alphanumeric(10),
-    type: faker.helpers.arrayElement(["Admin", "Người chơi"]),
+    type: faker.helpers.arrayElement(["Người chơi"]),
     avatar: faker.image.avatar(),
     fullName: faker.person.fullName(),
     userName: faker.internet.userName(),
     password: faker.internet.password(),
     email: faker.internet.email(),
-    phone: faker.phone.number(),
-    dob: faker.date.past(30, new Date()).toISOString().split("T")[0],
+    phone: "0" + faker.string.numeric(9),
+    dob: faker.date
+      .birthdate({ min: 18, max: 90, mode: "age" })
+      .toISOString()
+      .split("T")[0],
     gender: faker.helpers.arrayElement(["Nam", "Nữ"]),
     facebookacc: faker.internet.userName() + "@facebook.com",
     status: faker.helpers.arrayElement(["Active", "Inactive"]),
