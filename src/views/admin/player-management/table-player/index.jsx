@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import "./styles.css";
 
 import {
@@ -12,13 +11,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-// A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { compareItems, rankItem } from "@tanstack/match-sorter-utils";
 
-import { makeData } from "./makeData";
-
 import * as Dialog from "@radix-ui/react-dialog";
-
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 
 import Pagination from "./pagination";
@@ -28,44 +23,48 @@ import TableContextMenu from "./context-menu";
 import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
 
-// Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
+// Define a custom fuzzy filter function
 const fuzzyFilter = (row, columnId, value, addMeta) => {
-  // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
-
-  // Store the itemRank info
-  addMeta({
-    itemRank,
-  });
-
-  // Return if the item should be filtered in/out
+  addMeta({ itemRank });
   return itemRank.passed;
 };
 
-// Define a custom fuzzy sort function that will sort by rank if the row has ranking information
+// Define a custom fuzzy sort function
 const fuzzySort = (rowA, rowB, columnId) => {
   let dir = 0;
-
-  // Only sort by rank if the column has ranking information
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
       rowA.columnFiltersMeta[columnId]?.itemRank,
-      rowB.columnFiltersMeta[columnId]?.itemRank,
+      rowB.columnFiltersMeta[columnId]?.itemRank
     );
   }
-
-  // Provide an alphanumeric fallback for when the item ranks are equal
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
 
 export default function TablePlayer() {
-  const [columnFilters, setColumnFilters] = React.useState([]);
-  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [data, setData] = useState([]);
+  const [open2, setOpen2] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
-  const [open2, setOpen2] = React.useState(false);
   const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
-  const [selectedRow, setSelectedRow] = React.useState(null);
+  // Fetch data from the API when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:50000/user/getAll");
+        const result = await response.json();
+        setData(result); // Assuming the result is an array of users
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const getDataRow = (row) => {
     setSelectedRow(row.original);
@@ -82,35 +81,34 @@ export default function TablePlayer() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "equalsString", //note: normal non-fuzzy filter column - exact match required
+        filterFn: "equalsString",
         sortingFn: "alphanumeric",
       },
       {
         header: () => <span className="title-table-player">Họ và tên</span>,
-        accessorKey: "fullName",
-        id: "fullName",
+        accessorKey: "full_name",
+        id: "full_name",
         size: 135,
         cell: (info) => (
           <div className="edit-text" id="fullName">
             {info.getValue()}
           </div>
         ),
-        filterFn: "includesString", //note: normal non-fuzzy filter column
+        filterFn: "includesString",
         sortingFn: fuzzySort,
       },
       {
         header: () => <span className="title-table-player">Tên đăng nhập</span>,
-        accessorKey: "userName",
+        accessorKey: "user_name",
         size: 135,
         cell: (info) => (
-          <div className="edit-text" id="userName">
+          <div className="edit-text" id="user_name">
             {info.getValue()}
           </div>
         ),
-        filterFn: "includesString", //note: normal non-fuzzy filter column - case insensitive
+        filterFn: "includesString",
         sortingFn: fuzzySort,
       },
-
       {
         header: () => <span className="title-table-player">Email</span>,
         accessorKey: "email",
@@ -120,8 +118,8 @@ export default function TablePlayer() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "includesString", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
+        filterFn: "includesString",
+        sortingFn: fuzzySort,
       },
       {
         header: () => <span className="title-table-player">Số điện thoại</span>,
@@ -132,8 +130,8 @@ export default function TablePlayer() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "fuzzy", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
+        filterFn: "fuzzy",
+        sortingFn: fuzzySort,
       },
       {
         header: () => <span className="title-table-player">Ngày sinh</span>,
@@ -144,8 +142,8 @@ export default function TablePlayer() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "equalsString", //using our custom fuzzy filter function
-        sortingFn: "alphanumeric", //sort by fuzzy rank (falls back to alphanumeric)
+        filterFn: "equalsString",
+        sortingFn: "alphanumeric",
       },
       {
         header: () => <span className="title-table-player">Giới tính</span>,
@@ -156,20 +154,20 @@ export default function TablePlayer() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "equalsString", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
+        filterFn: "equalsString",
+        sortingFn: fuzzySort,
       },
       {
         header: () => <span className="title-table-player">Facebook</span>,
-        accessorKey: "facebookacc",
+        accessorKey: "fb_acc",
         size: 130,
         cell: (info) => (
-          <div className="edit-text" id="facebookacc">
+          <div className="edit-text" id="fb_acc">
             {info.getValue()}
           </div>
         ),
-        filterFn: "fuzzy", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
+        filterFn: "fuzzy",
+        sortingFn: fuzzySort,
       },
       {
         header: () => <span className="title-table-player">Người dùng</span>,
@@ -180,8 +178,8 @@ export default function TablePlayer() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "fuzzy", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
+        filterFn: "fuzzy",
+        sortingFn: fuzzySort,
       },
       {
         header: () => <span className="title-table-player">Trạng thái</span>,
@@ -192,20 +190,18 @@ export default function TablePlayer() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "includesString", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
+        filterFn: "includesString",
+        sortingFn: fuzzySort,
       },
     ],
-    [],
+    []
   );
-
-  const [data] = React.useState(() => makeData(100));
 
   const table = useReactTable({
     data,
     columns,
     filterFns: {
-      fuzzy: fuzzyFilter, //define as a filter function that can be used in column definitions
+      fuzzy: fuzzyFilter,
     },
     state: {
       columnFilters,
@@ -213,9 +209,9 @@ export default function TablePlayer() {
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: "fuzzy", //apply fuzzy filter to the global filter (most common use case for fuzzy filter)
+    globalFilterFn: "fuzzy",
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(), //client side filtering
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     debugTable: true,
@@ -223,7 +219,6 @@ export default function TablePlayer() {
     debugColumns: false,
   });
 
-  //apply the fuzzy sort if the fullName column is being filtered
   React.useEffect(() => {
     if (table.getState().columnFilters[0]?.id === "brandName") {
       if (table.getState().sorting[0]?.id !== "brandName") {
@@ -267,7 +262,7 @@ export default function TablePlayer() {
                         >
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                           {{
                             asc: "🔼",
