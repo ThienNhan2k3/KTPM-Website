@@ -5,7 +5,8 @@ import { set } from "date-fns";
 import QuizModal from "../QuizModal/QuizModal";
 
 const convertDateFormat = (dateStr) => {
-  const [day, month, year] = dateStr.split("/");
+  console.log(dateStr);
+  const [year, month, day] = dateStr.split("/");
   return `${year}-${month}-${day}`;
 };
 
@@ -27,8 +28,8 @@ const Modal = ({ show, onClose, itemData }) => {
   const [prevImage, setPrevImage] = useState(null);
   const [imageError, setImageError] = useState(false);
   const [eventName, setEventName] = useState(itemData.name);
-  const [startDate, setStartDate] = useState(convertDateFormat("01/01/2024")); // Adjust default date
-  const [endDate, setEndDate] = useState(convertDateFormat("01/01/2024")); // Adjust default date
+  const [startDate, setStartDate] = useState(itemData.start_time)    //(convertDateFormat("01/01/2024")); // Adjust default date
+  const [endDate, setEndDate] = useState(itemData.end_time);    //(convertDateFormat("01/01/2024")); // Adjust default date
   
   const [errors, setErrors] = useState({
     eventName: "",
@@ -160,7 +161,7 @@ const Modal = ({ show, onClose, itemData }) => {
                   <input
                     type="date"
                     className="form-control"
-                    defaultValue={convertDateFormat(itemData.dateCreate)}
+                    defaultValue= {itemData.start_time} //{convertDateFormat(itemData.start_time)}
                     style={{
                       width: "150px",
                       padding: "10px",
@@ -176,7 +177,7 @@ const Modal = ({ show, onClose, itemData }) => {
                   <input
                     type="date"
                     className="form-control"
-                    defaultValue={convertDateFormat(itemData.dateEnd)}
+                    defaultValue= {itemData.end_time}   //{convertDateFormat(itemData.end_time)}
                     onChange={(e) => setEndDate(e.target.value)}
                     style={{
                       width: "150px",
