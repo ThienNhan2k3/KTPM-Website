@@ -5,7 +5,6 @@ import { set } from "date-fns";
 import QuizModal from "../QuizModal/QuizModal";
 
 const convertDateFormat = (dateStr) => {
-  console.log(dateStr);
   const [year, month, day] = dateStr.split("/");
   return `${year}-${month}-${day}`;
 };
@@ -14,7 +13,6 @@ const Modal = ({ show, onClose, itemData }) => {
   if (!show) {
     return null;
   }
-
   const data = [
     { id: 1, name: "Voucher1", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
     { id: 2, name: "Voucher2", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
@@ -26,17 +24,44 @@ const Modal = ({ show, onClose, itemData }) => {
 
   const [image, setImage] = useState(null);
   const [prevImage, setPrevImage] = useState(null);
-  const [imageError, setImageError] = useState(false);
   const [eventName, setEventName] = useState(itemData.name);
-  const [startDate, setStartDate] = useState(itemData.start_time)    //(convertDateFormat("01/01/2024")); // Adjust default date
-  const [endDate, setEndDate] = useState(itemData.end_time);    //(convertDateFormat("01/01/2024")); // Adjust default date
-  
+  const [startDate, setStartDate] = useState(itemData.start_time);
+  const [endDate, setEndDate] = useState(itemData.end_time);
+  const [quizData, setQuizData] = useState([]);
+  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
   const [errors, setErrors] = useState({
     eventName: "",
     startDate: "",
     endDate: "",
     image: "",
   });
+
+  // Fetch quiz data based on id_event
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      try {
+        console.log(itemData)
+        // Step 1: Fetch the quiz by event using the id_event
+        const quizResponse = await fetch(`http://localhost:50000/quiz/get_by_event/${itemData.id}`);
+        if (!quizResponse.ok) throw new Error("Failed to fetch quiz data");
+        const quiz = await quizResponse.json();
+
+        if (quiz && quiz.id) {
+          // Step 2: Fetch questions using the id_quiz from the quiz
+          const questionsResponse = await fetch(`http://localhost:50000/questions/get_byQuiz/${quiz.id}`);
+          if (!questionsResponse.ok) throw new Error("Failed to fetch questions");
+          const questions = await questionsResponse.json();
+
+          setQuizData(questions);
+          console.log(questions);
+        }
+      } catch (error) {
+        console.error("Error fetching quiz data:", error);
+      }
+    };
+
+    fetchQuizData();
+  }, [itemData]);
 
   
   const validateDate = (dateStr) => {
@@ -111,8 +136,6 @@ const Modal = ({ show, onClose, itemData }) => {
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
   //For Quiz settings
-  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
-  const [quizData, setQuizData] = useState([{ id: 1, question: '', answers: ['', '', '', ''], correctAnswer: 0 }]);
 
   const openQuizModal = () => {
     console.log("Opening Quiz Modal");
