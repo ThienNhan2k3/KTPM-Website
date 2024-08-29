@@ -48,6 +48,7 @@ export default function TableBrand() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  //Get all the brand account
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -66,6 +67,45 @@ export default function TableBrand() {
 
     fetchData();
   }, []);
+
+  //updating the brand's status
+  const activateBrand = async (brandId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:50000/brand/activate/${brandId}`,
+        {
+          method: "POST",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to activate brand");
+      }
+      const result = await response.json();
+      // Show a success notification
+      alert("Brand account has been activated successfully!");
+      console.log("Brand activated:", result);
+    } catch (error) {
+      console.error(error);
+      // Show an error notification
+      alert("Failed to activate brand. Please try again.");
+    }
+  };
+
+  const handleActivateClick = async (brandId) => {
+    console.log(brandId);
+    const userConfirmed = window.confirm(
+      "Do you want to activate this brand account?"
+    );
+    if (userConfirmed) {
+      await activateBrand(brandId);
+      // Optionally, refresh data after activation
+      setData((prevData) =>
+        prevData.map((brand) =>
+          brand.id === brandId ? { ...brand, status: "Active" } : brand
+        )
+      );
+    }
+  };
 
   const getDataRow = (row) => {
     console.log(row.original);
@@ -168,12 +208,23 @@ export default function TableBrand() {
         accessorKey: "status",
         size: 90,
         cell: (info) => (
-          <div className="edit-id" id="status">
+          <div
+            className="edit-id"
+            id="status"
+            style={{
+              color: info.getValue() === "Inactive" ? "blue" : "inherit",
+              cursor: info.getValue() === "Inactive" ? "pointer" : "default",
+            }}
+            onClick={() =>
+              info.getValue() === "Inactive" &&
+              handleActivateClick(info.row.original.id)
+            }
+          >
             {info.getValue()}
           </div>
         ),
-        filterFn: "includesString", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
+        filterFn: "includesString",
+        sortingFn: fuzzySort,
       },
     ],
     [],
