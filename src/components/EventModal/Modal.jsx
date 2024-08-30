@@ -3,6 +3,7 @@ import "./Modal.css";
 import PlusIcon from "@assets/images/plus-icon.png";
 import { set } from "date-fns";
 import QuizModal from "../QuizModal/QuizModal";
+import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
@@ -13,16 +14,15 @@ const Modal = ({ show, onClose, itemData }) => {
   if (!show) {
     return null;
   }
-  const data = [
-    { id: 1, name: "Voucher1", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 2, name: "Voucher2", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 3, name: "Voucher3", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 4, name: "Voucher4", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 5, name: "Voucher5", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  const [data, setTableData] = useState([
+    { voucher_code: 1, value: 20, max_discount: 450000 },
+    { voucher_code: 2, value: 18, max_discount: 20000},
     // Add more items if needed
-  ];
+  ]);
 
   const [vouchers, setVoucher] = useState([]); //set vouchers active
+  const [selectedVouchers, setSelectedVouchers] = useState([]);
+  const [isVoucherModalOpen, setIsVoucherModalOpen] = useState(false);
   const [image, setImage] = useState(null);
   const [prevImage, setPrevImage] = useState(null);
   const [eventName, setEventName] = useState(itemData.name);
@@ -41,7 +41,7 @@ const Modal = ({ show, onClose, itemData }) => {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        console.log(itemData)
+        //console.log(itemData)
         // Step 1: Fetch the quiz by event using the id_event
         const quizResponse = await fetch(`http://localhost:50000/quiz/get_by_event/${itemData.id}`);
         if (!quizResponse.ok) throw new Error("Failed to fetch quiz data");
@@ -54,7 +54,7 @@ const Modal = ({ show, onClose, itemData }) => {
           const questions = await questionsResponse.json();
 
           setQuizData(questions);
-          console.log(questions);
+          //console.log(questions);
         }
       } catch (error) {
         console.error("Error fetching quiz data:", error);
@@ -71,7 +71,7 @@ const Modal = ({ show, onClose, itemData }) => {
         const response = await fetch("http://localhost:50000/voucher/getAll_active");
         if (!response.ok) throw new Error("Failed to fetch voucher data");
         const voucherData = await response.json();
-        console.log(voucherData);
+        //console.log(voucherData);
         setVoucher(voucherData);
       } catch (error) {
         console.error("Error fetching voucher data:", error);
@@ -133,8 +133,13 @@ const Modal = ({ show, onClose, itemData }) => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 4;  // Number of items per page
   const totalPages = Math.ceil(data.length / itemsPerPage);
+  
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -148,12 +153,30 @@ const Modal = ({ show, onClose, itemData }) => {
     }
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  //For select voucher
+    const openVoucherModal = () => {
+      setIsVoucherModalOpen(true);
+    };
+  
+    const closeVoucherModal = () => {
+      setIsVoucherModalOpen(false);
+    };
+  
+    const handleSelectVoucher = (voucher) => {
+      // Check if the voucher is already in the table
+      console.log(voucher);
+      const isVoucherAlreadySelected = data.some((item) => item.voucher_code === voucher.voucher_code);
+      if (!isVoucherAlreadySelected) {
+        // Add the selected voucher to the table data
+        setTableData((prevTableData) => [...prevTableData, voucher]);
+      }
+      setIsVoucherModalOpen(false);
+      console.log(data);
+      console.log("currentItems:", currentItems);
+    };
+
 
   //For Quiz settings
-
   const openQuizModal = () => {
     console.log("Opening Quiz Modal");
     setIsQuizModalOpen(true);
@@ -306,27 +329,37 @@ const Modal = ({ show, onClose, itemData }) => {
                 {errors.data}
               </span>
             }
-            <button className="editevent-add-voucher-button">
-              <img src={PlusIcon} alt="Add" style={{ marginRight: "5px", display: "inline" }} />
+            <button className="editevent-add-voucher-button" onClick={openVoucherModal}>
+              <img src={PlusIcon} alt="Add" 
+                style={{ marginRight: "5px", display: "inline" }} 
+              />
               Thêm voucher
             </button>
           </div>
+
+              {/* Render the Voucher Selection Modal */}
+              {isVoucherModalOpen && (
+                <VoucherSelectionModal
+                  vouchers={vouchers}
+                  onClose={closeVoucherModal}
+                  onSelectVoucher={handleSelectVoucher}
+                />
+              )}
+
 
               <div className="editevent-form-group">
                 <table className="table table-bordered my-3" style={{ fontSize: '12px', width: '100%' }}>
                   <thead>
                     <tr>
-                      <th scope="col" style={{ width: '10%' }}>ID</th>
-                      <th scope="col" style={{ width: '45%' }}>Quantity</th>
-                      <th scope="col" style={{ width: '45%' }}>Sale</th>
+                      <th scope="col" style={{ width: '45%' }}>Phần Trăm</th>
+                      <th scope="col" style={{ width: '45%' }}>Giảm Giá Tối Đa</th>
                     </tr>
                   </thead>
                   <tbody>
                     {currentItems.map((item) => (
                       <tr key={item.id}>
-                        <th scope="row">{item.id}</th>
-                        <td>{item.quantity}</td>
-                        <td>{item.sale}</td>
+                        <td>{item.value}%</td>
+                        <td>{item.max_discount} vnđ</td>
                       </tr>
                     ))}
                   </tbody>
