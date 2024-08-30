@@ -22,6 +22,7 @@ const Modal = ({ show, onClose, itemData }) => {
     // Add more items if needed
   ];
 
+  const [vouchers, setVoucher] = useState([]); //set vouchers active
   const [image, setImage] = useState(null);
   const [prevImage, setPrevImage] = useState(null);
   const [eventName, setEventName] = useState(itemData.name);
@@ -63,6 +64,22 @@ const Modal = ({ show, onClose, itemData }) => {
     fetchQuizData();
   }, [itemData]);
 
+  // Fetch voucher data
+  useEffect(() => {
+    const fetchVoucherData = async () => {
+      try {
+        const response = await fetch("http://localhost:50000/voucher/getAll_active");
+        if (!response.ok) throw new Error("Failed to fetch voucher data");
+        const voucherData = await response.json();
+        console.log(voucherData);
+        setVoucher(voucherData);
+      } catch (error) {
+        console.error("Error fetching voucher data:", error);
+      }
+    };
+
+    fetchVoucherData();
+  }, []);
   
   const validateDate = (dateStr) => {
     const dateObj = new Date(dateStr);
