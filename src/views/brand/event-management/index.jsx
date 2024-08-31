@@ -25,6 +25,7 @@ export default function EventManagement() {
   const [quiz, setQuiz] = useState(false);
   const [lx, setLx] = useState(false);
 
+  //get all event data
   useEffect(() => {
     const fetchData = async () => {
       try {

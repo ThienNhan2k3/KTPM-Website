@@ -154,26 +154,26 @@ const Modal = ({ show, onClose, itemData }) => {
   };
 
   //For select voucher
-    const openVoucherModal = () => {
-      setIsVoucherModalOpen(true);
-    };
+  const openVoucherModal = () => {
+    setIsVoucherModalOpen(true);
+  };
   
-    const closeVoucherModal = () => {
-      setIsVoucherModalOpen(false);
-    };
+  const closeVoucherModal = () => {
+    setIsVoucherModalOpen(false);
+  };
   
-    const handleSelectVoucher = (voucher) => {
-      // Check if the voucher is already in the table
-      console.log(voucher);
-      const isVoucherAlreadySelected = data.some((item) => item.voucher_code === voucher.voucher_code);
-      if (!isVoucherAlreadySelected) {
-        // Add the selected voucher to the table data
-        setTableData((prevTableData) => [...prevTableData, voucher]);
-      }
-      setIsVoucherModalOpen(false);
-      console.log(data);
-      console.log("currentItems:", currentItems);
-    };
+  const handleSelectVoucher = (voucher) => {
+    // Check if the voucher is already in the table
+    console.log(voucher);
+    const isVoucherAlreadySelected = data.some((item) => item.voucher_code === voucher.voucher_code);
+    if (!isVoucherAlreadySelected) {
+      // Add the selected voucher to the table data
+      setTableData((prevTableData) => [...prevTableData, voucher]);
+    }
+    setIsVoucherModalOpen(false);
+    console.log(data);
+    console.log("currentItems:", currentItems);
+  };
 
 
   //For Quiz settings
@@ -317,36 +317,33 @@ const Modal = ({ show, onClose, itemData }) => {
                 }
               </div>
 
-
               <div className="row editevent-voucher editevent-form-group container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <strong style={{ width: "fit-content" }}>VOUCHER</strong>
-            {errors.data && 
-              <span className="editevent-error-text"
-                style={{
-                  left: '100px',
-                }}
-              >
-                {errors.data}
-              </span>
-            }
-            <button className="editevent-add-voucher-button" onClick={openVoucherModal}>
-              <img src={PlusIcon} alt="Add" 
-                style={{ marginRight: "5px", display: "inline" }} 
-              />
-              Thêm voucher
-            </button>
-          </div>
+                <strong style={{ width: "fit-content" }}>VOUCHER</strong>
+                {errors.data && 
+                  <span className="editevent-error-text"
+                    style={{
+                      left: '100px',
+                    }}
+                  >
+                    {errors.data}
+                  </span>
+                }
+                <button className="editevent-add-voucher-button" onClick={openVoucherModal}>
+                  <img src={PlusIcon} alt="Add" 
+                    style={{ marginRight: "5px", display: "inline" }} 
+                  />
+                  Thêm voucher
+                </button>
 
-              {/* Render the Voucher Selection Modal */}
-              {isVoucherModalOpen && (
-                <VoucherSelectionModal
-                  vouchers={vouchers}
-                  onClose={closeVoucherModal}
-                  onSelectVoucher={handleSelectVoucher}
-                />
-              )}
-
-
+                {/* Render the Voucher Selection Modal */}
+                {isVoucherModalOpen && (
+                  <VoucherSelectionModal
+                    vouchers={vouchers}
+                    onClose={closeVoucherModal}
+                    onSelectVoucher={handleSelectVoucher}
+                  />
+                )}
+              </div>
               <div className="editevent-form-group">
                 <table className="table table-bordered my-3" style={{ fontSize: '12px', width: '100%' }}>
                   <thead>
@@ -355,6 +352,7 @@ const Modal = ({ show, onClose, itemData }) => {
                       <th scope="col" style={{ width: '45%' }}>Giảm Giá Tối Đa</th>
                     </tr>
                   </thead>
+
                   <tbody>
                     {currentItems.map((item) => (
                       <tr key={item.id}>
@@ -364,28 +362,29 @@ const Modal = ({ show, onClose, itemData }) => {
                     ))}
                   </tbody>
                 </table>
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <button className="editevent-table-button" onClick={handlePreviousPage} disabled={currentPage === 1}>
-                    Previous
-                  </button>
-                  <button className= "editevent-table-button" onClick={handleNextPage} disabled={currentPage === totalPages} style={{ marginLeft: '10px' }}>
-                    Next
-                  </button>
-                </div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <button className="editevent-table-button" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                      Previous
+                    </button>
+                    <button className= "editevent-table-button" onClick={handleNextPage} disabled={currentPage === totalPages} style={{ marginLeft: '10px' }}>
+                      Next
+                    </button>
+                  </div>
               </div>
-
+      
               <div className="row editevent-form-group">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <label style={{ marginRight: '10px' }}>
                     <strong>Loại trò chơi:</strong>
                   </label>
                   <span>{itemData.type}</span>
+                  
                   {itemData.type === "Quiz" && (
                     <div className="editevent-hiddent-box editevent-form-group">
                       <button className="editevent-hidden-button" onClick={openQuizModal}>Câu hỏi</button>
                     </div>
                   )}
-
+                  
                   {/* Render the Quiz Modal */}
                   {isQuizModalOpen && (
                     <QuizModal
@@ -397,13 +396,11 @@ const Modal = ({ show, onClose, itemData }) => {
                 </div>
               </div>
 
-
-
               <div className="editevent-save editevent-form-group" style={{ display: 'flex', justifyContent: 'center' }}>
                 <button className="editevent-save-button" onClick={handleSubmit}>
                   Cập nhật sự kiện
                 </button>
-              </div>
+              </div>   
             </div>
           )}
         </div>
