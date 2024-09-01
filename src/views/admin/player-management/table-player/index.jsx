@@ -15,8 +15,6 @@ import {
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { compareItems, rankItem } from "@tanstack/match-sorter-utils";
 
-import { makeData } from "./makeData";
-
 import * as Dialog from "@radix-ui/react-dialog";
 
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
@@ -27,6 +25,7 @@ import AddDialog from "./table-dialog/add-dialog";
 import TableContextMenu from "./context-menu";
 import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
+import { baseAPI } from "@/services/api";
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -67,6 +66,17 @@ export default function TablePlayer() {
 
   const [selectedRow, setSelectedRow] = React.useState(null);
 
+  const [data, setData] = React.useState([]);
+  React.useEffect(() => {
+    baseAPI
+      .get(`http://localhost:5000/account/getAll/${"user"}`)
+      .then((accounts) => {
+        setData(accounts);
+        // console.log(accounts);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const getDataRow = (row) => {
     setSelectedRow(row.original);
   };
@@ -87,11 +97,11 @@ export default function TablePlayer() {
       },
       {
         header: () => <span className="title-table-player">Họ và tên</span>,
-        accessorKey: "fullName",
-        id: "fullName",
+        accessorKey: "full_name",
+        id: "full_name",
         size: 135,
         cell: (info) => (
-          <div className="edit-text" id="fullName">
+          <div className="edit-text" id="full_name">
             {info.getValue()}
           </div>
         ),
@@ -100,10 +110,10 @@ export default function TablePlayer() {
       },
       {
         header: () => <span className="title-table-player">Tên đăng nhập</span>,
-        accessorKey: "userName",
+        accessorKey: "user_name",
         size: 135,
         cell: (info) => (
-          <div className="edit-text" id="userName">
+          <div className="edit-text" id="user_name">
             {info.getValue()}
           </div>
         ),
@@ -124,30 +134,6 @@ export default function TablePlayer() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title-table-player">Số điện thoại</span>,
-        accessorKey: "phone",
-        size: 115,
-        cell: (info) => (
-          <div className="edit-id" id="phone">
-            {info.getValue()}
-          </div>
-        ),
-        filterFn: "fuzzy", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
-      },
-      {
-        header: () => <span className="title-table-player">Ngày sinh</span>,
-        accessorKey: "dob",
-        size: 90,
-        cell: (info) => (
-          <div className="edit-id" id="dob">
-            {info.getValue()}
-          </div>
-        ),
-        filterFn: "equalsString", //using our custom fuzzy filter function
-        sortingFn: "alphanumeric", //sort by fuzzy rank (falls back to alphanumeric)
-      },
-      {
         header: () => <span className="title-table-player">Giới tính</span>,
         accessorKey: "gender",
         size: 80,
@@ -157,18 +143,6 @@ export default function TablePlayer() {
           </div>
         ),
         filterFn: "equalsString", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
-      },
-      {
-        header: () => <span className="title-table-player">Facebook</span>,
-        accessorKey: "facebookacc",
-        size: 130,
-        cell: (info) => (
-          <div className="edit-text" id="facebookacc">
-            {info.getValue()}
-          </div>
-        ),
-        filterFn: "fuzzy", //using our custom fuzzy filter function
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
@@ -195,11 +169,21 @@ export default function TablePlayer() {
         filterFn: "includesString", //using our custom fuzzy filter function
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
+      {
+        header: () => <span className="title-table-brand">Cập nhật</span>,
+        accessorKey: "time_update",
+        size: 150,
+        cell: (info) => (
+          <div className="edit-text" id="time_update">
+            {info.getValue()}
+          </div>
+        ),
+        filterFn: "equalsString", //using our custom fuzzy filter function
+        sortingFn: "alphanumeric", //sort by fuzzy rank (falls back to alphanumeric)
+      },
     ],
     [],
   );
-
-  const [data] = React.useState(() => makeData(100));
 
   const table = useReactTable({
     data,
@@ -225,9 +209,9 @@ export default function TablePlayer() {
 
   //apply the fuzzy sort if the fullName column is being filtered
   React.useEffect(() => {
-    if (table.getState().columnFilters[0]?.id === "brandName") {
-      if (table.getState().sorting[0]?.id !== "brandName") {
-        table.setSorting([{ id: "brandName", desc: false }]);
+    if (table.getState().columnFilters[0]?.id === "full_name") {
+      if (table.getState().sorting[0]?.id !== "full_name") {
+        table.setSorting([{ id: "full_name", desc: false }]);
       }
     }
   }, [table.getState().columnFilters[0]?.id]);
@@ -293,9 +277,8 @@ export default function TablePlayer() {
                   />
                   <EditDialog
                     selectedRow={selectedRow}
-                    onSubmit={(event) => {
+                    onSubmit={() => {
                       wait().then(() => setOpen2(false));
-                      event.preventDefault();
                     }}
                   />
                   <RemoveDialog selectedRow={selectedRow} />

@@ -15,8 +15,6 @@ import {
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { compareItems, rankItem } from "@tanstack/match-sorter-utils";
 
-import { makeData } from "./makeData";
-
 import * as Dialog from "@radix-ui/react-dialog";
 
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
@@ -27,6 +25,8 @@ import TableContextMenu from "./context-menu";
 import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
 import Pagination from "./pagination";
+import { baseAPI } from "@/services/api";
+import dayjs from "dayjs";
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -65,6 +65,17 @@ export default function TableVoucher() {
   const [open2, setOpen2] = React.useState(false);
 
   const [selectedRow, setSelectedRow] = React.useState(null);
+  const [data, setData] = React.useState([]);
+  React.useEffect(() => {
+    baseAPI
+      .get(
+        `http://localhost:5000/voucher/getVoucherByIdBrand/${"05e44252-ff08-4a0a-b238-93cf3c5382a6"}`,
+      )
+      .then((vouchers) => {
+        setData(vouchers);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const getDataRow = (row) => {
     console.log(row.original);
@@ -74,20 +85,14 @@ export default function TableVoucher() {
   const columns = React.useMemo(
     () => [
       {
-        header: () => <span className="title-table-voucher">ID</span>,
-        accessorKey: "id",
-        size: 60,
-        cell: (info) => <div className="edit-text">{info.getValue()}</div>,
-        filterFn: "equalsString", //note: normal non-fuzzy filter column - exact match required
-        sortingFn: "alphanumeric",
-      },
-      {
-        header: () => <span className="title-table-voucher">Mã Voucher</span>,
-        accessorKey: "voucherCode",
-        id: "voucherCode",
+        header: () => (
+          <span className="title-table-voucher">Mã khuyến mãi</span>
+        ),
+        accessorKey: "voucher_code",
+        id: "voucher_code",
         size: 100,
         cell: (info) => (
-          <div className="edit-id" id="voucherCode">
+          <div className="edit-text" id="voucher_code">
             {info.getValue()}
           </div>
         ),
@@ -110,10 +115,10 @@ export default function TableVoucher() {
         header: () => (
           <span className="title-table-voucher">Giảm giá tối đa (VND)</span>
         ),
-        accessorKey: "maxDiscount",
+        accessorKey: "max_discount",
         size: 180,
         cell: (info) => (
-          <div className="edit-id" id="maxDiscount">
+          <div className="edit-id" id="max_discount">
             {info.getValue()}
           </div>
         ),
@@ -145,30 +150,6 @@ export default function TableVoucher() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title-table-voucher">Mã QR</span>,
-        accessorKey: "qrCode",
-        size: 120,
-        cell: (info) => (
-          <div className="edit-text" id="qrCode">
-            {info.getValue()}
-          </div>
-        ),
-        filterFn: "includesString", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
-      },
-      {
-        header: () => <span className="title-table-voucher">Ngày hết hạn</span>,
-        accessorKey: "expDate",
-        size: 130,
-        cell: (info) => (
-          <div className="edit-id" id="expDate">
-            {info.getValue()}
-          </div>
-        ),
-        filterFn: "includesString", //using our custom fuzzy filter function
-        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
-      },
-      {
         header: () => <span className="title-table-voucher">Trạng thái</span>,
         accessorKey: "status",
         size: 80,
@@ -180,12 +161,22 @@ export default function TableVoucher() {
         filterFn: "includesString", //using our custom fuzzy filter function
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
+      {
+        header: () => <span className="title-table-voucher">Cập nhật</span>,
+        accessorKey: "time_update",
+        size: 130,
+        cell: (info) => (
+          <div className="edit-text" id="time_update">
+            {dayjs(info.getValue()).format("DD-MM-YYYY HH:mm:ss")}
+          </div>
+        ),
+        filterFn: "includesString", //using our custom fuzzy filter function
+        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
+      },
     ],
     [],
   );
 
-  const [data] = React.useState(() => makeData(100));
-  console.log(data);
   const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
   const table = useReactTable({
@@ -212,9 +203,9 @@ export default function TableVoucher() {
 
   //apply the fuzzy sort if the fullName column is being filtered
   React.useEffect(() => {
-    if (table.getState().columnFilters[0]?.id === "brandName") {
-      if (table.getState().sorting[0]?.id !== "brandName") {
-        table.setSorting([{ id: "brandName", desc: false }]);
+    if (table.getState().columnFilters[0]?.id === "Voucher_code") {
+      if (table.getState().sorting[0]?.id !== "voucher_code") {
+        table.setSorting([{ id: "voucher_code", desc: false }]);
       }
     }
   }, [table.getState().columnFilters[0]?.id]);

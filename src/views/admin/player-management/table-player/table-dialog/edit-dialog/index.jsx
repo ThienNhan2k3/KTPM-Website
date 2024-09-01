@@ -1,5 +1,5 @@
 import { Cross2Icon, ChevronDownIcon, CheckIcon } from "@radix-ui/react-icons";
-import React from "react";
+
 import * as Dialog from "@radix-ui/react-dialog";
 
 import * as Select from "@radix-ui/react-select";
@@ -16,14 +16,26 @@ import * as Avatar from "@radix-ui/react-avatar";
 
 import * as Label from "@radix-ui/react-label";
 
-const EditDialog = ({ selectedRow, onSubmit }) => {
-  const [isChecked, setIsChecked] = React.useState(
-    selectedRow?.status === "Active",
-  );
+import { baseAPI } from "@/services/api";
 
-  React.useEffect(() => {
-    setIsChecked(selectedRow?.status === "Active");
-  }, [selectedRow]);
+const EditDialog = ({ selectedRow, onSubmit }) => {
+  const updateData = (data) => {
+    console.log(data);
+
+    data.status = data.status ? "Active" : "Inactive";
+
+    console.log(data);
+
+    baseAPI
+      .put(
+        `http://localhost:5000/account/update/${"user"}/${selectedRow.id}`,
+        data,
+      )
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <Dialog.Portal>
@@ -32,6 +44,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
         <ScrollArea.Viewport className="ScrollAreaViewport">
           <Dialog.Content className="DialogContent">
             <Dialog.Title className="DialogTitle">Loại người dùng</Dialog.Title>
+
             <Select.Root defaultValue={selectedRow?.type} disabled>
               <Select.Trigger className="SelectTrigger" aria-label="UserType">
                 <Select.Value />
@@ -58,6 +71,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                 </Select.Content>
               </Select.Portal>
             </Select.Root>
+
             <div className="LabelSpace">
               <Label.Root className="LabelRoot">ID:</Label.Root>
               <input
@@ -67,6 +81,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                 disabled
               />
             </div>
+
             <div className="AvatarSpace" style={{ pointerEvents: "none" }}>
               <Avatar.Root className="AvatarRoot">
                 <Avatar.Image
@@ -79,8 +94,19 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                 </Avatar.Fallback>
               </Avatar.Root>
             </div>
-            <Form.Root className="FormRoot" onSubmit={onSubmit}>
-              <Form.Field className="FormField" name="fullName">
+
+            <Form.Root
+              className="FormRoot"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const data = Object.fromEntries(
+                  new FormData(event.currentTarget),
+                );
+                updateData(data);
+                onSubmit();
+              }}
+            >
+              <Form.Field className="FormField" name="full_name">
                 <div
                   style={{
                     display: "flex",
@@ -95,11 +121,12 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                     className="Input"
                     type="text"
                     disabled
-                    defaultValue={selectedRow?.fullName}
+                    defaultValue={selectedRow?.full_name}
                   />
                 </Form.Control>
               </Form.Field>
-              <Form.Field className="FormField" name="userName">
+
+              <Form.Field className="FormField" name="user_name">
                 <div
                   style={{
                     display: "flex",
@@ -114,10 +141,11 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                     className="Input"
                     type="text"
                     disabled
-                    defaultValue={selectedRow?.userName}
+                    defaultValue={selectedRow?.user_name}
                   />
                 </Form.Control>
               </Form.Field>
+
               <Form.Field className="FormField" name="password">
                 <div
                   style={{
@@ -137,6 +165,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                   />
                 </Form.Control>
               </Form.Field>
+
               <Form.Field className="FormField" name="email">
                 <div
                   style={{
@@ -156,6 +185,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                   />
                 </Form.Control>
               </Form.Field>
+
               <Form.Field className="FormField" name="phone">
                 <div
                   style={{
@@ -175,6 +205,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                   />
                 </Form.Control>
               </Form.Field>
+
               <Form.Field className="FormField" name="dob">
                 <div
                   style={{
@@ -195,6 +226,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                   />
                 </Form.Control>
               </Form.Field>
+
               <Form.Field className="FormField" name="gender">
                 <div
                   style={{
@@ -205,41 +237,44 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                 >
                   <Form.Label className="FormLabel">Giới tính</Form.Label>
                 </div>
-                <RadioGroup.Root
-                  className="RadioGroupRoot"
-                  defaultValue={selectedRow?.gender}
-                  aria-label="View density"
-                  disabled
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
+                <Form.Control asChild>
+                  <RadioGroup.Root
+                    className="RadioGroupRoot"
+                    defaultValue={selectedRow?.gender}
+                    aria-label="View density"
+                    disabled
                   >
-                    <RadioGroup.Item className="RadioGroupItem" value="Nam">
-                      <RadioGroup.Indicator className="RadioGroupIndicator" />
-                    </RadioGroup.Item>
-                    <label className="Label-radiogroup" htmlFor="r1">
-                      Nam
-                    </label>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <RadioGroup.Item className="RadioGroupItem" value="Nữ">
-                      <RadioGroup.Indicator className="RadioGroupIndicator" />
-                    </RadioGroup.Item>
-                    <label className="Label-radiogroup" htmlFor="r2">
-                      Nữ
-                    </label>
-                  </div>
-                </RadioGroup.Root>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <RadioGroup.Item className="RadioGroupItem" value="Nam">
+                        <RadioGroup.Indicator className="RadioGroupIndicator" />
+                      </RadioGroup.Item>
+                      <label className="Label-radiogroup" htmlFor="r1">
+                        Nam
+                      </label>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <RadioGroup.Item className="RadioGroupItem" value="Nữ">
+                        <RadioGroup.Indicator className="RadioGroupIndicator" />
+                      </RadioGroup.Item>
+                      <label className="Label-radiogroup" htmlFor="r2">
+                        Nữ
+                      </label>
+                    </div>
+                  </RadioGroup.Root>
+                </Form.Control>
               </Form.Field>
-              <Form.Field className="FormField" name="facebookacc">
+
+              <Form.Field className="FormField" name="fb_acc">
                 <div
                   style={{
                     display: "flex",
@@ -256,10 +291,11 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                     className="Input"
                     type="text"
                     disabled
-                    defaultValue={selectedRow?.facebookacc}
+                    defaultValue={selectedRow?.fb_acc}
                   />
                 </Form.Control>
               </Form.Field>
+
               <Form.Field className="FormField" name="status">
                 <div
                   style={{
@@ -267,20 +303,22 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                     alignItems: "center",
                   }}
                 >
-                  <Checkbox.Root
-                    className="CheckboxRoot"
-                    checked={isChecked}
-                    onCheckedChange={(checked) => setIsChecked(checked)}
-                  >
-                    <Checkbox.Indicator className="CheckboxIndicator">
-                      <CheckIcon />
-                    </Checkbox.Indicator>
-                  </Checkbox.Root>
+                  <Form.Control asChild>
+                    <Checkbox.Root
+                      className="CheckboxRoot"
+                      defaultChecked={selectedRow?.status === "Active"}
+                    >
+                      <Checkbox.Indicator className="CheckboxIndicator">
+                        <CheckIcon />
+                      </Checkbox.Indicator>
+                    </Checkbox.Root>
+                  </Form.Control>
                   <label className="Label" htmlFor="c1">
                     Kích hoạt tài khoản.
                   </label>
                 </div>
               </Form.Field>
+
               <div className="custom-layout-submit">
                 <Dialog.Close asChild>
                   <div className="DialogClose">
@@ -289,6 +327,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                     </button>
                   </div>
                 </Dialog.Close>
+
                 <Form.Submit asChild>
                   <div className="FormSubmit">
                     <button className="design-save-button rounded-3">

@@ -9,6 +9,7 @@ import * as Checkbox from "@radix-ui/react-checkbox";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 import { Cross2Icon, CheckIcon } from "@radix-ui/react-icons";
+import dayjs from "dayjs";
 
 const EditDialog = ({ selectedRow, onSubmit }) => {
   const [isChecked, setIsChecked] = React.useState(
@@ -25,7 +26,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
             <Form.Root className="FormRoot" onSubmit={onSubmit} noValidate>
               <Form.Field
                 className="FormField"
-                name="voucherCode"
+                name="voucher_code"
                 style={{ marginTop: "10px" }}
               >
                 <div
@@ -42,7 +43,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                     className="Input"
                     type="text"
                     disabled
-                    defaultValue={selectedRow?.voucherCode}
+                    defaultValue={selectedRow?.voucher_code}
                   />
                 </Form.Control>
               </Form.Field>
@@ -67,7 +68,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                 </Form.Control>
               </Form.Field>
 
-              <Form.Field className="FormField" name="maxDiscount">
+              <Form.Field className="FormField" name="max_discount">
                 <div
                   style={{
                     display: "flex",
@@ -84,7 +85,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                     className="Input"
                     type="number"
                     disabled
-                    defaultValue={selectedRow?.maxDiscount}
+                    defaultValue={selectedRow?.max_discount}
                   />
                 </Form.Control>
               </Form.Field>
@@ -100,8 +101,8 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                   <Form.Label className="FormLabel">Mô tả</Form.Label>
                 </div>
                 <Form.Control asChild>
-                  <input
-                    className="Input"
+                  <textarea
+                    className="Input-description"
                     type="text"
                     disabled
                     defaultValue={selectedRow?.description}
@@ -183,7 +184,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                 </Form.Control>
               </Form.Field>
 
-              <Form.Field className="FormField" name="qrCode">
+              <Form.Field className="FormField" name="time_update">
                 <div
                   style={{
                     display: "flex",
@@ -191,89 +192,17 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <Form.Label className="FormLabel">Mã QR</Form.Label>
-                </div>
-                <Form.Control asChild>
-                  <div className="ChooseFileSpace">
-                    <label
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        border: "1px solid #3FA2F6",
-                        padding: "5px 15px",
-                        width: "fit-content",
-                        borderRadius: "8px",
-                        pointerEvents: "none",
-                      }}
-                      htmlFor="thumbnail-qrCode"
-                    >
-                      {selectedRow?.qrCode == null ? (
-                        <>
-                          <div
-                            style={{
-                              color: "#69b4f3",
-                              fontWeight: "500",
-                            }}
-                          >
-                            Choose File
-                          </div>
-                        </>
-                      ) : (
-                        <img
-                          src={selectedRow?.qrCode}
-                          alt=""
-                          style={{ width: "150px" }}
-                        />
-                      )}
-                    </label>
-
-                    <label
-                      style={{
-                        marginLeft: "15px",
-                        display: "flex",
-                        alignItems: "end",
-                        width: "180px",
-                        pointerEvents: "none",
-                      }}
-                      htmlFor="thumbnail-qrCode"
-                    >
-                      {selectedRow?.qrCode == null ? (
-                        <>
-                          <div>file...name.jpg</div>
-                        </>
-                      ) : (
-                        <span
-                          style={{
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            height: "24px",
-                          }}
-                        >
-                          {selectedRow?.qrCode}
-                        </span>
-                      )}
-                    </label>
-                  </div>
-                </Form.Control>
-              </Form.Field>
-
-              <Form.Field className="FormField" name="expDate">
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Form.Label className="FormLabel">Ngày hết hạn</Form.Label>
+                  <Form.Label className="FormLabel">Ngày cập nhật</Form.Label>
                 </div>
                 <Form.Control asChild>
                   <input
                     className="Input"
-                    type="date"
+                    type="datetime"
                     style={{ display: "flow" }}
                     disabled
-                    defaultValue={selectedRow?.expDate}
+                    defaultValue={dayjs(selectedRow?.time_update).format(
+                      "DD-MM-YYYY HH:mm:ss",
+                    )}
                   />
                 </Form.Control>
               </Form.Field>
