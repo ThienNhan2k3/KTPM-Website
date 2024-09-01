@@ -2,16 +2,24 @@ import React, { useEffect, useState } from "react";
 import "./Modal.css";
 import PlusIcon from "@assets/images/plus-icon.png";
 import QuizModal from "../QuizModal/QuizModal";
+import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
+import { name, type } from "tedious/lib/data-types/null";
 
 const convertDateFormat = (dateStr) => {
-  const [day, month, year] = dateStr.split("/");
+  const [year, month, day] = dateStr.split("/");
   return `${year}-${month}-${day}`;
 };
 
 const Modal = ({ show, onClose }) => {
   if (!show) return null;
 
-  const [data, setData] = useState([]);
+  const [data, setTableData] = useState([
+    // Add more items if needed
+  ]);
+  const [vouchers, setVoucher] = useState([]); //set vouchers active
+  const [selectedVouchers, setSelectedVouchers] = useState([]);
+  const [isVoucherModalOpen, setIsVoucherModalOpen] = useState(false);
+
   const [image, setImage] = useState(null);
   const [prevImage, setPrevImage] = useState(null);
   const [imageError, setImageError] = useState(false);
@@ -27,6 +35,23 @@ const Modal = ({ show, onClose }) => {
     endDate: "",
     image: "",
   });
+
+  // Fetch voucher data
+  useEffect(() => {
+    const fetchVoucherData = async () => {
+      try {
+        const response = await fetch("http://localhost:50000/voucher/getAll_active");
+        if (!response.ok) throw new Error("Failed to fetch voucher data");
+        const voucherData = await response.json();
+        //console.log(voucherData);
+        setVoucher(voucherData);
+      } catch (error) {
+        console.error("Error fetching voucher data:", error);
+      }
+    };
+
+    fetchVoucherData();
+  }, []);
 
   const validateDate = (dateStr) => {
     const dateObj = new Date(dateStr);
@@ -47,10 +72,53 @@ const Modal = ({ show, onClose }) => {
     return !Object.values(newErrors).some((error) => error !== "");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
       // Submit form data
       console.log("Form submitted");
+
+      //Create a new event
+      const new_event = {
+        type: selectedType,
+        id_game: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        name: eventName,
+        image: image.name,
+        start_time: startDate,
+        end_time: endDate
+      }
+      // Log the gathered form data
+      console.log("New Event:", new_event);
+
+      try {
+        const response = await fetch("http://localhost:50000/Event/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(new_event),
+        });
+  
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+  
+        const result = await response.json();
+        console.log("Success:", result);
+  
+        // Close the modal
+        onClose();
+        alert("New event created successfully!");
+      } catch (error) {
+        console.error("Error:", error);
+      }
+
+
+      // Gather all form data
+      const formData = {
+        selectedVouchers: data,
+        quizData: quizData,
+      };
     }
   };
 
@@ -86,6 +154,10 @@ const Modal = ({ show, onClose }) => {
   const itemsPerPage = 4;
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -96,9 +168,27 @@ const Modal = ({ show, onClose }) => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  //For select voucher
+  const openVoucherModal = () => {
+    setIsVoucherModalOpen(true);
+  };
+  
+  const closeVoucherModal = () => {
+    setIsVoucherModalOpen(false);
+  };
+  
+  const handleSelectVoucher = (voucher) => {
+    // Check if the voucher is already in the table
+    console.log(voucher);
+    const isVoucherAlreadySelected = data.some((item) => item.voucher_code === voucher.voucher_code);
+    if (!isVoucherAlreadySelected) {
+      // Add the selected voucher to the table data
+      setTableData((prevTableData) => [...prevTableData, voucher]);
+    }
+    setIsVoucherModalOpen(false);
+    console.log(data);
+    console.log("currentItems:", currentItems);
+  };
 
 
   //For Quiz settings
@@ -243,38 +333,45 @@ const Modal = ({ show, onClose }) => {
           </div>
 
           <div className="row addevent-voucher addevent-form-group container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div className="col">
-            <div style={{ marginBottom: '4px' }}>
-              <strong>VOUCHER</strong>
+            <div className="col">
+              <div style={{ marginBottom: '4px' }}>
+                <strong>VOUCHER</strong>
+              </div>
+              {errors.data && 
+                <span className="addevent-error-text" style={{ color: 'red', fontSize: '0.875rem' }}>
+                  {errors.data}
+                </span>
+              }
             </div>
-            {errors.data && 
-              <span className="addevent-error-text" style={{ color: 'red', fontSize: '0.875rem' }}>
-                {errors.data}
-              </span>
-            }
-          </div>
 
-            <button className="addevent-add-voucher-button">
+            <button className="addevent-add-voucher-button" onClick={openVoucherModal}>
               <img src={PlusIcon} alt="Add" style={{ marginRight: "0px", display: "inline" }} />
               Thêm voucher
             </button>
+
+            {/* Render the Voucher Selection Modal */}
+            {isVoucherModalOpen && (
+              <VoucherSelectionModal
+                vouchers={vouchers}
+                onClose={closeVoucherModal}
+                onSelectVoucher={handleSelectVoucher}
+              />
+            )}
           </div>
 
           <div className="addevent-form-group">
             <table className="table table-bordered my-3" style={{ fontSize: "12px", width: "100%" }}>
               <thead>
                 <tr>
-                  <th scope="col" style={{ width: "10%" }}>ID</th>
-                  <th scope="col" style={{ width: "45%" }}>Quantity</th>
-                  <th scope="col" style={{ width: "45%" }}>Sale</th>
+                  <th scope="col" style={{ width: "45%" }}>Phần Trăm</th>
+                  <th scope="col" style={{ width: "45%" }}>Giảm Giá Tối Đa</th>
                 </tr>
               </thead>
               <tbody>
                 {currentItems.map((item) => (
                   <tr key={item.id}>
-                    <th scope="row">{item.id}</th>
-                    <td>{item.quantity}</td>
-                    <td>{item.sale}</td>
+                    <td>{item.value}%</td>
+                    <td>{item.max_discount} vnđ</td>
                   </tr>
                 ))}
               </tbody>

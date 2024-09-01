@@ -16,12 +16,53 @@ import Map from "@/components/map";
 import "./styles.css";
 
 function SignUp() {
+  
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Submit")
-    navigate("/admin");
+    const formData = new FormData(event.target);
+
+    const data = {
+      //username: formData.get("username"),
+      brand_name: formData.get("name-brand"),
+      industry: formData.get("field-brand"),
+      password: formData.get("password"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      //confirmPassword: formData.get("confirm-password"),
+      address: formData.get("address"),
+      gps: `${markerPos[0]},${markerPos[1]}`,  // Convert array to string
+      status: "Inactive",
+      time_update: new Date().toISOString(), 
+    };
+
+    console.log(JSON.stringify(data, null, 2));
+
+    try {
+      const response = await fetch("http://localhost:50000/brand/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      console.log("Success:", result);
+
+      // Navigate or update state based on response
+      navigate("..");
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    navigate("..");
   };
 
   const [markerPos, setMarkerPos] = useState([10.762180, 106.682257]);
@@ -108,7 +149,7 @@ function SignUp() {
               </Form.Control>
             </Form.Field>
 
-            <Form.Field className="FormField col" name="confirm-password">
+            <Form.Field className="FormField col" name="phone">
               <div
                 style={{
                   display: "flex",
@@ -116,7 +157,7 @@ function SignUp() {
                   justifyContent: "space-between",
                 }}
               >
-                <Form.Label className="FormLabel">Xác nhận mật khẩu</Form.Label>
+                <Form.Label className="FormLabel">Số điện thoại</Form.Label>
                 <Form.Message className="FormMessage" match="valueMissing">
                   <InfoCircledIcon className="FormIcon" />
                   Trường này không được để trống!

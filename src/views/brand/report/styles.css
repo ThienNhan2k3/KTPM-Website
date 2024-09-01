@@ -26,7 +26,8 @@
 
 .brand-report-screen-chart {
   width: 100%;
-  max-width: 600px;
+  height: 100%;
+  max-width: 1000px;
   margin: auto;
 }
 

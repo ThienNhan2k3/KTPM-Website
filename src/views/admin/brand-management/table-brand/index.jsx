@@ -1,5 +1,4 @@
 import React from "react";
-
 import "./styles.css";
 
 import {
@@ -12,11 +11,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-// A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { compareItems, rankItem } from "@tanstack/match-sorter-utils";
 
 import * as Dialog from "@radix-ui/react-dialog";
-
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 
 import SearchBar from "./search-bar";
@@ -26,33 +23,20 @@ import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
 import { baseAPI } from "@/services/api";
 
-// Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter = (row, columnId, value, addMeta) => {
-  // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
-
-  // Store the itemRank info
-  addMeta({
-    itemRank,
-  });
-
-  // Return if the item should be filtered in/out
+  addMeta({ itemRank });
   return itemRank.passed;
 };
 
-// Define a custom fuzzy sort function that will sort by rank if the row has ranking information
 const fuzzySort = (rowA, rowB, columnId) => {
   let dir = 0;
-
-  // Only sort by rank if the column has ranking information
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
       rowA.columnFiltersMeta[columnId]?.itemRank,
       rowB.columnFiltersMeta[columnId]?.itemRank,
     );
   }
-
-  // Provide an alphanumeric fallback for when the item ranks are equal
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
 
@@ -168,18 +152,6 @@ export default function TableBrand() {
         filterFn: "includesString", //using our custom fuzzy filter function
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
-      {
-        header: () => <span className="title-table-brand">Cập nhật</span>,
-        accessorKey: "time_update",
-        size: 150,
-        cell: (info) => (
-          <div className="edit-text" id="time_update">
-            {info.getValue()}
-          </div>
-        ),
-        filterFn: "equalsString", //using our custom fuzzy filter function
-        sortingFn: "alphanumeric", //sort by fuzzy rank (falls back to alphanumeric)
-      },
     ],
     [],
   );
@@ -188,7 +160,7 @@ export default function TableBrand() {
     data,
     columns,
     filterFns: {
-      fuzzy: fuzzyFilter, //define as a filter function that can be used in column definitions
+      fuzzy: fuzzyFilter,
     },
     state: {
       columnFilters,
@@ -196,9 +168,9 @@ export default function TableBrand() {
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: "fuzzy", //apply fuzzy filter to the global filter (most common use case for fuzzy filter)
+    globalFilterFn: "fuzzy",
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(), //client side filtering
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     debugTable: true,
@@ -206,7 +178,6 @@ export default function TableBrand() {
     debugColumns: false,
   });
 
-  //apply the fuzzy sort if the fullName column is being filtered
   React.useEffect(() => {
     if (table.getState().columnFilters[0]?.id === "brand_name") {
       if (table.getState().sorting[0]?.id !== "brand_name") {
