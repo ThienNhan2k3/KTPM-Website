@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./styles.css";
 
 import {
@@ -21,6 +21,7 @@ import Pagination from "./pagination";
 import TableContextMenu from "./context-menu";
 import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
+import { baseAPI } from "@/services/api";
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
@@ -33,82 +34,32 @@ const fuzzySort = (rowA, rowB, columnId) => {
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
       rowA.columnFiltersMeta[columnId]?.itemRank,
-      rowB.columnFiltersMeta[columnId]?.itemRank
+      rowB.columnFiltersMeta[columnId]?.itemRank,
     );
   }
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
 
 export default function TableBrand() {
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [open, setOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  //Get all the brand account
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:50000/brand/getAll");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        setData(result);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+  const [columnFilters, setColumnFilters] = React.useState([]);
+  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [selectedRow, setSelectedRow] = React.useState(null);
+  const [data, setData] = React.useState([]);
+  React.useEffect(() => {
+    baseAPI
+      .get(`http://localhost:5000/account/getAll/${"brand"}`)
+      .then((accounts) => {
+        setData(accounts);
+        // console.log(accounts);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
-  //updating the brand's status
-  const activateBrand = async (brandId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:50000/brand/activate/${brandId}`,
-        {
-          method: "POST",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to activate brand");
-      }
-      const result = await response.json();
-      // Show a success notification
-      alert("Brand account has been activated successfully!");
-      console.log("Brand activated:", result);
-    } catch (error) {
-      console.error(error);
-      // Show an error notification
-      alert("Failed to activate brand. Please try again.");
-    }
-  };
-
-  const handleActivateClick = async (brandId) => {
-    console.log(brandId);
-    const userConfirmed = window.confirm(
-      "Do you want to activate this brand account?"
-    );
-    if (userConfirmed) {
-      await activateBrand(brandId);
-      // Optionally, refresh data after activation
-      setData((prevData) =>
-        prevData.map((brand) =>
-          brand.id === brandId ? { ...brand, status: "Active" } : brand
-        )
-      );
-    }
-  };
+  const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
   const getDataRow = (row) => {
-    console.log(row.original);
+    console.log("original" + row.original);
     setSelectedRow(row.original);
   };
 
@@ -134,7 +85,7 @@ export default function TableBrand() {
         id: "brand_name",
         size: 160,
         cell: (info) => (
-          <div className="edit-text" id="brandName">
+          <div className="edit-text" id="brand_name">
             {info.getValue()}
           </div>
         ),
@@ -166,20 +117,6 @@ export default function TableBrand() {
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
-        header: () => <span className="title-table-brand">GPS(Lat/Long)</span>,
-        accessorKey: "gps",
-        size: 150,
-        cell: (info) => (
-          <div className="edit-text" id="gps">
-            {Array.isArray(info.getValue())
-              ? info.getValue().join(", ")
-              : info.getValue()}
-          </div>
-        ),
-        filterFn: "equalsString", //using our custom fuzzy filter function
-        sortingFn: "alphanumeric", //sort by fuzzy rank (falls back to alphanumeric)
-      },
-      {
         header: () => <span className="title-table-brand">Email</span>,
         accessorKey: "email",
         size: 200,
@@ -196,7 +133,7 @@ export default function TableBrand() {
         accessorKey: "phone",
         size: 130,
         cell: (info) => (
-          <div className="edit-text" id="phone">
+          <div className="edit-id" id="phone">
             {info.getValue()}
           </div>
         ),
@@ -208,23 +145,12 @@ export default function TableBrand() {
         accessorKey: "status",
         size: 90,
         cell: (info) => (
-          <div
-            className="edit-id"
-            id="status"
-            style={{
-              color: info.getValue() === "Inactive" ? "blue" : "inherit",
-              cursor: info.getValue() === "Inactive" ? "pointer" : "default",
-            }}
-            onClick={() =>
-              info.getValue() === "Inactive" &&
-              handleActivateClick(info.row.original.id)
-            }
-          >
+          <div className="edit-id" id="status">
             {info.getValue()}
           </div>
         ),
-        filterFn: "includesString",
-        sortingFn: fuzzySort,
+        filterFn: "includesString", //using our custom fuzzy filter function
+        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
     ],
     [],
@@ -253,20 +179,12 @@ export default function TableBrand() {
   });
 
   React.useEffect(() => {
-    if (table.getState().columnFilters[0]?.id === "brandName") {
-      if (table.getState().sorting[0]?.id !== "brandName") {
-        table.setSorting([{ id: "brandName", desc: false }]);
+    if (table.getState().columnFilters[0]?.id === "brand_name") {
+      if (table.getState().sorting[0]?.id !== "brand_name") {
+        table.setSorting([{ id: "brand_name", desc: false }]);
       }
     }
   }, [table.getState().columnFilters[0]?.id]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
 
   return (
     <div className="p-2">
@@ -302,7 +220,7 @@ export default function TableBrand() {
                         >
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                           {{
                             asc: "🔼",

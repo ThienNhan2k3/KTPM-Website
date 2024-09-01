@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./styles.css";
 
 import {
@@ -22,6 +22,7 @@ import AddDialog from "./table-dialog/add-dialog";
 import TableContextMenu from "./context-menu";
 import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
+import { baseAPI } from "@/services/api";
 
 // Define a custom fuzzy filter function
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -36,34 +37,30 @@ const fuzzySort = (rowA, rowB, columnId) => {
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
       rowA.columnFiltersMeta[columnId]?.itemRank,
-      rowB.columnFiltersMeta[columnId]?.itemRank
+      rowB.columnFiltersMeta[columnId]?.itemRank,
     );
   }
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
 
 export default function TablePlayer() {
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [data, setData] = useState([]);
-  const [open2, setOpen2] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [columnFilters, setColumnFilters] = React.useState([]);
+  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [open2, setOpen2] = React.useState(false);
 
   const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
-  // Fetch data from the API when the component mounts
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:50000/user/getAll");
-        const result = await response.json();
-        setData(result); // Assuming the result is an array of users
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  const [selectedRow, setSelectedRow] = React.useState(null);
 
-    fetchData();
+  const [data, setData] = React.useState([]);
+  React.useEffect(() => {
+    baseAPI
+      .get(`http://localhost:5000/account/getAll/${"user"}`)
+      .then((accounts) => {
+        setData(accounts);
+        // console.log(accounts);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   const getDataRow = (row) => {
@@ -90,7 +87,7 @@ export default function TablePlayer() {
         id: "full_name",
         size: 135,
         cell: (info) => (
-          <div className="edit-text" id="fullName">
+          <div className="edit-text" id="full_name">
             {info.getValue()}
           </div>
         ),
@@ -122,30 +119,6 @@ export default function TablePlayer() {
         sortingFn: fuzzySort,
       },
       {
-        header: () => <span className="title-table-player">Số điện thoại</span>,
-        accessorKey: "phone",
-        size: 115,
-        cell: (info) => (
-          <div className="edit-id" id="phone">
-            {info.getValue()}
-          </div>
-        ),
-        filterFn: "fuzzy",
-        sortingFn: fuzzySort,
-      },
-      {
-        header: () => <span className="title-table-player">Ngày sinh</span>,
-        accessorKey: "dob",
-        size: 90,
-        cell: (info) => (
-          <div className="edit-id" id="dob">
-            {info.getValue()}
-          </div>
-        ),
-        filterFn: "equalsString",
-        sortingFn: "alphanumeric",
-      },
-      {
         header: () => <span className="title-table-player">Giới tính</span>,
         accessorKey: "gender",
         size: 80,
@@ -155,18 +128,6 @@ export default function TablePlayer() {
           </div>
         ),
         filterFn: "equalsString",
-        sortingFn: fuzzySort,
-      },
-      {
-        header: () => <span className="title-table-player">Facebook</span>,
-        accessorKey: "fb_acc",
-        size: 130,
-        cell: (info) => (
-          <div className="edit-text" id="fb_acc">
-            {info.getValue()}
-          </div>
-        ),
-        filterFn: "fuzzy",
         sortingFn: fuzzySort,
       },
       {
@@ -190,11 +151,23 @@ export default function TablePlayer() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "includesString",
-        sortingFn: fuzzySort,
+        filterFn: "includesString", //using our custom fuzzy filter function
+        sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
+      },
+      {
+        header: () => <span className="title-table-brand">Cập nhật</span>,
+        accessorKey: "time_update",
+        size: 150,
+        cell: (info) => (
+          <div className="edit-text" id="time_update">
+            {info.getValue()}
+          </div>
+        ),
+        filterFn: "equalsString", //using our custom fuzzy filter function
+        sortingFn: "alphanumeric", //sort by fuzzy rank (falls back to alphanumeric)
       },
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -220,9 +193,9 @@ export default function TablePlayer() {
   });
 
   React.useEffect(() => {
-    if (table.getState().columnFilters[0]?.id === "brandName") {
-      if (table.getState().sorting[0]?.id !== "brandName") {
-        table.setSorting([{ id: "brandName", desc: false }]);
+    if (table.getState().columnFilters[0]?.id === "full_name") {
+      if (table.getState().sorting[0]?.id !== "full_name") {
+        table.setSorting([{ id: "full_name", desc: false }]);
       }
     }
   }, [table.getState().columnFilters[0]?.id]);
@@ -262,7 +235,7 @@ export default function TablePlayer() {
                         >
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                           {{
                             asc: "🔼",
@@ -288,9 +261,8 @@ export default function TablePlayer() {
                   />
                   <EditDialog
                     selectedRow={selectedRow}
-                    onSubmit={(event) => {
+                    onSubmit={() => {
                       wait().then(() => setOpen2(false));
-                      event.preventDefault();
                     }}
                   />
                   <RemoveDialog selectedRow={selectedRow} />

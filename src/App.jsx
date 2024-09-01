@@ -36,7 +36,7 @@ function App() {
     },
     {
       id: 2,
-      name: "Quản lý người chơi",
+      name: "Quản lý người dùng",
       image: playerManagementIcon,
       link: "playermanagement",
     },
@@ -70,7 +70,10 @@ function App() {
             <Route index element={<BrandManagement />} />
             <Route path="playermanagement" element={<PlayerManagement />} />
             <Route path="gamemanagement" element={<GameManagement />} />
-            <Route path="gamemanagement/gamedetail/:id" element={<GameDetail />}>
+            <Route
+              path="gamemanagement/gamedetail/:id"
+              element={<GameDetail />}
+            >
               <Route index element={<GameIntroduce />} />
               <Route path="items" element={<GameItems />} />
             </Route>

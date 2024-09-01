@@ -22,6 +22,9 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 import * as Avatar from "@radix-ui/react-avatar";
 
 import React from "react";
+
+import { baseAPI } from "@/services/api";
+
 const AddDialog = () => {
   const [open1, setOpen1] = React.useState(false);
   const [prevImage, setPrevImage] = React.useState(null);
@@ -34,12 +37,27 @@ const AddDialog = () => {
     setPrevImage(null);
     setShow(false);
   };
+
   const handleChangeImage = (event) => {
     const [file] = event.target.files;
     if (file) {
       setPrevImage(URL.createObjectURL(file));
     }
   };
+
+  const saveData = (data) => {
+    data.status = data.status ? "Active" : "Inactive";
+
+    console.log(data);
+
+    baseAPI
+      .post(`http://localhost:5000/account/create/user`, data)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div>
       <Dialog.Root open={open1} onOpenChange={setOpen1}>
@@ -62,153 +80,189 @@ const AddDialog = () => {
           <ScrollArea.Root className="ScrollAreaRoot">
             <ScrollArea.Viewport className="ScrollAreaViewport">
               <Dialog.Content className="DialogContent">
-                <Dialog.Title className="DialogTitle">
-                  Loại người dùng
-                </Dialog.Title>
-
-                <Select.Root defaultValue="admin">
-                  <Select.Trigger
-                    className="SelectTrigger"
-                    aria-label="UserType"
-                  >
-                    <Select.Value />
-                    <Select.Icon className="SelectIcon">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-
-                  <Select.Portal>
-                    <Select.Content className="SelectContent">
-                      <Select.Viewport className="SelectViewport">
-                        <Select.Item value="admin" className="SelectItem">
-                          <Select.ItemText>Admin</Select.ItemText>
-                          <Select.ItemIndicator className="SelectItemIndicator">
-                            <CheckIcon />
-                          </Select.ItemIndicator>
-                        </Select.Item>
-
-                        <Select.Item value="player" className="SelectItem">
-                          <Select.ItemText>Người chơi</Select.ItemText>
-                          <Select.ItemIndicator className="SelectItemIndicator">
-                            <CheckIcon />
-                          </Select.ItemIndicator>
-                        </Select.Item>
-                      </Select.Viewport>
-                    </Select.Content>
-                  </Select.Portal>
-                </Select.Root>
-
-                <div className="AvatarSpace">
-                  <Avatar.Root className="AvatarRoot" onClick={handleShow}>
-                    <Avatar.Image
-                      className={`AvatarImage ${image == null ? "change-image-button" : ""}`}
-                      src={image == null ? plus : image}
-                      alt="Avatar"
-                    />
-                  </Avatar.Root>
-                </div>
-
-                <Dialog.Root centered open={show} onHide={handleClose}>
-                  <Dialog.Portal>
-                    <Dialog.Overlay className="DialogOverlayI" />
-                    <Dialog.Content className="DialogContentI">
-                      <Dialog.Title className="DialogTitleI">
-                        Chọn ảnh
-                      </Dialog.Title>
-
-                      <div className="d-flex justify-content-center">
-                        <label
-                          className="btn d-flex flex-row align-items-center"
-                          style={{
-                            backgroundColor: "#D9D9D9",
-                            cursor: "pointer",
-                            color: "black",
-                            border: "none",
-                            minHeight: "40px",
-                            marginTop: "16px",
-                            marginBottom: "28px",
-                          }}
-                          htmlFor="thumbnail-image"
-                        >
-                          {prevImage == null ? (
-                            <>
-                              <img
-                                src={plus}
-                                alt=""
-                                style={{
-                                  width: "22px",
-                                  marginRight: "8px",
-                                }}
-                              />
-                              Tải ảnh lên
-                            </>
-                          ) : (
-                            <img
-                              src={prevImage}
-                              alt=""
-                              style={{ width: "300px" }}
-                            />
-                          )}
-                        </label>
-                        <input
-                          type="file"
-                          id="thumbnail-image"
-                          name="thumbnail-image"
-                          accept="image/*"
-                          onChange={(event) => handleChangeImage(event)}
-                        />
-                      </div>
-
-                      <div
-                        style={{
-                          border: "none",
-                          display: "flex",
-                          justifyContent: "space-around",
-                        }}
-                      >
-                        <Dialog.Close className="DialogCloseI">
-                          <button
-                            style={{
-                              backgroundColor: "#FF5526",
-                              color: "white",
-                              padding: "5px 15px",
-                            }}
-                            onClick={handleClose}
-                          >
-                            Hủy
-                          </button>
-                        </Dialog.Close>
-
-                        <Dialog.Close className="DialogCloseI">
-                          <button
-                            style={{
-                              backgroundColor: "#1FAB89",
-                              color: "white",
-                              padding: "5px 15px",
-                            }}
-                            onClick={() => {
-                              if (prevImage != null) {
-                                setImage(prevImage);
-                              }
-                              handleClose();
-                            }}
-                          >
-                            Lưu ảnh đại diện
-                          </button>
-                        </Dialog.Close>
-                      </div>
-                    </Dialog.Content>
-                  </Dialog.Portal>
-                </Dialog.Root>
+                <Dialog.Title />
 
                 <Form.Root
                   className="FormRoot"
                   onSubmit={(event) => {
                     wait().then(() => setOpen1(false));
                     event.preventDefault();
+                    const data = Object.fromEntries(
+                      new FormData(event.currentTarget),
+                    );
+                    saveData(data);
                   }}
                 >
-                  <Form.Field className="FormField" name="fullName">
+                  <Form.Field className="DialogTitle" name="type">
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "baseline",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Form.Label className="FormLabel">
+                        Loại người dùng
+                      </Form.Label>
+                    </div>
+                    <Form.Control asChild>
+                      <Select.Root defaultValue="Admin">
+                        <Select.Trigger
+                          className="SelectTrigger"
+                          aria-label="UserType"
+                        >
+                          <Select.Value />
+                          <Select.Icon className="SelectIcon">
+                            <ChevronDownIcon />
+                          </Select.Icon>
+                        </Select.Trigger>
+
+                        <Select.Portal>
+                          <Select.Content className="SelectContent">
+                            <Select.Viewport className="SelectViewport">
+                              <Select.Item value="Admin" className="SelectItem">
+                                <Select.ItemText>Admin</Select.ItemText>
+                                <Select.ItemIndicator className="SelectItemIndicator">
+                                  <CheckIcon />
+                                </Select.ItemIndicator>
+                              </Select.Item>
+
+                              <Select.Item
+                                value="Người chơi"
+                                className="SelectItem"
+                              >
+                                <Select.ItemText>Người chơi</Select.ItemText>
+                                <Select.ItemIndicator className="SelectItemIndicator">
+                                  <CheckIcon />
+                                </Select.ItemIndicator>
+                              </Select.Item>
+                            </Select.Viewport>
+                          </Select.Content>
+                        </Select.Portal>
+                      </Select.Root>
+                    </Form.Control>
+                  </Form.Field>
+
+                  <Form.Field className="FormField" name="avatar">
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "baseline",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Form.Label />
+                    </div>
+                    <Form.Control asChild>
+                      <div className="AvatarSpace">
+                        <Avatar.Root
+                          className="AvatarRoot"
+                          onClick={handleShow}
+                        >
+                          <Avatar.Image
+                            className={`AvatarImage ${image == null ? "change-image-button" : ""}`}
+                            src={image == null ? plus : image}
+                            alt="Avatar"
+                          />
+                        </Avatar.Root>
+
+                        <Dialog.Root centered open={show} onHide={handleClose}>
+                          <Dialog.Portal>
+                            <Dialog.Overlay className="DialogOverlayI" />
+                            <Dialog.Content className="DialogContentI">
+                              <Dialog.Title className="DialogTitleI">
+                                Chọn ảnh
+                              </Dialog.Title>
+
+                              <div className="d-flex justify-content-center">
+                                <label
+                                  className="btn d-flex flex-row align-items-center"
+                                  style={{
+                                    backgroundColor: "#D9D9D9",
+                                    cursor: "pointer",
+                                    color: "black",
+                                    border: "none",
+                                    minHeight: "40px",
+                                    marginTop: "16px",
+                                    marginBottom: "28px",
+                                  }}
+                                  htmlFor="thumbnail-image"
+                                >
+                                  {prevImage == null ? (
+                                    <>
+                                      <img
+                                        src={plus}
+                                        alt=""
+                                        style={{
+                                          width: "22px",
+                                          marginRight: "8px",
+                                        }}
+                                      />
+                                      Tải ảnh lên
+                                    </>
+                                  ) : (
+                                    <img
+                                      src={prevImage}
+                                      alt=""
+                                      style={{ width: "300px" }}
+                                    />
+                                  )}
+                                </label>
+                                <input
+                                  type="file"
+                                  id="thumbnail-image"
+                                  name="thumbnail-image"
+                                  accept="image/*"
+                                  onChange={(event) => handleChangeImage(event)}
+                                />
+                              </div>
+
+                              <div
+                                style={{
+                                  border: "none",
+                                  display: "flex",
+                                  justifyContent: "space-around",
+                                }}
+                              >
+                                <Dialog.Close className="DialogCloseI">
+                                  <button
+                                    style={{
+                                      backgroundColor: "#FF5526",
+                                      color: "white",
+                                      padding: "5px 15px",
+                                    }}
+                                    onClick={handleClose}
+                                  >
+                                    Hủy
+                                  </button>
+                                </Dialog.Close>
+
+                                <Dialog.Close className="DialogCloseI">
+                                  <button
+                                    style={{
+                                      backgroundColor: "#1FAB89",
+                                      color: "white",
+                                      padding: "5px 15px",
+                                    }}
+                                    onClick={() => {
+                                      if (prevImage != null) {
+                                        setImage(prevImage);
+                                      }
+                                      handleClose();
+                                    }}
+                                  >
+                                    Lưu ảnh đại diện
+                                  </button>
+                                </Dialog.Close>
+                              </div>
+                            </Dialog.Content>
+                          </Dialog.Portal>
+                        </Dialog.Root>
+                      </div>
+                    </Form.Control>
+                  </Form.Field>
+
+                  <Form.Field className="FormField" name="full_name">
                     <div
                       style={{
                         display: "flex",
@@ -240,7 +294,7 @@ const AddDialog = () => {
                     </Form.Control>
                   </Form.Field>
 
-                  <Form.Field className="FormField" name="userName">
+                  <Form.Field className="FormField" name="user_name">
                     <div
                       style={{
                         display: "flex",
@@ -418,40 +472,42 @@ const AddDialog = () => {
                     >
                       <Form.Label className="FormLabel">Giới tính</Form.Label>
                     </div>
-                    <RadioGroup.Root
-                      className="RadioGroupRoot"
-                      defaultValue="male"
-                      aria-label="View density"
-                    >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <RadioGroup.Item
-                          className="RadioGroupItem"
-                          value="male"
-                          id="male"
-                        >
-                          <RadioGroup.Indicator className="RadioGroupIndicator" />
-                        </RadioGroup.Item>
-                        <label className="Label-radiogroup" htmlFor="r1">
-                          Nam
-                        </label>
-                      </div>
+                    <Form.Control asChild>
+                      <RadioGroup.Root
+                        className="RadioGroupRoot"
+                        defaultValue="Nam"
+                        aria-label="View density"
+                      >
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <RadioGroup.Item
+                            className="RadioGroupItem"
+                            value="Nam"
+                            id="Nam"
+                          >
+                            <RadioGroup.Indicator className="RadioGroupIndicator" />
+                          </RadioGroup.Item>
+                          <label className="Label-radiogroup" htmlFor="r1">
+                            Nam
+                          </label>
+                        </div>
 
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <RadioGroup.Item
-                          className="RadioGroupItem"
-                          value="female"
-                          id="female"
-                        >
-                          <RadioGroup.Indicator className="RadioGroupIndicator" />
-                        </RadioGroup.Item>
-                        <label className="Label-radiogroup" htmlFor="r2">
-                          Nữ
-                        </label>
-                      </div>
-                    </RadioGroup.Root>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <RadioGroup.Item
+                            className="RadioGroupItem"
+                            value="Nữ"
+                            id="Nữ"
+                          >
+                            <RadioGroup.Indicator className="RadioGroupIndicator" />
+                          </RadioGroup.Item>
+                          <label className="Label-radiogroup" htmlFor="r2">
+                            Nữ
+                          </label>
+                        </div>
+                      </RadioGroup.Root>
+                    </Form.Control>
                   </Form.Field>
 
-                  <Form.Field className="FormField" name="facebookacc">
+                  <Form.Field className="FormField" name="fb_acc">
                     <div
                       style={{
                         display: "flex",
@@ -476,22 +532,22 @@ const AddDialog = () => {
                       </Form.Message>
                     </div>
                     <Form.Control asChild>
-                      <input
-                        className="Input"
-                        type="text"
-                        minLength={3}
-                        required
-                      />
+                      <input className="Input" type="text" minLength={3} />
                     </Form.Control>
                   </Form.Field>
 
                   <Form.Field className="FormField" name="status">
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <Checkbox.Root className="CheckboxRoot">
-                        <Checkbox.Indicator className="CheckboxIndicator">
-                          <CheckIcon />
-                        </Checkbox.Indicator>
-                      </Checkbox.Root>
+                      <Form.Control asChild>
+                        <Checkbox.Root
+                          className="CheckboxRoot"
+                          defaultChecked={false}
+                        >
+                          <Checkbox.Indicator className="CheckboxIndicator">
+                            <CheckIcon />
+                          </Checkbox.Indicator>
+                        </Checkbox.Root>
+                      </Form.Control>
                       <label className="Label" htmlFor="c1">
                         Kích hoạt tài khoản.
                       </label>
