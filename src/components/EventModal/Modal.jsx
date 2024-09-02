@@ -99,10 +99,51 @@ const Modal = ({ show, onClose, itemData }) => {
     return !Object.values(newErrors).some((error) => error !== "");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
       // Submit form data
       console.log("Form submitted");
+
+      //Create a new event
+      const updated_event = {
+        type: itemData.type,
+        id_game: itemData.id_game,    //"0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        id_brand: itemData.id_brand, //"0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        name: eventName,
+        image: image.name,
+        start_time: startDate,
+        end_time: endDate
+      }
+      // Log the gathered form data
+      console.log("Updated Event!:", updated_event);
+      try {
+        const response = await fetch(`http://localhost:50000/Event/update/${itemData.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updated_event),
+        });
+  
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        console.log("Success:", result);
+  
+        // Close the modal
+        onClose();
+        alert("Event updated successfully!");
+      } catch (error) {
+        console.error("Error:", error);
+      }
+
+
+      // Gather all form data
+      const formData = {
+        selectedVouchers: data,
+        quizData: quizData,
+      };
     }
   };
 
