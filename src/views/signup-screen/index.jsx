@@ -15,6 +15,7 @@ import LocationMarker from "@/components/location-marker";
 import Map from "@/components/map";
 import "./styles.css";
 
+
 function SignUp() {
   const navigate = useNavigate();
 
