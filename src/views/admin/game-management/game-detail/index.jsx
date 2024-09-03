@@ -30,7 +30,7 @@ export default function GameDetail() {
   useEffect(() => {
     async function getDetailGame() {
       try {
-        const data = await fetchDetailGame();
+        const data = await fetchDetailGame(id);
         console.log(data);
         if (data.code === 200) {
           setName(data.metadata.name);

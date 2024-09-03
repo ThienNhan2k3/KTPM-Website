@@ -28,8 +28,6 @@ import PageNotFound from "./views/404";
 
 import HeaderTitleProvider from "./services/providers/HeaderTitleProvider";
 import PrivateRoutes, {loader as privateRoutesLoader} from "./views/PrivateRoutes";
-import IsLoginedRoutes from "./views/IsLoginedRoutes";
-import Logout from "./views/logout";
 
 
 function App() {
@@ -42,7 +40,7 @@ function App() {
     },
     {
       id: 2,
-      name: "Quản lý người chơi",
+      name: "Quản lý người dùng",
       image: playerManagementIcon,
       link: "playermanagement",
     },
@@ -68,7 +66,6 @@ function App() {
 
   const router = createBrowserRouter(createRoutesFromElements(
     <>
-      <Route path="/logout" element={<Logout />} />
       <Route element={<PrivateRoutes />} loader={privateRoutesLoader} errorElement={<h3>You don't have a permision</h3>}>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

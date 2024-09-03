@@ -140,3 +140,39 @@
 .design-choose-file-link {
   margin-left: 20px;
 }
+
+.Input-description {
+  display: inline-flex;
+  align-items: center;
+  text-align: left;
+  margin-top: 5px;
+  border: 1px solid #49454f;
+  border-radius: 4px;
+  font-size: 15px;
+  color: black;
+  background-color: #e6e0e9;
+  padding: 10px;
+  height: 100px;
+  line-height: 1;
+}
+
+.Input-description:hover {
+  border: 1px solid white;
+  box-shadow: 0 0 0 2px #0f67b1;
+}
+
+.Input-description:focus {
+  border: 1px solid white;
+  box-shadow: 0 0 0 2px #0f67b1;
+}
+
+.Input-description::selection {
+  background-color: #3fa2f6;
+  color: #faffaf;
+}
+
+.Input-description:disabled {
+  color: #49454f;
+  background-color: #e6e0e9;
+  pointer-events: none;
+}

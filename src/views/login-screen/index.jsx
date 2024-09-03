@@ -27,7 +27,6 @@ function Login() {
     if (email != "" && password != "") {
       event.target.disabled = true;
     }
-    
     await postLogin(email, password, navigate);
   };
 

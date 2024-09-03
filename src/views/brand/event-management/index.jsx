@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import SearchIcon from "@assets/images/search-icon.png";
 import EditIcon from "@assets/images/edit-icon.png";
@@ -8,12 +8,14 @@ import AddEventModal from "../../../components/AddEventModal/Modal";
 import "./styles.css";
 import { makeData } from "./table-event/makeData";
 import { fa } from "@faker-js/faker";
+import { fetchAllEvents } from "@/services/api/eventAPI";
 
 
 const ITEMS_PER_PAGE = 10;
 
 export default function EventManagement() {
-  const [data] = useState(() => makeData(500));
+  //const [data] = useState(() => makeData(500));
+  const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showAddEventModal, setShowAddEventModal] = useState(false);
@@ -24,6 +26,21 @@ export default function EventManagement() {
   const [quiz, setQuiz] = useState(false);
   const [lx, setLx] = useState(false);
 
+  //get all event data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchAllEvents();
+        setData(result);
+        console.log(result);
+        setSortedData(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
@@ -109,6 +126,7 @@ export default function EventManagement() {
   };
 
 
+
   return (
     <div className="col">
       <div className="EventManagement-row mb-3">
@@ -151,7 +169,7 @@ export default function EventManagement() {
             <th scope="col" style={{ width: "5%" }}>ID</th>
             <th scope="col">Tên sự kiện</th>
             <th scope="col" style={{ width: "12%" }}>Loại trò chơi</th>
-            <th scope="col" style={{ width: "19%" }}>Ngày tạo</th>
+            <th scope="col" style={{ width: "19%" }}>Ngày bắt đầu</th>
             <th scope="col" style={{ width: "19%" }}>Ngày kết thúc</th>
             <th scope="col" style={{ width: "5%" }}></th>
           </tr>
@@ -162,8 +180,8 @@ export default function EventManagement() {
               <td className="EventManagement-table-id" scope="row">{item.id}</td>
               <td>{item.name}</td>
               <td>{item.type}</td>
-              <td>{item.dateCreate}</td>
-              <td>{item.dateEnd}</td>
+              <td>{item.start_time}</td>
+              <td>{item.end_time}</td>
               <td>
                 <button
                   type="button"

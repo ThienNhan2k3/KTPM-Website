@@ -41,7 +41,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
         </Select.Root>
 
         <Form.Root className="FormRoot" onSubmit={onSubmit} disabled>
-          <Form.Field className="FormField" name="brandName">
+          <Form.Field className="FormField" name="brand_name">
             <div
               style={{
                 display: "flex",
@@ -56,7 +56,7 @@ const EditDialog = ({ selectedRow, onSubmit }) => {
                 className="Input"
                 type="text"
                 disabled
-                defaultValue={selectedRow?.brandName}
+                defaultValue={selectedRow?.brand_name}
               />
             </Form.Control>
           </Form.Field>

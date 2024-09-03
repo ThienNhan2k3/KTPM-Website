@@ -67,8 +67,8 @@ const LineChart = ({ data }) => {
 
 export default function BrandReports() {
   const [data, setData] = useState({
-    labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
-    values: [12, 19, 3, 5, 2]
+    labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+    values: [4, 5.5, 6, 7, 8, 12, 19, 3, 5, 30, 11, 40]
   });
 
   return (

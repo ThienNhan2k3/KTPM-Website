@@ -30,7 +30,7 @@ const postUpdateAwardGame = async (id, award) => {
     } 
 }
 
-const fetchDetailGame = async () => {
+const fetchDetailGame = async (id) => {
     try {
         const res = await axios.get(`/game/${id}`);
         const data = res.data;;

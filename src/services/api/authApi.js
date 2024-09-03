@@ -16,8 +16,8 @@ const postLogin = async (email, password, navigateCb) => {
         const data = response.data;
         console.log(data);
         if (data.code == 200) {
-            window.localStorage.setItem("isLogined", true);
-            window.localStorage.setItem("homePage", data.redirect);
+            // window.localStorage.setItem("isLogined", true);
+            // window.localStorage.setItem("homePage", data.redirect);
             navigateCb(data.redirect)
         }
         
@@ -27,4 +27,17 @@ const postLogin = async (email, password, navigateCb) => {
 }
 
 
-export {postLogin}
+const getLogout = async (navigateCb) => {
+    try {
+        const response = await axios.get("/logout");
+        const data = response.data;
+        console.log(data);
+        return data;
+        
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+
+export {postLogin, getLogout}

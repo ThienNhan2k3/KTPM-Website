@@ -3,9 +3,10 @@ import "./Modal.css";
 import PlusIcon from "@assets/images/plus-icon.png";
 import { set } from "date-fns";
 import QuizModal from "../QuizModal/QuizModal";
+import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
 
 const convertDateFormat = (dateStr) => {
-  const [day, month, year] = dateStr.split("/");
+  const [year, month, day] = dateStr.split("/");
   return `${year}-${month}-${day}`;
 };
 
@@ -13,23 +14,22 @@ const Modal = ({ show, onClose, itemData }) => {
   if (!show) {
     return null;
   }
-
-  const data = [
-    { id: 1, name: "Voucher1", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 2, name: "Voucher2", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 3, name: "Voucher3", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 4, name: "Voucher4", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
-    { id: 5, name: "Voucher5", quantity: 200, sale: "40%", dateCreate: "15/02/2024", dateEnd: "18/02/2024" },
+  const [data, setTableData] = useState([
+    { voucher_code: 1, value: 20, max_discount: 450000 },
+    { voucher_code: 2, value: 18, max_discount: 20000},
     // Add more items if needed
-  ];
+  ]);
 
+  const [vouchers, setVoucher] = useState([]); //set vouchers active
+  const [selectedVouchers, setSelectedVouchers] = useState([]);
+  const [isVoucherModalOpen, setIsVoucherModalOpen] = useState(false);
   const [image, setImage] = useState(null);
   const [prevImage, setPrevImage] = useState(null);
-  const [imageError, setImageError] = useState(false);
   const [eventName, setEventName] = useState(itemData.name);
-  const [startDate, setStartDate] = useState(convertDateFormat("01/01/2024")); // Adjust default date
-  const [endDate, setEndDate] = useState(convertDateFormat("01/01/2024")); // Adjust default date
-  
+  const [startDate, setStartDate] = useState(itemData.start_time);
+  const [endDate, setEndDate] = useState(itemData.end_time);
+  const [quizData, setQuizData] = useState([]);
+  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
   const [errors, setErrors] = useState({
     eventName: "",
     startDate: "",
@@ -37,6 +37,49 @@ const Modal = ({ show, onClose, itemData }) => {
     image: "",
   });
 
+  // Fetch quiz data based on id_event
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      try {
+        //console.log(itemData)
+        // Step 1: Fetch the quiz by event using the id_event
+        const quizResponse = await fetch(`http://localhost:50000/quiz/get_by_event/${itemData.id}`);
+        if (!quizResponse.ok) throw new Error("Failed to fetch quiz data");
+        const quiz = await quizResponse.json();
+
+        if (quiz && quiz.id) {
+          // Step 2: Fetch questions using the id_quiz from the quiz
+          const questionsResponse = await fetch(`http://localhost:50000/questions/get_byQuiz/${quiz.id}`);
+          if (!questionsResponse.ok) throw new Error("Failed to fetch questions");
+          const questions = await questionsResponse.json();
+
+          setQuizData(questions);
+          //console.log(questions);
+        }
+      } catch (error) {
+        console.error("Error fetching quiz data:", error);
+      }
+    };
+
+    fetchQuizData();
+  }, [itemData]);
+
+  // Fetch voucher data
+  useEffect(() => {
+    const fetchVoucherData = async () => {
+      try {
+        const response = await fetch("http://localhost:50000/voucher/getAll_active");
+        if (!response.ok) throw new Error("Failed to fetch voucher data");
+        const voucherData = await response.json();
+        //console.log(voucherData);
+        setVoucher(voucherData);
+      } catch (error) {
+        console.error("Error fetching voucher data:", error);
+      }
+    };
+
+    fetchVoucherData();
+  }, []);
   
   const validateDate = (dateStr) => {
     const dateObj = new Date(dateStr);
@@ -56,10 +99,51 @@ const Modal = ({ show, onClose, itemData }) => {
     return !Object.values(newErrors).some((error) => error !== "");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
       // Submit form data
       console.log("Form submitted");
+
+      //Create a new event
+      const updated_event = {
+        type: itemData.type,
+        id_game: itemData.id_game,    //"0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        id_brand: itemData.id_brand, //"0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        name: eventName,
+        image: image.name,
+        start_time: startDate,
+        end_time: endDate
+      }
+      // Log the gathered form data
+      console.log("Updated Event!:", updated_event);
+      try {
+        const response = await fetch(`http://localhost:50000/Event/update/${itemData.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updated_event),
+        });
+  
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        console.log("Success:", result);
+  
+        // Close the modal
+        onClose();
+        alert("Event updated successfully!");
+      } catch (error) {
+        console.error("Error:", error);
+      }
+
+
+      // Gather all form data
+      const formData = {
+        selectedVouchers: data,
+        quizData: quizData,
+      };
     }
   };
 
@@ -90,8 +174,13 @@ const Modal = ({ show, onClose, itemData }) => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 4;  // Number of items per page
   const totalPages = Math.ceil(data.length / itemsPerPage);
+  
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -105,14 +194,30 @@ const Modal = ({ show, onClose, itemData }) => {
     }
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  //For select voucher
+  const openVoucherModal = () => {
+    setIsVoucherModalOpen(true);
+  };
+  
+  const closeVoucherModal = () => {
+    setIsVoucherModalOpen(false);
+  };
+  
+  const handleSelectVoucher = (voucher) => {
+    // Check if the voucher is already in the table
+    console.log(voucher);
+    const isVoucherAlreadySelected = data.some((item) => item.voucher_code === voucher.voucher_code);
+    if (!isVoucherAlreadySelected) {
+      // Add the selected voucher to the table data
+      setTableData((prevTableData) => [...prevTableData, voucher]);
+    }
+    setIsVoucherModalOpen(false);
+    console.log(data);
+    console.log("currentItems:", currentItems);
+  };
+
 
   //For Quiz settings
-  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
-  const [quizData, setQuizData] = useState([{ id: 1, question: '', answers: ['', '', '', ''], correctAnswer: 0 }]);
-
   const openQuizModal = () => {
     console.log("Opening Quiz Modal");
     setIsQuizModalOpen(true);
@@ -160,7 +265,7 @@ const Modal = ({ show, onClose, itemData }) => {
                   <input
                     type="date"
                     className="form-control"
-                    defaultValue={convertDateFormat(itemData.dateCreate)}
+                    defaultValue= {itemData.start_time} //{convertDateFormat(itemData.start_time)}
                     style={{
                       width: "150px",
                       padding: "10px",
@@ -176,7 +281,7 @@ const Modal = ({ show, onClose, itemData }) => {
                   <input
                     type="date"
                     className="form-control"
-                    defaultValue={convertDateFormat(itemData.dateEnd)}
+                    defaultValue= {itemData.end_time}   //{convertDateFormat(itemData.end_time)}
                     onChange={(e) => setEndDate(e.target.value)}
                     style={{
                       width: "150px",
@@ -253,65 +358,74 @@ const Modal = ({ show, onClose, itemData }) => {
                 }
               </div>
 
-
               <div className="row editevent-voucher editevent-form-group container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <strong style={{ width: "fit-content" }}>VOUCHER</strong>
-            {errors.data && 
-              <span className="editevent-error-text"
-                style={{
-                  left: '100px',
-                }}
-              >
-                {errors.data}
-              </span>
-            }
-            <button className="editevent-add-voucher-button">
-              <img src={PlusIcon} alt="Add" style={{ marginRight: "5px", display: "inline" }} />
-              Thêm voucher
-            </button>
-          </div>
+                <strong style={{ width: "fit-content" }}>VOUCHER</strong>
+                {errors.data && 
+                  <span className="editevent-error-text"
+                    style={{
+                      left: '100px',
+                    }}
+                  >
+                    {errors.data}
+                  </span>
+                }
+                <button className="editevent-add-voucher-button" onClick={openVoucherModal}>
+                  <img src={PlusIcon} alt="Add" 
+                    style={{ marginRight: "5px", display: "inline" }} 
+                  />
+                  Thêm voucher
+                </button>
 
+                {/* Render the Voucher Selection Modal */}
+                {isVoucherModalOpen && (
+                  <VoucherSelectionModal
+                    vouchers={vouchers}
+                    onClose={closeVoucherModal}
+                    onSelectVoucher={handleSelectVoucher}
+                  />
+                )}
+              </div>
               <div className="editevent-form-group">
                 <table className="table table-bordered my-3" style={{ fontSize: '12px', width: '100%' }}>
                   <thead>
                     <tr>
-                      <th scope="col" style={{ width: '10%' }}>ID</th>
-                      <th scope="col" style={{ width: '45%' }}>Quantity</th>
-                      <th scope="col" style={{ width: '45%' }}>Sale</th>
+                      <th scope="col" style={{ width: '45%' }}>Phần Trăm</th>
+                      <th scope="col" style={{ width: '45%' }}>Giảm Giá Tối Đa</th>
                     </tr>
                   </thead>
+
                   <tbody>
                     {currentItems.map((item) => (
                       <tr key={item.id}>
-                        <th scope="row">{item.id}</th>
-                        <td>{item.quantity}</td>
-                        <td>{item.sale}</td>
+                        <td>{item.value}%</td>
+                        <td>{item.max_discount} vnđ</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <button className="editevent-table-button" onClick={handlePreviousPage} disabled={currentPage === 1}>
-                    Previous
-                  </button>
-                  <button className= "editevent-table-button" onClick={handleNextPage} disabled={currentPage === totalPages} style={{ marginLeft: '10px' }}>
-                    Next
-                  </button>
-                </div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <button className="editevent-table-button" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                      Previous
+                    </button>
+                    <button className= "editevent-table-button" onClick={handleNextPage} disabled={currentPage === totalPages} style={{ marginLeft: '10px' }}>
+                      Next
+                    </button>
+                  </div>
               </div>
-
+      
               <div className="row editevent-form-group">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <label style={{ marginRight: '10px' }}>
                     <strong>Loại trò chơi:</strong>
                   </label>
                   <span>{itemData.type}</span>
+                  
                   {itemData.type === "Quiz" && (
                     <div className="editevent-hiddent-box editevent-form-group">
                       <button className="editevent-hidden-button" onClick={openQuizModal}>Câu hỏi</button>
                     </div>
                   )}
-
+                  
                   {/* Render the Quiz Modal */}
                   {isQuizModalOpen && (
                     <QuizModal
@@ -323,13 +437,11 @@ const Modal = ({ show, onClose, itemData }) => {
                 </div>
               </div>
 
-
-
               <div className="editevent-save editevent-form-group" style={{ display: 'flex', justifyContent: 'center' }}>
                 <button className="editevent-save-button" onClick={handleSubmit}>
                   Cập nhật sự kiện
                 </button>
-              </div>
+              </div>   
             </div>
           )}
         </div>
