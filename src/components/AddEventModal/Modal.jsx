@@ -5,13 +5,14 @@ import QuizModal from "../QuizModal/QuizModal";
 import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
 import { name, type } from "tedious/lib/data-types/null";
 import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
+import { fetchCreateEvent } from "@/services/api/eventApi";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
   return `${year}-${month}-${day}`;
 };
 
-const Modal = ({ show, onClose }) => {
+const Modal = ({ show, onClose, onAddEvent }) => {
   if (!show) return null;
 
   const [data, setTableData] = useState([
@@ -94,27 +95,19 @@ const Modal = ({ show, onClose }) => {
       console.log("New Event:", new_event);
 
       try {
-        const response = await fetch("http://localhost:5000/Event/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(new_event),
-        });
-  
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-  
-        const result = await response.json();
+        const result = await fetchCreateEvent(new_event);
         console.log("Success:", result);
-  
+
+        // Call onAddEvent to update the parent component's state
+        onAddEvent(result);
+
         // Close the modal
         onClose();
         alert("New event created successfully!");
       } catch (error) {
         console.error("Error:", error);
       }
+
 
 
       // Gather all form data
@@ -436,10 +429,10 @@ const Modal = ({ show, onClose }) => {
               )} 
               {selectedType === "Lắc xì" && (
                 <div className="addevent-hiddent-box addevent-form-group">
-                  <label className="btn btn-info" htmlFor="files">
+                  <label className="btn btn-info" htmlFor="items">
                     Items
                   </label>
-                  <input type="file" id="files" name="files" multiple hidden onChange={(event) => {
+                  <input type="file" id="files" name="items" multiple hidden onChange={(event) => {
                     handleChangeItems(event);
                   }}/>    
                 </div>

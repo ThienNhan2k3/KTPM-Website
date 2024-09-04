@@ -4,19 +4,23 @@ import PlusIcon from "@assets/images/plus-icon.png";
 import { set } from "date-fns";
 import QuizModal from "../QuizModal/QuizModal";
 import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
+import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
+import { fetchUpdateEvent } from "@/services/api/eventApi";
+import { fetchQuizByEvent } from "@/services/api/quizApi";
+import { fetchQuestionByQuiz } from "@/services/api/questionApi";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
   return `${year}-${month}-${day}`;
 };
 
-const Modal = ({ show, onClose, itemData }) => {
+const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
   if (!show) {
     return null;
   }
   const [data, setTableData] = useState([
-    { voucher_code: 1, value: 20, max_discount: 450000 },
-    { voucher_code: 2, value: 18, max_discount: 20000},
+    { voucher_code: 1, value: 20, max_discount: 450000, quantity: 2 },
+    { voucher_code: 2, value: 18, max_discount: 20000, quantity:3 },
     // Add more items if needed
   ]);
 
@@ -41,20 +45,12 @@ const Modal = ({ show, onClose, itemData }) => {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        //console.log(itemData)
-        // Step 1: Fetch the quiz by event using the id_event
-        const quizResponse = await fetch(`http://localhost:50000/quiz/get_by_event/${itemData.id}`);
-        if (!quizResponse.ok) throw new Error("Failed to fetch quiz data");
-        const quiz = await quizResponse.json();
+        const quiz = await fetchQuizByEvent(itemData.id);
 
         if (quiz && quiz.id) {
-          // Step 2: Fetch questions using the id_quiz from the quiz
-          const questionsResponse = await fetch(`http://localhost:50000/questions/get_byQuiz/${quiz.id}`);
-          if (!questionsResponse.ok) throw new Error("Failed to fetch questions");
-          const questions = await questionsResponse.json();
+          const questions = await fetchQuestionByQuiz(quiz.id);
 
           setQuizData(questions);
-          //console.log(questions);
         }
       } catch (error) {
         console.error("Error fetching quiz data:", error);
@@ -68,9 +64,9 @@ const Modal = ({ show, onClose, itemData }) => {
   useEffect(() => {
     const fetchVoucherData = async () => {
       try {
-        const response = await fetch("http://localhost:50000/voucher/getAll_active");
-        if (!response.ok) throw new Error("Failed to fetch voucher data");
-        const voucherData = await response.json();
+        const data = await fetchAllActiveVouchers();
+        // if (data.code != "200") throw new Error("Failed to fetch voucher data");
+        const voucherData = data;
         //console.log(voucherData);
         setVoucher(voucherData);
       } catch (error) {
@@ -117,21 +113,11 @@ const Modal = ({ show, onClose, itemData }) => {
       // Log the gathered form data
       console.log("Updated Event!:", updated_event);
       try {
-        const response = await fetch(`http://localhost:50000/Event/update/${itemData.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updated_event),
-        });
-  
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        console.log("Success:", result);
-  
+        const result = await fetchUpdateEvent(itemData.id, updated_event);
+        console.log("Update Success:", result);
+
         // Close the modal
+        onUpdateEvent(result);
         onClose();
         alert("Event updated successfully!");
       } catch (error) {
@@ -391,6 +377,7 @@ const Modal = ({ show, onClose, itemData }) => {
                     <tr>
                       <th scope="col" style={{ width: '45%' }}>Phần Trăm</th>
                       <th scope="col" style={{ width: '45%' }}>Giảm Giá Tối Đa</th>
+                      <th scope="col">Số lượng</th>
                     </tr>
                   </thead>
 
@@ -399,6 +386,18 @@ const Modal = ({ show, onClose, itemData }) => {
                       <tr key={item.id}>
                         <td>{item.value}%</td>
                         <td>{item.max_discount} vnđ</td>
+                        <td>
+                          <input type="text" value={item.quantity} onChange={(event) => {
+                            console.log(event.target.value);
+                            const newData = data.map(i => {
+                              if (i.voucher_code === item.voucher_code) {
+                                return {...i, quantity: event.target.value}
+                              }
+                              return i;
+                            })
+                            setTableData(newData)
+                          }}/>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
