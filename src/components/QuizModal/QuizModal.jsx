@@ -20,7 +20,7 @@ const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
       choice_2: '', 
       choice_3: '', 
       choice_4: '', 
-      answear: 0, 
+      answer: 0, 
       time_update: new Date().toISOString()
     };
     
@@ -86,8 +86,8 @@ const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
                   <input
                     type="radio"
                     className="quizbox-radio form-check-input"
-                    checked={quiz.answear === i}
-                    onChange={() => handleQuizChange(quiz.id, 'answear', i)}
+                    checked={quiz.answer === i}
+                    onChange={() => handleQuizChange(quiz.id, 'answer', i)}
                   />
                 </div>
               ))}

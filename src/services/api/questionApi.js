@@ -12,6 +12,8 @@ const fetchAllQuestions = async () => {
 
 const fetchCreateQuestion = async (new_question) => {
   try {
+    console.log('Begin to fetch this question:', new_question);
+    console.log(typeof new_question.answer);
     const res = await axios.post("/question/create", new_question, {
       headers: {
         "Content-Type": "application/json",

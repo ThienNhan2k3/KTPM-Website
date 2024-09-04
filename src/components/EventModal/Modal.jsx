@@ -4,7 +4,7 @@ import PlusIcon from "@assets/images/plus-icon.png";
 import { set } from "date-fns";
 import QuizModal from "../QuizModal/QuizModal";
 import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
-import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
+import { fetchAllActiveVouchers, fetchAllVoucherInEvent } from "@/services/api/voucherApi";
 import { fetchUpdateEvent } from "@/services/api/eventApi";
 import { fetchQuizByEvent } from "@/services/api/quizApi";
 import { fetchQuestionByQuiz } from "@/services/api/questionApi";
@@ -18,11 +18,7 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
   if (!show) {
     return null;
   }
-  const [data, setTableData] = useState([
-    { voucher_code: 1, value: 20, max_discount: 450000, quantity: 2 },
-    { voucher_code: 2, value: 18, max_discount: 20000, quantity:3 },
-    // Add more items if needed
-  ]);
+  const [data, setTableData] = useState([]);
 
   const [vouchers, setVoucher] = useState([]); //set vouchers active
   const [selectedVouchers, setSelectedVouchers] = useState([]);
@@ -40,6 +36,21 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
     endDate: "",
     image: "",
   });
+
+  // Fetch voucher data related to the event
+  useEffect(() => {
+    const fetchVoucherInEventData = async () => {
+      try {
+        const vouchersInEvent = await fetchAllVoucherInEvent(itemData.id);
+        console.log(vouchersInEvent);
+        setTableData(vouchersInEvent || []); // Set fetched vouchers to table data
+      } catch (error) {
+        console.error("Error fetching vouchers in event:", error);
+      }
+    };
+
+    fetchVoucherInEventData();
+  }, [itemData]);
 
   // Fetch quiz data based on id_event
   useEffect(() => {
@@ -161,7 +172,7 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;  // Number of items per page
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(data.length / itemsPerPage) || 1;
   
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -384,10 +395,10 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
                   <tbody>
                     {currentItems.map((item) => (
                       <tr key={item.id}>
-                        <td>{item.value}%</td>
-                        <td>{item.max_discount} vnđ</td>
+                        <td>{item.Voucher.value}%</td>
+                        <td>{item.Voucher.max_discount} vnđ</td>
                         <td>
-                          <input type="text" value={item.quantity} onChange={(event) => {
+                          <input type="text" value={item.total_quantity} onChange={(event) => {
                             console.log(event.target.value);
                             const newData = data.map(i => {
                               if (i.voucher_code === item.voucher_code) {
@@ -424,6 +435,17 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
                       <button className="editevent-hidden-button" onClick={openQuizModal}>Câu hỏi</button>
                     </div>
                   )}
+
+                  {itemData.type === "Lắc xì" && (
+                  <div className="editevent-hiddent-box editevent-form-group">
+                    <label className="btn btn-info" htmlFor="items">
+                      Items
+                    </label>
+                    <input type="file" id="items" name="items" multiple hidden onChange={(event) => {
+                      handleChangeItems(event);
+                    }}/>    
+                  </div>
+              )}
                   
                   {/* Render the Quiz Modal */}
                   {isQuizModalOpen && (
