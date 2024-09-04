@@ -6,6 +6,8 @@ import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModa
 import { name, type } from "tedious/lib/data-types/null";
 import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
 import { fetchCreateEvent } from "@/services/api/eventApi";
+import { fetchCreateQuiz } from "@/services/api/quizApi";
+import { fetchQuestionByQuiz } from "@/services/api/questionApi";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
@@ -84,7 +86,7 @@ const Modal = ({ show, onClose, onAddEvent }) => {
       //Create a new event
       const new_event = {
         type: selectedType,
-        id_game: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        id_game: "550e8400-e29b-41d4-a716-446655440000",  //fake id
         id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
         name: eventName,
         image: image.name,
@@ -97,6 +99,13 @@ const Modal = ({ show, onClose, onAddEvent }) => {
       try {
         const result = await fetchCreateEvent(new_event);
         console.log("Success:", result);
+
+        //create a new quiz
+        const new_quiz = {
+          id_event: result.id, 
+          id_game: "550e8400-e29b-41d4-a716-446655440000"  //fake id
+        };
+        const quiz_result = await fetchCreateQuiz(new_quiz);
 
         // Call onAddEvent to update the parent component's state
         onAddEvent(result);
