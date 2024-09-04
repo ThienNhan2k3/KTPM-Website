@@ -4,7 +4,7 @@ const Pagination = ({ table }) => {
       <div className="show-page-number">
         <span className="design-page-number">
           <div style={{ marginRight: "5px" }}>Page</div>
-          <strong>
+          <strong style={{ width: "62px" }}>
             {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </strong>
@@ -15,6 +15,7 @@ const Pagination = ({ table }) => {
             type="number"
             defaultValue={table.getState().pagination.pageIndex + 1}
             min={1} // Xác định giá trị min là 1
+            max={table.getPageCount()}
             onChange={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0;
               table.setPageIndex(page);

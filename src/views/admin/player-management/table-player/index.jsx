@@ -14,6 +14,7 @@ import {
 import { compareItems, rankItem } from "@tanstack/match-sorter-utils";
 
 import * as Dialog from "@radix-ui/react-dialog";
+
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 
 import Pagination from "./pagination";
@@ -23,6 +24,7 @@ import TableContextMenu from "./context-menu";
 import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
 import { baseAPI } from "@/services/api";
+import dayjs from "dayjs";
 
 // Define a custom fuzzy filter function
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -48,12 +50,13 @@ export default function TablePlayer() {
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [open2, setOpen2] = React.useState(false);
 
-  const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
+  const wait = () => new Promise((resolve) => setTimeout(resolve, 100));
 
   const [selectedRow, setSelectedRow] = React.useState(null);
 
   const [data, setData] = React.useState([]);
-  React.useEffect(() => {
+
+  const getData = () => {
     baseAPI
       .get(`http://localhost:5000/account/getAll/${"user"}`)
       .then((accounts) => {
@@ -61,6 +64,10 @@ export default function TablePlayer() {
         // console.log(accounts);
       })
       .catch((err) => console.log(err));
+  };
+
+  React.useEffect(() => {
+    getData();
   }, []);
 
   const getDataRow = (row) => {
@@ -160,7 +167,7 @@ export default function TablePlayer() {
         size: 150,
         cell: (info) => (
           <div className="edit-text" id="time_update">
-            {info.getValue()}
+            {dayjs(info.getValue()).format("DD-MM-YYYY HH:mm:ss")}
           </div>
         ),
         filterFn: "equalsString", //using our custom fuzzy filter function
@@ -207,7 +214,7 @@ export default function TablePlayer() {
           value={globalFilter ?? ""}
           onChange={(value) => setGlobalFilter(String(value))}
         />
-        <AddDialog />
+        <AddDialog callbackfn={getData} />
       </div>
       <div className="h-2" />
       <table className="table-player">
@@ -253,7 +260,11 @@ export default function TablePlayer() {
         <tbody>
           {table.getRowModel().rows.map((row) => {
             return (
-              <Dialog.Root key={row.id} open={open2} onOpenChange={setOpen2}>
+              <Dialog.Root
+                key={row.id}
+                open={open2 && open2 === row.id}
+                onOpenChange={() => setOpen2(row.id)}
+              >
                 <AlertDialog.Root>
                   <TableContextMenu
                     row={row}
@@ -261,11 +272,15 @@ export default function TablePlayer() {
                   />
                   <EditDialog
                     selectedRow={selectedRow}
+                    callbackfn={getData}
                     onSubmit={() => {
-                      wait().then(() => setOpen2(false));
+                      wait().then(() => setOpen2(null));
                     }}
                   />
-                  <RemoveDialog selectedRow={selectedRow} />
+                  <RemoveDialog
+                    selectedRow={selectedRow}
+                    callbackfn={getData}
+                  />
                 </AlertDialog.Root>
               </Dialog.Root>
             );

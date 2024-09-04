@@ -14,14 +14,18 @@ import {
 import { compareItems, rankItem } from "@tanstack/match-sorter-utils";
 
 import * as Dialog from "@radix-ui/react-dialog";
+
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
+
+import { baseAPI } from "@/services/api";
+
+import dayjs from "dayjs";
 
 import SearchBar from "./search-bar";
 import Pagination from "./pagination";
 import TableContextMenu from "./context-menu";
 import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
-import { baseAPI } from "@/services/api";
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
@@ -40,13 +44,16 @@ const fuzzySort = (rowA, rowB, columnId) => {
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
 
+const wait = () => new Promise((resolve) => setTimeout(resolve, 100));
+
 export default function TableBrand() {
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(null);
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [data, setData] = React.useState([]);
-  React.useEffect(() => {
+
+  const getData = () => {
     baseAPI
       .get(`http://localhost:5000/account/getAll/${"brand"}`)
       .then((accounts) => {
@@ -54,12 +61,14 @@ export default function TableBrand() {
         // console.log(accounts);
       })
       .catch((err) => console.log(err));
+  };
+
+  React.useEffect(() => {
+    getData();
   }, []);
 
-  const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
-
   const getDataRow = (row) => {
-    console.log("original" + row.original);
+    // console.log("original" + row.original);
     setSelectedRow(row.original);
   };
 
@@ -152,6 +161,18 @@ export default function TableBrand() {
         filterFn: "includesString", //using our custom fuzzy filter function
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
+      {
+        header: () => <span className="title-table-brand">Cập nhật</span>,
+        accessorKey: "time_update",
+        size: 150,
+        cell: (info) => (
+          <div className="edit-text" id="time_update">
+            {dayjs(info.getValue()).format("DD-MM-YYYY HH:mm:ss")}
+          </div>
+        ),
+        filterFn: "equalsString", //using our custom fuzzy filter function
+        sortingFn: "alphanumeric", //sort by fuzzy rank (falls back to alphanumeric)
+      },
     ],
     [],
   );
@@ -238,7 +259,11 @@ export default function TableBrand() {
         <tbody>
           {table.getRowModel().rows.map((row) => {
             return (
-              <Dialog.Root key={row.id} open={open} onOpenChange={setOpen}>
+              <Dialog.Root
+                key={row.id}
+                open={open && open === row.id}
+                onOpenChange={() => setOpen(row.id)}
+              >
                 <AlertDialog.Root>
                   <TableContextMenu
                     row={row}
@@ -246,13 +271,16 @@ export default function TableBrand() {
                   />
                   <EditDialog
                     selectedRow={selectedRow}
-                    onSubmit={(event) => {
-                      wait().then(() => setOpen(false));
-                      event.preventDefault();
+                    callbackfn={getData}
+                    onSubmit={() => {
+                      wait().then(() => setOpen(null));
                     }}
                   />
 
-                  <RemoveDialog selectedRow={selectedRow} />
+                  <RemoveDialog
+                    selectedRow={selectedRow}
+                    callbackfn={getData}
+                  />
                 </AlertDialog.Root>
               </Dialog.Root>
             );

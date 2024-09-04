@@ -21,17 +21,23 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 import * as Avatar from "@radix-ui/react-avatar";
 
+import * as Toast from "@radix-ui/react-toast";
+
 import React from "react";
 
 import { baseAPI } from "@/services/api";
 
-const AddDialog = () => {
+const AddDialog = ({ callbackfn }) => {
   const [open1, setOpen1] = React.useState(false);
   const [prevImage, setPrevImage] = React.useState(null);
   const [show, setShow] = React.useState(false);
   const [image, setImage] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [showMessage1, setShowMessage1] = React.useState(false);
+  const [showMessage2, setShowMessage2] = React.useState(false);
+  const timerRef = React.useRef(0);
   const handleShow = () => setShow(true);
-  const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
+  const wait = () => new Promise((resolve) => setTimeout(resolve, 100));
 
   const handleClose = () => {
     setPrevImage(null);
@@ -53,7 +59,28 @@ const AddDialog = () => {
     baseAPI
       .post(`http://localhost:5000/account/create/user`, data)
       .then((result) => {
-        console.log(result);
+        console.log(result.message);
+        if (result.message === "user_name, email") {
+          setShowMessage1(true);
+          setShowMessage2(true);
+        } else if (result.message === "user_name") {
+          setShowMessage1(true);
+          setShowMessage2(false);
+        } else if (result.message === "email") {
+          setShowMessage1(false);
+          setShowMessage2(true);
+        } else {
+          setShowMessage1(false);
+          setShowMessage2(false);
+          wait().then(() => setOpen1(false));
+          // Hiển thị toast khi xóa thành công
+          setOpen(false);
+          window.clearTimeout(timerRef.current);
+          timerRef.current = window.setTimeout(() => {
+            setOpen(true);
+          }, 100);
+          callbackfn();
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -85,7 +112,6 @@ const AddDialog = () => {
                 <Form.Root
                   className="FormRoot"
                   onSubmit={(event) => {
-                    wait().then(() => setOpen1(false));
                     event.preventDefault();
                     const data = Object.fromEntries(
                       new FormData(event.currentTarget),
@@ -317,6 +343,13 @@ const AddDialog = () => {
                         <InfoCircledIcon className="FormIcon" />
                         Vui lòng nhập tên đăng nhập hợp lệ!
                       </Form.Message>
+
+                      {showMessage1 && (
+                        <Form.Message className="FormMessage">
+                          <InfoCircledIcon className="FormIcon" />
+                          Tên tài khoản đã tồn tại!
+                        </Form.Message>
+                      )}
                     </div>
                     <Form.Control asChild>
                       <input
@@ -384,6 +417,13 @@ const AddDialog = () => {
                         <InfoCircledIcon className="FormIcon" />
                         Vui lòng nhập email hợp lệ!
                       </Form.Message>
+
+                      {showMessage2 && (
+                        <Form.Message className="FormMessage">
+                          <InfoCircledIcon className="FormIcon" />
+                          Email đã tồn tại!
+                        </Form.Message>
+                      )}
                     </div>
                     <Form.Control asChild>
                       <input className="Input" type="email" required />
@@ -554,24 +594,22 @@ const AddDialog = () => {
                     </div>
                   </Form.Field>
 
-                  <div className="custom-layout-submit">
-                    <Dialog.Close asChild>
-                      <div className="DialogClose">
-                        <button className="design-cancel-button rounded-3">
-                          Hủy
-                        </button>
-                      </div>
-                    </Dialog.Close>
-
-                    <Form.Submit asChild>
-                      <div className="FormSubmit">
-                        <button className="design-save-button rounded-3">
-                          Lưu người chơi
-                        </button>
-                      </div>
-                    </Form.Submit>
-                  </div>
+                  <Form.Submit asChild>
+                    <div className="FormSubmit">
+                      <button className="design-save-button rounded-3">
+                        Lưu người chơi
+                      </button>
+                    </div>
+                  </Form.Submit>
                 </Form.Root>
+
+                <Dialog.Close asChild>
+                  <div className="DialogCloseButton">
+                    <button className="design-cancel-button rounded-3">
+                      Hủy
+                    </button>
+                  </div>
+                </Dialog.Close>
 
                 <Dialog.Close asChild>
                   <button className="IconButton" aria-label="Close">
@@ -589,6 +627,27 @@ const AddDialog = () => {
           </ScrollArea.Root>
         </Dialog.Portal>
       </Dialog.Root>
+
+      <Toast.Provider swipeDirection="right">
+        <Toast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
+          <Toast.Title className="ToastTitle">
+            Tạo tài khoản thành công!
+          </Toast.Title>
+          <Toast.Description asChild>
+            <span className="ToastDescription">
+              Tài khoản của người dùng đã được tạo thành công trong hệ thống.
+            </span>
+          </Toast.Description>
+          <Toast.Action
+            className="ToastAction"
+            asChild
+            altText="Goto schedule to undo"
+          >
+            <button className="ButtonInToast small green">Đóng</button>
+          </Toast.Action>
+        </Toast.Root>
+        <Toast.Viewport className="ToastViewport" />
+      </Toast.Provider>
     </div>
   );
 };

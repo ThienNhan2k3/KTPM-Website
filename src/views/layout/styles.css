@@ -3,7 +3,7 @@
 }
 
 .seller-layout-container {
-  height: calc(100vh - 82px);
+  height: calc(100vh - 117px);
   transition: all 500ms;
   margin: 20px 40px;
   z-index: 0;
