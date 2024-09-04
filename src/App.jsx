@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Login from "./views/login-screen";
 import SignUp from "./views/signup-screen";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
 import playerManagementIcon from "@assets/images/quan-ly-nguoi-choi-icon.png";
 import brandManagementIcon from "@assets/images/quan-ly-thuong-hieu-icon.png";
 import gameManagementIcon from "@assets/images/quan-ly-tro-choi-icon.png";
@@ -24,7 +24,11 @@ import AdminUserReports from "@views/admin/report/user-report";
 import AdminGameReports from "@views/admin/report/game-report";
 import AdminBrandReports from "@views/admin/report/brand-report";
 import Layout from "@views/layout";
+import PageNotFound from "./views/404";
+
 import HeaderTitleProvider from "./services/providers/HeaderTitleProvider";
+import PrivateRoutes, {loader as privateRoutesLoader} from "./views/PrivateRoutes";
+
 
 function App() {
   const adminPages = [
@@ -60,35 +64,37 @@ function App() {
     { id: 3, name: "Báo cáo thống kê", image: reportsIcon, link: "report" },
   ];
 
+  const router = createBrowserRouter(createRoutesFromElements(
+    <>
+      <Route element={<PrivateRoutes />} loader={privateRoutesLoader} errorElement={<h3>You don't have a permision</h3>}>
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/admin" element={<Layout linkArray={adminPages} />}>
+          <Route index element={<BrandManagement />} />
+          <Route path="playermanagement" element={<PlayerManagement />} />
+          <Route path="gamemanagement" element={<GameManagement />} />
+          <Route path="gamemanagement/gamedetail/:id" element={<GameDetail />}>
+            <Route index element={<GameIntroduce />} />
+            <Route path="items" element={<GameItems />} />
+          </Route>
+          <Route path="report" element={<AdminReports />} />
+          <Route path="report/userreport" element={<AdminUserReports />} />
+          <Route path="report/gamereport" element={<AdminGameReports />} />
+          <Route path="report/brandreport" element={<AdminBrandReports />} />
+        </Route>
+        <Route path="/brand" element={<Layout linkArray={brandPages} />}>
+          <Route index element={<EventManagement />} />
+          <Route path="vouchermanagement" element={<VoucherManagement />} />
+          <Route path="report" element={<BrandReports />} />
+        </Route>
+      </Route>
+      <Route path="*" element={<PageNotFound />}/>
+    </>
+  ))
+
   return (
     <HeaderTitleProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/admin" element={<Layout linkArray={adminPages} />}>
-            <Route index element={<BrandManagement />} />
-            <Route path="playermanagement" element={<PlayerManagement />} />
-            <Route path="gamemanagement" element={<GameManagement />} />
-            <Route
-              path="gamemanagement/gamedetail/:id"
-              element={<GameDetail />}
-            >
-              <Route index element={<GameIntroduce />} />
-              <Route path="items" element={<GameItems />} />
-            </Route>
-            <Route path="report" element={<AdminReports />} />
-            <Route path="report/userreport" element={<AdminUserReports />} />
-            <Route path="report/gamereport" element={<AdminGameReports />} />
-            <Route path="report/brandreport" element={<AdminBrandReports />} />
-          </Route>
-          <Route path="/brand" element={<Layout linkArray={brandPages} />}>
-            <Route index element={<EventManagement />} />
-            <Route path="vouchermanagement" element={<VoucherManagement />} />
-            <Route path="report" element={<BrandReports />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router}/>
     </HeaderTitleProvider>
   );
 }

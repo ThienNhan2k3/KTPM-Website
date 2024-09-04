@@ -5,9 +5,10 @@
 }
 
 .quiz-box-delete {
-    position: absolute;
+    /* position: absolute;
     right: 30px;
-    display: inline;    
+    display: inline;     */
+    height: 100%;
 }
 
 .quizbox-add-quiz-button {
@@ -18,17 +19,30 @@
     width: 450px;
     height: max-content;
     margin-top: 15px;
-    border: solid gray;
-    padding: 5px;
+    border: 1px solid rgb(86, 77, 77);
+    padding: 8px;
+    border-radius: 4px;
+
+    .title {
+        font-weight: 600;
+    }
 }
 
 .quizbox-question {
     width: 300px;
-    border: 1px solid rgb(3, 250, 151);
+    border: 1px solid black;
+    border-radius: 4px;
+    padding-left: 8px;
+    height: 30px;
 }
 
 .quizbox-answer {
-    width: 250px;
+    width: 90%;
+    border: 1px solid rgb(59, 59, 59);
+    margin: 5px 0px;
+    border-radius: 3px;
+    padding: 5px;
+
 }
 
 .quizbox-quizHeader {
@@ -38,8 +52,8 @@
 
 
 .quizbox-radio {
-    width: 15px;
-    height: 15px;
+    width: 17px;
+    height: 17px;
     margin-right: 5px;
     background-color: white;
     border: 1px solid black;
@@ -48,7 +62,7 @@
     right: 30px;
 }
   
-  .quizbox-radio:checked::before {
+  /* .quizbox-radio:checked::before {
     content: '';
     display: block;
     width: 6px;
@@ -57,4 +71,4 @@
     border: solid green;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
-  }
+  } */

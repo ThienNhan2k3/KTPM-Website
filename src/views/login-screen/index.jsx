@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import * as Form from "@radix-ui/react-form";
 
 import { InfoCircledIcon } from "@radix-ui/react-icons";
@@ -14,35 +13,21 @@ import { Link } from "react-router-dom";
 
 import "./styles.css";
 import { useState } from "react";
+import { postLogin } from "@/services/api/authApi";
+import { useNavigate } from "react-router-dom";
+
 
 function Login() {
   const navigate = useNavigate();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     if (email != "" && password != "") {
       event.target.disabled = true;
     }
-    
-    fetch(`http://localhost:50000/login`, {
-      body: JSON.stringify({
-        email,
-        password
-      }),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    }).then(res => res.json())
-    .then(data => {
-      console.log("introduce:::", data);
-      if (data.code === 200 && data.redirect) {
-        navigate(data.redirect);
-      }
-    })
-    .catch(err => console.log(err));
-
+    await postLogin(email, password, navigate);
   };
 
 

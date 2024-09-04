@@ -4,6 +4,7 @@ import EditGameModal from "@components/edit-game-modal";
 import { useState } from "react";
 
 import { useOutletContext, useParams } from "react-router-dom";
+import { postUpdateAwardGame } from "@/services/api/gameApi";
 
 export default function GameItems() {
   const {id} = useParams();
@@ -27,27 +28,17 @@ export default function GameItems() {
       </div>
       <EditGameModal
         show={show}
-        submitForm={() => {
-          
-          fetch(`http://localhost:5000/game/${id}`, {
-            body: JSON.stringify({
-              award,
-            }),
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-          }).then(res => res.json())
-          .then(data => {
-            console.log("Award:::", data);
+        submitForm={async () => {
+          try {
+            const data = postUpdateAwardGame(id, award);
             if (data.code === 200) {
               // setGame(data.metadata);
               setAward(data.metadata.award);
               setShow(false);
             }
-          })
-          .catch(err => console.log(err));
-
+          } catch(err) {
+            console.error(err);
+          }
         }}
         title="Vật phẩm"
         content={award}

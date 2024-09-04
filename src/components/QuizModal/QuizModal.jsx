@@ -51,25 +51,27 @@ const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
         <Dialog.Content className="DialogContent">
           <div className="quizbox-header-container">
             <DialogTitle>Manage Quizzes</DialogTitle>
-            <button onClick={handleAddQuiz} className="quizbox-add-quiz-button">Add Quiz</button>
+            <button onClick={handleAddQuiz} className="quizbox-add-quiz-button btn btn-success">Add Quiz</button>
           </div>
 
           {quizData.map((quiz, index) => (
             <div key={quiz.id} className="quizbox-quizBox">
               <div className="quizbox-quizHeader">
                 <div className="title">Câu hỏi số {index + 1}:</div>
-                <button className="quiz-box-delete" onClick={() => handleDeleteQuiz(quiz.id)}>Delete</button>
-                <input
-                  type="text"
-                  value={quiz.ques}
-                  className="quizbox-question"
-                  onChange={(e) => handleQuizChange(quiz.id, 'ques', e.target.value)}
-                  placeholder="Enter quiz question"
-                />
+                <div className="d-flex justify-content-between align-items-center">
+                  <input
+                    type="text"
+                    value={quiz.ques}
+                    className="quizbox-question"
+                    onChange={(e) => handleQuizChange(quiz.id, 'ques', e.target.value)}
+                    placeholder="Enter quiz question"
+                  />
+                  <button className="quiz-box-delete btn btn-danger" onClick={() => handleDeleteQuiz(quiz.id)}>Delete</button>
+                </div>
               </div>
 
               {[quiz.choice_1, quiz.choice_2, quiz.choice_3, quiz.choice_4].map((choice, i) => (
-                <div key={i} className="quizbox-answerBox">
+                <div key={i} className="quizbox-answerBox d-flex align-items-center justify-content-between">
                   <input
                     type="text"
                     value={choice}
@@ -83,7 +85,7 @@ const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
                   />
                   <input
                     type="radio"
-                    className="quizbox-radio"
+                    className="quizbox-radio form-check-input"
                     checked={quiz.answear === i}
                     onChange={() => handleQuizChange(quiz.id, 'answear', i)}
                   />
@@ -93,7 +95,7 @@ const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
           ))}
 
           <DialogClose asChild>
-            <button className="closebutton">Close</button>
+            <button className="closebutton btn btn-warning">Close</button>
           </DialogClose>
         </Dialog.Content>
       </Dialog.Portal>

@@ -5,22 +5,24 @@ import { Link } from "react-router-dom";
 import { changeHeaderTitle } from "@/lib/utils";
 
 import { useEffect, useState } from "react";
+import { fetchAllGame } from "@/services/api/gameApi";
 
 export default function GameManagement() {
   changeHeaderTitle("Quản lý trò chơi")
   const [games, setGames] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/game", {
-      method: "GET"
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      if (data.code === 200) {
-        setGames(data.metadata);
+    async function fetchGames() {
+      try {
+        const data = await fetchAllGame();
+        if (data.code === 200) {
+          setGames(data.metadata);
+        }
+      } catch(err) {
+        console.error(err);
       }
-    })
-    .catch(err => console.log(err));
+    }
+
+    fetchGames();
   }, []);
 
   return (

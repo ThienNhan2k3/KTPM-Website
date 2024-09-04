@@ -8,7 +8,7 @@ const VoucherSelectionModal = ({ vouchers, onClose, onSelectVoucher }) => {
         <button className="voucher-modal-close" onClick={onClose}>
           &times;
         </button>
-        <h3>Chọn Voucher</h3>
+        <h3 style={{fontWeight: "700", fontSize: "20px"}}>Chọn Voucher</h3>
         <ul className="voucher-list">
           {vouchers.map((voucher) => (
             <li key={voucher.id} className="voucher-item" onClick={() => onSelectVoucher(voucher)}>

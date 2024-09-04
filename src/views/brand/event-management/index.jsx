@@ -8,6 +8,7 @@ import AddEventModal from "../../../components/AddEventModal/Modal";
 import "./styles.css";
 import { makeData } from "./table-event/makeData";
 import { fa } from "@faker-js/faker";
+import { fetchAllEvents } from "@/services/api/eventApi";
 
 
 const ITEMS_PER_PAGE = 10;
@@ -29,8 +30,7 @@ export default function EventManagement() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:50000/event/getAll");
-        const result = await response.json();
+        const result = await fetchAllEvents();
         setData(result);
         console.log(result);
         setSortedData(result);
@@ -125,6 +125,22 @@ export default function EventManagement() {
     setShowAddEventModal(false);
   };
 
+  const handleAddEvent = (newEvent) => {
+    console.log('updated event: ', newEvent);
+    const updatedData = [...data, newEvent]; // Add new event to data array
+    setData(updatedData);
+    setSortedData(updatedData);
+    setCurrentPage(Math.ceil(updatedData.length / ITEMS_PER_PAGE) - 1); // Navigate to the last page where the new event is added
+    setPageInput(Math.ceil(updatedData.length / ITEMS_PER_PAGE).toString()); // Update page input field to last page
+  };
+
+  const updateEventInList = (updatedEvent) => {
+    const updatedEvents = data.map((event) =>
+      event.id === updatedEvent.id ? updatedEvent : event
+    );
+    setData(updatedEvents);
+    setSortedData(updatedEvents);
+  };
 
   return (
     <div className="col">
@@ -174,9 +190,11 @@ export default function EventManagement() {
           </tr>
         </thead>
         <tbody>
-          {currentPageData.map((item) => (
+          {currentPageData.map((item, index) => (
             <tr key={item.id}>
-              <td className="EventManagement-table-id" scope="row">{item.id}</td>
+              <td className="EventManagement-table-id" scope="row">
+                {offset + index + 1}
+              </td>
               <td>{item.name}</td>
               <td>{item.type}</td>
               <td>{item.start_time}</td>
@@ -243,8 +261,17 @@ export default function EventManagement() {
           forcePage={currentPage} // Force the component to reflect the currentPage
         />
       </div>
-      <EventModal show={showModal} onClose={handleCloseModal} itemData={selectedItem} />
-      <AddEventModal show={showAddEventModal} onClose={handleCloseAddEventModal} />
+      <EventModal 
+        show={showModal} 
+        onClose={handleCloseModal} 
+        itemData={selectedItem} 
+        onUpdateEvent={updateEventInList}
+      />
+      <AddEventModal 
+        show={showAddEventModal} 
+        onClose={handleCloseAddEventModal} 
+        onAddEvent={handleAddEvent} 
+      />
     </div>
   );
 }

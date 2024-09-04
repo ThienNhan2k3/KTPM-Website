@@ -17,6 +17,7 @@ import "./styles.css";
 import { baseAPI } from "@/services/api";
 import NotiDialog from "./noti-dialog";
 
+
 function SignUp() {
   const [showMessage1, setShowMessage1] = useState(false);
   const [showMessage2, setShowMessage2] = useState(false);

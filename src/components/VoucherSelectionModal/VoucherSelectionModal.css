@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    /* background-color: rgba(0, 0, 0, 0.5); */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,6 +18,8 @@
     height: 400px; /* Set fixed height */
     display: flex;
     flex-direction: column;
+    box-shadow: -2px 1px 28px 1px rgba(0,0,0,0.75);
+
 }
 
 .voucher-modal-close {

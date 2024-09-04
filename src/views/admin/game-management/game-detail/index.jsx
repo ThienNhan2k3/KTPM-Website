@@ -9,6 +9,8 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
 import { useEffect, useState } from "react";
+import { fetchDetailGame } from "@/services/api/gameApi";
+
 
 export default function GameDetail() {
   const location = useLocation();
@@ -26,12 +28,9 @@ export default function GameDetail() {
 
   const {id} = useParams();
   useEffect(() => {
-    if (id != "") {
-      fetch(`http://localhost:5000/game/${id}`, {
-        method: "GET"
-      })
-      .then(res => res.json())
-      .then(data => {
+    async function getDetailGame() {
+      try {
+        const data = await fetchDetailGame(id);
         console.log(data);
         if (data.code === 200) {
           setName(data.metadata.name);
@@ -40,9 +39,12 @@ export default function GameDetail() {
           setIntroduce(data.metadata.introduce);
           setType(JSON.parse(data.metadata.type))
         }
-      })
-      .catch(err => console.log(err));
+      } catch(err) {
+        console.error(err);
+      }
     }
+
+    getDetailGame();
   }, []);
 
 
@@ -158,7 +160,9 @@ export default function GameDetail() {
               .then(data => {
                 console.log(data);
                 if (data.code === 200) {
-                  setGame(data.metadata);
+                  setImage(data.metadata.image);
+                  setPrevImage(null);
+                  setNewImage(null);
                 }
                 setShow(false);
               })
