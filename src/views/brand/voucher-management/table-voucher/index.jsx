@@ -66,7 +66,8 @@ export default function TableVoucher() {
 
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [data, setData] = React.useState([]);
-  React.useEffect(() => {
+
+  const getData = () => {
     baseAPI
       .get(
         `http://localhost:5000/voucher/getVoucherByIdBrand/${"05e44252-ff08-4a0a-b238-93cf3c5382a6"}`,
@@ -75,6 +76,10 @@ export default function TableVoucher() {
         setData(vouchers);
       })
       .catch((err) => console.log(err));
+  };
+
+  React.useEffect(() => {
+    getData();
   }, []);
 
   const getDataRow = (row) => {
@@ -177,7 +182,7 @@ export default function TableVoucher() {
     [],
   );
 
-  const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
+  const wait = () => new Promise((resolve) => setTimeout(resolve, 100));
 
   const table = useReactTable({
     data,
@@ -217,7 +222,7 @@ export default function TableVoucher() {
           value={globalFilter ?? ""}
           onChange={(value) => setGlobalFilter(String(value))}
         />
-        <AddDialog />
+        <AddDialog callbackfn={getData} />
       </div>
       <div className="h-2" />
       <table className="table-voucher">
@@ -263,7 +268,11 @@ export default function TableVoucher() {
         <tbody>
           {table.getRowModel().rows.map((row) => {
             return (
-              <Dialog.Root key={row.id} open={open2} onOpenChange={setOpen2}>
+              <Dialog.Root
+                key={row.id}
+                open={open2 && open2 === row.id}
+                onOpenChange={() => setOpen2(row.id)}
+              >
                 <AlertDialog.Root>
                   <TableContextMenu
                     row={row}
@@ -272,13 +281,16 @@ export default function TableVoucher() {
 
                   <EditDialog
                     selectedRow={selectedRow}
-                    onSubmit={(event) => {
-                      wait().then(() => setOpen2(false));
-                      event.preventDefault();
+                    callbackfn={getData}
+                    onSubmit={() => {
+                      wait().then(() => setOpen2(null));
                     }}
                   />
 
-                  <RemoveDialog selectedRow={selectedRow} />
+                  <RemoveDialog
+                    selectedRow={selectedRow}
+                    callbackfn={getData}
+                  />
                 </AlertDialog.Root>
               </Dialog.Root>
             );

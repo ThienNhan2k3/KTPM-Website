@@ -77,7 +77,8 @@
 
 .page-number {
   display: flex;
-  margin-top: 1.5em;
+  position: sticky;
+  top: 34em;
   align-items: center;
   justify-content: space-between;
 }
@@ -117,6 +118,7 @@
   border-color: #0f67b1;
   border-width: 1.5px;
   margin-left: 5px;
+  width: 180px;
 }
 
 .show-page-number {
