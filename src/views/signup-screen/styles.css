@@ -22,8 +22,6 @@
   }
 }
 
-
-
 .sign-up-conatiner .login-button {
   display: flex;
   border: 1px solid #0f67b1;
@@ -55,8 +53,8 @@
 .sign-up-conatiner .SignUp {
   background-color: #3fa2f6;
   color: white;
-  margin-top: 30px;
-  margin-bottom: 20px;
+  margin-top: 15px;
+  margin-bottom: 10px;
   border-radius: 6px;
   padding: 8px 0;
   width: 240px;
@@ -64,6 +62,7 @@
 
 .sign-up-conatiner .link-to-login-screen {
   display: flex;
+  padding-bottom: 10px;
 
   .link {
     margin-left: 3px;

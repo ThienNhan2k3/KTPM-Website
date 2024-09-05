@@ -5,14 +5,17 @@ import QuizModal from "../QuizModal/QuizModal";
 import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
 import { name, type } from "tedious/lib/data-types/null";
 import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
-import { postCreateLacXiEvents } from "@/services/api/eventAPI";
+
+import { fetchCreateEvent } from "@/services/api/eventApi";
+import { fetchCreateQuiz } from "@/services/api/quizApi";
+import { fetchCreateQuestion } from "@/services/api/questionApi";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
   return `${year}-${month}-${day}`;
 };
 
-const Modal = ({ show, onClose }) => {
+const Modal = ({ show, onClose, onAddEvent }) => {
   if (!show) return null;
 
   const [data, setTableData] = useState([
@@ -78,53 +81,65 @@ const Modal = ({ show, onClose }) => {
 
   const handleSubmit = async () => {
     if (validateForm()) {
-      // Submit form data
       console.log("Form submitted");
-
-      //Create a new event
+  
+      // Create a new event object
       const new_event = {
         type: selectedType,
-        id_game: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        id_game: "550e8400-e29b-41d4-a716-446655440000",  //fake id
         id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
         name: eventName,
         image: image.name,
         start_time: startDate,
         end_time: endDate
-      }
-      // Log the gathered form data
+      };
+      
       console.log("New Event:", new_event);
-
+  
       try {
-        // const response = await fetch("http://localhost:5000/Event/create", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(new_event),
-        // });
+        // Create the event and get the result
+        const result = await fetchCreateEvent(new_event);
+        console.log("Event creation success:", result);
   
-        // if (!response.ok) {
-        //   throw new Error("Network response was not ok");
-        // }
+        // If the selected type is "Quiz", create the quiz and its questions
+        if (selectedType === "Quiz") {
+          const new_quiz = {
+            id_event: result.id, 
+            id_game: "550e8400-e29b-41d4-a716-446655440000"  //fake id
+          };
   
-        // const result = await response.json();
-        console.log("Success:", result);
+          const quiz_result = await fetchCreateQuiz(new_quiz);
+          console.log("Quiz creation success:", quiz_result);
+          console.log(quizData);
+          for (const question of quizData) {
+            const new_question = {
+              id_quiz: quiz_result.id,
+              ques: question.ques,
+              choice_1: question.choice_1,
+              choice_2: question.choice_2,
+              choice_3: question.choice_3,
+              choice_4: question.choice_4,
+              answer: question.answer
+            };
+            
+            const question_result = await fetchCreateQuestion(new_question);
+            console.log("Question creation success:", question_result);
+          }
+        }
   
-        // Close the modal
+        // Call the onAddEvent to update the parent component's state
+        onAddEvent(result);
+  
+        // Close the modal and notify the user
         onClose();
         alert("New event created successfully!");
+  
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error during event creation:", error);
       }
-
-
-      // Gather all form data
-      const formData = {
-        selectedVouchers: data,
-        quizData: quizData,
-      };
     }
   };
+  
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -199,7 +214,7 @@ const Modal = ({ show, onClose }) => {
 
   //For Quiz settings
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
-  const [quizData, setQuizData] = useState([{ id: 1, question: '', answers: ['', '', '', ''], correctAnswer: 0 }]);
+  const [quizData, setQuizData] = useState([{ id: 1, ques: '', choice_1: '', choice_2: '', choice_3: '', choice_4: '', answer: 0 }]);
 
   const openQuizModal = () => {
     console.log("Opening Quiz Modal");

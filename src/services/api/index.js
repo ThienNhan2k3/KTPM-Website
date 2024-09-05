@@ -60,4 +60,15 @@ const put = async (url, payload) => {
   }
 };
 
-export const baseAPI = { get, post, put };
+const del = async (url) => {
+  try {
+    const rawResult = await fetch(url, {
+      method: "DELETE",
+    });
+    return await rawResult.json();
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const baseAPI = { get, post, put, del };

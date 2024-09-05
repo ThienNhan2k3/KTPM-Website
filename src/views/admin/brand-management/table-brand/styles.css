@@ -63,7 +63,8 @@
 
 .page-number {
   display: flex;
-  margin-top: 1.5em;
+  position: sticky;
+  top: 34em;
   align-items: center;
   justify-content: space-between;
 }
@@ -104,6 +105,7 @@
   border: 1.5px solid #0f67b1;
   margin-left: 5px;
   text-align: left;
+  width: 180px;
 }
 
 .show-page-number {
@@ -146,7 +148,7 @@ input {
 
 /*Dialog*/
 .DialogOverlay {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgba(0, 0, 0, 0.4);
   position: fixed;
   z-index: 15;
   inset: 0;
@@ -210,17 +212,17 @@ input {
   padding: 5px 15px;
 }
 
-.custom-layout-submit {
+.DialogCloseButton {
   display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
+  justify-content: center;
+  margin-top: -35px;
 }
 
 /*Alert*/
 .AlertDialogOverlay {
   background-color: rgba(0, 0, 0, 0.4);
   position: fixed;
-  z-index: 15;
+  z-index: 1000;
   inset: 0;
   animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -232,7 +234,7 @@ input {
     hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
     hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
   position: fixed;
-  z-index: 15;
+  z-index: 1000;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -250,6 +252,9 @@ input {
 .AlertDialogTitle {
   display: flex;
   justify-content: center;
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 10px;
 }
 
 .AlertDialogDescription {
@@ -435,6 +440,12 @@ button {
   padding: 5px 15px;
 }
 
+.FormSubmit {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
 /*Check Box*/
 .CheckboxRoot {
   background-color: white;
@@ -460,4 +471,163 @@ button {
   color: black;
   padding-left: 10px;
   font-size: 15px;
+}
+
+/*Toast*/
+.ToastViewport {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 390px;
+  max-width: 100vw;
+  margin: 0;
+  list-style: none;
+  z-index: 15;
+  outline: none;
+}
+
+.ToastRoot {
+  background-color: white;
+  border-radius: 6px;
+  box-shadow:
+    hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
+    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+  padding: 15px;
+  display: grid;
+  grid-template-areas: "title action" "description action";
+  grid-template-columns: auto max-content;
+  column-gap: 15px;
+}
+
+.UpdateSuccess {
+  border: 1px solid #00cc00;
+}
+
+.UpdateFail {
+  border: 1px solid #ff0000;
+}
+
+.ToastRoot[data-state="open"] {
+  animation: slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ToastRoot[data-state="closed"] {
+  animation: hide 100ms ease-in;
+}
+
+.ToastRoot[data-swipe="move"] {
+  transform: translateX(var(--radix-toast-swipe-move-x));
+}
+
+.ToastRoot[data-swipe="cancel"] {
+  transform: translateX(0);
+  transition: transform 200ms ease-out;
+}
+
+.ToastRoot[data-swipe="end"] {
+  animation: swipeOut 100ms ease-out;
+}
+
+@keyframes hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(calc(100% + var(--viewport-padding)));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes swipeOut {
+  from {
+    transform: translateX(var(--radix-toast-swipe-end-x));
+  }
+  to {
+    transform: translateX(calc(100% + var(--viewport-padding)));
+  }
+}
+
+.ToastTitleSuccess {
+  grid-area: title;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #00cc00;
+  font-size: 15px;
+}
+
+.ToastTitleFail {
+  grid-area: title;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #ff0000;
+  font-size: 15px;
+}
+
+.ToastDescription {
+  grid-area: description;
+  margin: 0;
+  color: #777777;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.ToastAction {
+  grid-area: action;
+}
+
+.ButtonInToast {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-weight: 500;
+  user-select: none;
+}
+
+.ButtonInToast.small {
+  font-size: 12px;
+  padding: 0 10px;
+  line-height: 25px;
+  height: 25px;
+}
+
+.ButtonInToast.green {
+  background-color: white;
+  border: white;
+  color: #00cc00;
+  box-shadow: inset 0 0 0 1px #00cc00;
+}
+
+.ButtonInToast.green:hover {
+  box-shadow: inset 0 0 0 2px #00cc00;
+}
+
+.ButtonInToast.green:focus {
+  box-shadow: 0 0 0 2px #00cc00;
+}
+
+.ButtonInToast.red {
+  background-color: white;
+  border: white;
+  color: #ff0000;
+  box-shadow: inset 0 0 0 1px #ff0000;
+}
+
+.ButtonInToast.red:hover {
+  box-shadow: inset 0 0 0 2px #ff0000;
+}
+
+.ButtonInToast.red:focus {
+  box-shadow: 0 0 0 2px #ff0000;
 }
