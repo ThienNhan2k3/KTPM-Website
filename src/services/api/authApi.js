@@ -20,7 +20,7 @@ const postLogin = async (email, password, navigateCb) => {
             // window.localStorage.setItem("homePage", data.redirect);
             navigateCb(data.redirect)
         }
-        
+        return data;
     } catch (err) {
         console.error(err);
     }

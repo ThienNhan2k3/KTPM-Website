@@ -4,7 +4,6 @@ import image404 from "../../assets/images/404.svg";
 import { Link } from "react-router-dom";
 
 export default function PageNotFound({homeLink="/"}) {
-    console.log(window.localStorage.getItem("homePage"));
     return (
         <div className={styles["container"]}>
             <header className={styles["header"]}>
@@ -14,7 +13,7 @@ export default function PageNotFound({homeLink="/"}) {
             <img src={image404} alt="404 image" />
             <footer className={styles["footer"]}>
                 <p>Trang mà bạn yêu cầu không tồn tại. Làm ơn trở về trang chủ!</p>
-                <Link to={window.localStorage.getItem("homePage")}>Trang chủ</Link>
+                <Link to={homeLink}>Trang chủ</Link>
             </footer>
         </div>
     )
