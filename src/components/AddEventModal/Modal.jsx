@@ -6,7 +6,7 @@ import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModa
 import { name, type } from "tedious/lib/data-types/null";
 import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
 
-import { fetchCreateEvent } from "@/services/api/eventApi";
+import { fetchCreateEvent, fetchCreateVoucherInEvent } from "@/services/api/eventApi";
 import { fetchCreateQuiz } from "@/services/api/quizApi";
 import { fetchCreateQuestion } from "@/services/api/questionApi";
 
@@ -101,6 +101,20 @@ const Modal = ({ show, onClose, onAddEvent }) => {
         const result = await fetchCreateEvent(new_event);
         console.log("Event creation success:", result);
   
+        // Featch selected voucher
+        if(data.length) {
+          for (const voucher of data) {
+            const new_voucher_in_event = {
+              id_voucher_code: voucher.voucher_code,
+              id_event: result.id,
+              exp_date: result.end_time,
+              total_quantity: voucher.quantity
+            }
+
+            const voucher_in_event_result = await fetchCreateVoucherInEvent(new_voucher_in_event);
+          }
+        }
+
         // If the selected type is "Quiz", create the quiz and its questions
         if (selectedType === "Quiz") {
           const new_quiz = {
@@ -205,10 +219,11 @@ const Modal = ({ show, onClose, onAddEvent }) => {
     if (!isVoucherAlreadySelected) {
       // Add the selected voucher to the table data
       setTableData((prevTableData) => [...prevTableData, {...voucher, quantity: 1}]);
+      console.log("currentItems:", currentItems);
     }
     setIsVoucherModalOpen(false);
     console.log(data);
-    console.log("currentItems:", currentItems);
+    
   };
 
 
@@ -408,16 +423,21 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                     <td>{item.value}%</td>
                     <td>{item.max_discount} vnđ</td>
                     <td>
-                      <input type="text" value={item.quantity} onChange={(event) => {
-                        console.log(event.target.value);
-                        const newData = data.map(i => {
-                          if (i.voucher_code === item.voucher_code) {
-                            return {...i, quantity: event.target.value}
-                          }
-                          return i;
-                        })
-                        setTableData(newData)
-                      }}/>
+                      <input 
+                        type="number" 
+                        min="0"
+                        value={item.quantity} 
+                        onChange={(event) => {
+                          console.log(event.target.value);
+                          const newData = data.map(i => {
+                            if (i.voucher_code === item.voucher_code) {
+                              return {...i, quantity: Number(event.target.value)}
+                            }
+                            return i;
+                          })
+                          setTableData(newData)
+                        }
+                      }/>
                     </td>
                   </tr>
                 ))}

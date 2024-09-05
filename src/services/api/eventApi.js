@@ -42,5 +42,20 @@ const fetchUpdateEvent = async (id, update_event) => {
     return null; // Return null or handle the error appropriately
   }
 };
+
+const fetchCreateVoucherInEvent = async (new_voucher_in_event) => {
+  try {
+      const res = await axios.post("/voucher_in_event/create", new_voucher_in_event, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = res.data;
+      console.log("Success:", data);
+      return data;
+  } catch (err) {
+      console.error(err);
+  }
+}
   
-export { fetchAllEvents, fetchCreateEvent, fetchUpdateEvent };
+export { fetchAllEvents, fetchCreateEvent, fetchUpdateEvent , fetchCreateVoucherInEvent};
