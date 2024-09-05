@@ -5,7 +5,7 @@ import QuizModal from "../QuizModal/QuizModal";
 import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
 import { name, type } from "tedious/lib/data-types/null";
 import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
-import { fetchCreateEvent } from "@/services/api/eventApi";
+import { fetchCreateEvent } from "@/services/api/eventAPI";
 import { fetchCreateQuiz } from "@/services/api/quizApi";
 import { fetchCreateQuestion } from "@/services/api/questionApi";
 
@@ -61,15 +61,22 @@ const Modal = ({ show, onClose, onAddEvent }) => {
 
   const validateDate = (dateStr) => {
     const dateObj = new Date(dateStr);
-    return dateObj.toString() === 'Invalid Date' ? "Ngày không hợp lệ!" : "";
+    return dateObj.toString() === "Invalid Date" ? "Ngày không hợp lệ!" : "";
   };
 
   const validateForm = () => {
     const newErrors = {
       data: data.length === 0 ? "Chưa có voucher cho sự kiện!" : "",
-      eventName: eventName.trim() === "" ? "Tên sự kiện không được bỏ trống!" : "",
-      startDate: startDate.trim() === "" ? "Ngày bắt đầu không được bỏ trống!" : validateDate(startDate),
-      endDate: endDate.trim() === "" ? "Ngày kết thúc không được bỏ trống!" : validateDate(endDate),
+      eventName:
+        eventName.trim() === "" ? "Tên sự kiện không được bỏ trống!" : "",
+      startDate:
+        startDate.trim() === ""
+          ? "Ngày bắt đầu không được bỏ trống!"
+          : validateDate(startDate),
+      endDate:
+        endDate.trim() === ""
+          ? "Ngày kết thúc không được bỏ trống!"
+          : validateDate(endDate),
       image: !image ? "Ảnh không được để trống!" : "",
     };
 
@@ -81,32 +88,32 @@ const Modal = ({ show, onClose, onAddEvent }) => {
   const handleSubmit = async () => {
     if (validateForm()) {
       console.log("Form submitted");
-  
+
       // Create a new event object
       const new_event = {
         type: selectedType,
-        id_game: "550e8400-e29b-41d4-a716-446655440000",  //fake id
-        id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        id_game: "550e8400-e29b-41d4-a716-446655440000", //fake id
+        id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690", //fake id
         name: eventName,
         image: image.name,
         start_time: startDate,
-        end_time: endDate
+        end_time: endDate,
       };
-      
+
       console.log("New Event:", new_event);
-  
+
       try {
         // Create the event and get the result
         const result = await fetchCreateEvent(new_event);
         console.log("Event creation success:", result);
-  
+
         // If the selected type is "Quiz", create the quiz and its questions
         if (selectedType === "Quiz") {
           const new_quiz = {
-            id_event: result.id, 
-            id_game: "550e8400-e29b-41d4-a716-446655440000"  //fake id
+            id_event: result.id,
+            id_game: "550e8400-e29b-41d4-a716-446655440000", //fake id
           };
-  
+
           const quiz_result = await fetchCreateQuiz(new_quiz);
           console.log("Quiz creation success:", quiz_result);
           console.log(quizData);
@@ -118,27 +125,25 @@ const Modal = ({ show, onClose, onAddEvent }) => {
               choice_2: question.choice_2,
               choice_3: question.choice_3,
               choice_4: question.choice_4,
-              answer: question.answer
+              answer: question.answer,
             };
-            
+
             const question_result = await fetchCreateQuestion(new_question);
             console.log("Question creation success:", question_result);
           }
         }
-  
+
         // Call the onAddEvent to update the parent component's state
         onAddEvent(result);
-  
+
         // Close the modal and notify the user
         onClose();
         alert("New event created successfully!");
-  
       } catch (error) {
         console.error("Error during event creation:", error);
       }
     }
   };
-  
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -156,7 +161,7 @@ const Modal = ({ show, onClose, onAddEvent }) => {
 
   const handleChangeImage = (event) => {
     console.log(event.target.files);
-    
+
     const [file] = event.target.files;
     if (file) {
       setImage(file);
@@ -169,7 +174,6 @@ const Modal = ({ show, onClose, onAddEvent }) => {
     setSelectedType(event.target.value);
   };
 
-  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -192,42 +196,55 @@ const Modal = ({ show, onClose, onAddEvent }) => {
   const openVoucherModal = () => {
     setIsVoucherModalOpen(true);
   };
-  
+
   const closeVoucherModal = () => {
     setIsVoucherModalOpen(false);
   };
-  
+
   const handleSelectVoucher = (voucher) => {
     // Check if the voucher is already in the table
     console.log(voucher);
-    const isVoucherAlreadySelected = data.some((item) => item.voucher_code === voucher.voucher_code);
+    const isVoucherAlreadySelected = data.some(
+      (item) => item.voucher_code === voucher.voucher_code,
+    );
     if (!isVoucherAlreadySelected) {
       // Add the selected voucher to the table data
-      setTableData((prevTableData) => [...prevTableData, {...voucher, quantity: 1}]);
+      setTableData((prevTableData) => [
+        ...prevTableData,
+        { ...voucher, quantity: 1 },
+      ]);
     }
     setIsVoucherModalOpen(false);
     console.log(data);
     console.log("currentItems:", currentItems);
   };
 
-
   //For Quiz settings
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
-  const [quizData, setQuizData] = useState([{ id: 1, ques: '', choice_1: '', choice_2: '', choice_3: '', choice_4: '', answer: 0 }]);
+  const [quizData, setQuizData] = useState([
+    {
+      id: 1,
+      ques: "",
+      choice_1: "",
+      choice_2: "",
+      choice_3: "",
+      choice_4: "",
+      answer: 0,
+    },
+  ]);
 
   const openQuizModal = () => {
     console.log("Opening Quiz Modal");
     setIsQuizModalOpen(true);
   };
 
-  
   const handleChangeItems = (event) => {
     console.log(event.target.files);
-    
+
     const [file] = event.target.files;
     if (file) {
       setItems([...items, file]);
-      setItemImages([...itemImages, URL.createObjectURL(file)])
+      setItemImages([...itemImages, URL.createObjectURL(file)]);
     }
   };
 
@@ -247,16 +264,19 @@ const Modal = ({ show, onClose, onAddEvent }) => {
         </button>
         <div className="addevent-modal-body">
           <div className="addevent-form-group">
-            <label><strong>Tên sự kiện:</strong></label>
-            {errors.eventName && 
-              <span className="addevent-error-text"
+            <label>
+              <strong>Tên sự kiện:</strong>
+            </label>
+            {errors.eventName && (
+              <span
+                className="addevent-error-text"
                 style={{
-                  right: '40px',
+                  right: "40px",
                 }}
               >
                 {errors.eventName}
               </span>
-            }
+            )}
             <input
               type="text"
               className="form-control"
@@ -265,7 +285,14 @@ const Modal = ({ show, onClose, onAddEvent }) => {
             />
           </div>
 
-          <div className="row addevent-form-group container" style={{ display: "flex", alignItems: "center", flexWrap: "nowrap" }}>
+          <div
+            className="row addevent-form-group container"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "nowrap",
+            }}
+          >
             <div className="addevent-Date-created col-6">
               <strong style={{ marginRight: "10px" }}>Ngày bắt đầu:</strong>
               <input
@@ -275,17 +302,16 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 onChange={(e) => setStartDate(e.target.value)}
                 style={{ width: "150px", padding: "10px" }}
               />
-              {errors.startDate && 
-                <span className="addevent-error-text"
-                  style={{
-                  }}
-                >
+              {errors.startDate && (
+                <span className="addevent-error-text" style={{}}>
                   {errors.startDate}
                 </span>
-              }
+              )}
             </div>
             <div className="Date-end col-6">
-              <label><strong>Ngày kết thúc:</strong></label>
+              <label>
+                <strong>Ngày kết thúc:</strong>
+              </label>
               <input
                 type="date"
                 className="form-control"
@@ -293,19 +319,18 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 onChange={(e) => setEndDate(e.target.value)}
                 style={{ width: "150px", padding: "10px" }}
               />
-              {errors.endDate && 
-                <span className="addevent-error-text"
-                  style={{
-                  }}
-                >
+              {errors.endDate && (
+                <span className="addevent-error-text" style={{}}>
                   {errors.endDate}
                 </span>
-              }
+              )}
             </div>
           </div>
 
           <div className="addevent-form-group">
-            <label><strong>Hình ảnh:</strong></label>
+            <label>
+              <strong>Hình ảnh:</strong>
+            </label>
             <div className="row addevent-image-input">
               <label
                 style={{
@@ -323,7 +348,11 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 {prevImage == null ? (
                   <div className="addevent-add-image-button">Thêm ảnh</div>
                 ) : (
-                  <img src={prevImage} alt="Preview" style={{ width: "150px" }} />
+                  <img
+                    src={prevImage}
+                    alt="Preview"
+                    style={{ width: "150px" }}
+                  />
                 )}
               </label>
 
@@ -341,7 +370,13 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 {prevImage == null ? (
                   <div>file...name.jpg</div>
                 ) : (
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", height: "24px" }}>
+                  <span
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      height: "24px",
+                    }}
+                  >
                     {prevImage}
                   </span>
                 )}
@@ -355,30 +390,44 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 style={{ display: "none" }}
               />
             </div>
-            {errors.image && 
-              <span className="addevent-error-text"
-                style={{
-                }}
-              >
+            {errors.image && (
+              <span className="addevent-error-text" style={{}}>
                 {errors.image}
               </span>
-            }
+            )}
           </div>
 
-          <div className="row addevent-voucher addevent-form-group container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            className="row addevent-voucher addevent-form-group container"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <div className="col">
-              <div style={{ marginBottom: '4px' }}>
+              <div style={{ marginBottom: "4px" }}>
                 <strong>VOUCHER</strong>
               </div>
-              {errors.data && 
-                <span className="addevent-error-text" style={{ color: 'red', fontSize: '0.875rem' }}>
+              {errors.data && (
+                <span
+                  className="addevent-error-text"
+                  style={{ color: "red", fontSize: "0.875rem" }}
+                >
                   {errors.data}
                 </span>
-              }
+              )}
             </div>
 
-            <button className="addevent-add-voucher-button" onClick={openVoucherModal}>
-              <img src={PlusIcon} alt="Add" style={{ marginRight: "0px", display: "inline" }} />
+            <button
+              className="addevent-add-voucher-button"
+              onClick={openVoucherModal}
+            >
+              <img
+                src={PlusIcon}
+                alt="Add"
+                style={{ marginRight: "0px", display: "inline" }}
+              />
               Thêm voucher
             </button>
 
@@ -393,7 +442,10 @@ const Modal = ({ show, onClose, onAddEvent }) => {
           </div>
 
           <div className="addevent-form-group">
-            <table className="table table-bordered my-3" style={{ fontSize: "12px", width: "100%" }}>
+            <table
+              className="table table-bordered my-3"
+              style={{ fontSize: "12px", width: "100%" }}
+            >
               <thead>
                 <tr>
                   <th scope="col">Phần Trăm</th>
@@ -407,26 +459,39 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                     <td>{item.value}%</td>
                     <td>{item.max_discount} vnđ</td>
                     <td>
-                      <input type="text" value={item.quantity} onChange={(event) => {
-                        console.log(event.target.value);
-                        const newData = data.map(i => {
-                          if (i.voucher_code === item.voucher_code) {
-                            return {...i, quantity: event.target.value}
-                          }
-                          return i;
-                        })
-                        setTableData(newData)
-                      }}/>
+                      <input
+                        type="text"
+                        value={item.quantity}
+                        onChange={(event) => {
+                          console.log(event.target.value);
+                          const newData = data.map((i) => {
+                            if (i.voucher_code === item.voucher_code) {
+                              return { ...i, quantity: event.target.value };
+                            }
+                            return i;
+                          });
+                          setTableData(newData);
+                        }}
+                      />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button className="addevent-table-button" onClick={handlePreviousPage} disabled={currentPage === 1}>
+              <button
+                className="addevent-table-button"
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+              >
                 Previous
               </button>
-              <button className="addevent-table-button" onClick={handleNextPage} disabled={currentPage === totalPages} style={{ marginLeft: "10px" }}>
+              <button
+                className="addevent-table-button"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                style={{ marginLeft: "10px" }}
+              >
                 Next
               </button>
             </div>
@@ -434,29 +499,53 @@ const Modal = ({ show, onClose, onAddEvent }) => {
 
           <div className="row addevent-form-group">
             <div style={{ display: "flex", alignItems: "center" }}>
-              <label style={{ marginRight: "10px" }}><strong>Loại trò chơi:</strong></label>
+              <label style={{ marginRight: "10px" }}>
+                <strong>Loại trò chơi:</strong>
+              </label>
               <div style={{ display: "flex", flexDirection: "row" }}>
-                <input type="radio" className="addevent-radio form-check-input" name="type" value="Quiz" onClick={handleTypeChange} />
+                <input
+                  type="radio"
+                  className="addevent-radio form-check-input"
+                  name="type"
+                  value="Quiz"
+                  onClick={handleTypeChange}
+                />
                 <label style={{ marginRight: "15px" }}>Quiz</label>
 
-                <input type="radio" className="addevent-radio form-check-input" name="type" value="Lắc xì" onClick={handleTypeChange} />
+                <input
+                  type="radio"
+                  className="addevent-radio form-check-input"
+                  name="type"
+                  value="Lắc xì"
+                  onClick={handleTypeChange}
+                />
                 <label>Lắc xì</label>
               </div>
               {selectedType === "Quiz" && (
                 <div className="addevent-hiddent-box addevent-form-group">
-                  <button className="addevent-hidden-button" onClick={openQuizModal}>
+                  <button
+                    className="addevent-hidden-button"
+                    onClick={openQuizModal}
+                  >
                     Câu hỏi
                   </button>
                 </div>
-              )} 
+              )}
               {selectedType === "Lắc xì" && (
                 <div className="addevent-hiddent-box addevent-form-group">
                   <label className="btn btn-info" htmlFor="items">
                     Items
                   </label>
-                  <input type="file" id="items" name="items" multiple hidden onChange={(event) => {
-                    handleChangeItems(event);
-                  }}/>    
+                  <input
+                    type="file"
+                    id="items"
+                    name="items"
+                    multiple
+                    hidden
+                    onChange={(event) => {
+                      handleChangeItems(event);
+                    }}
+                  />
                 </div>
               )}
 
@@ -468,25 +557,33 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                   onClose={closeQuizModal}
                 />
               )}
-
-              
             </div>
           </div>
-          
-          {(itemImages.length > 0 && selectedType !== "Quiz") && (
-            <div className="row g-2" >
+
+          {itemImages.length > 0 && selectedType !== "Quiz" && (
+            <div className="row g-2">
               {itemImages.map((item, index) => (
-              <div className="card col-4 p-1">
-                <img src={item} style={{height: "120px", width: "100%"}} className="card-img-top" alt="..." />
-                <div className="card-body">
-                  <h5 className="card-title fw-bold">Item {index + 1}</h5>
+                <div className="card col-4 p-1">
+                  <img
+                    src={item}
+                    style={{ height: "120px", width: "100%" }}
+                    className="card-img-top"
+                    alt="..."
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title fw-bold">Item {index + 1}</h5>
+                  </div>
                 </div>
-              </div>
               ))}
             </div>
           )}
-          <div className="row addevent-form-group" style={{ display: "flex", justifyContent: "center" }}>
-            <button className="addevent-save-button" onClick={handleSubmit}>Thêm sự kiện</button>
+          <div
+            className="row addevent-form-group"
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <button className="addevent-save-button" onClick={handleSubmit}>
+              Thêm sự kiện
+            </button>
           </div>
         </div>
       </div>

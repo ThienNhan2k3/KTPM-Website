@@ -58,7 +58,7 @@ export default function TableBrand() {
       .get(`http://localhost:5000/account/getAll/${"brand"}`)
       .then((accounts) => {
         setData(accounts);
-        // console.log(accounts);
+        console.log(accounts);
       })
       .catch((err) => console.log(err));
   };
