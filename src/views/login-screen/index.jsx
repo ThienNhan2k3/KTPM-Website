@@ -15,6 +15,7 @@ import "./styles.css";
 import { useState } from "react";
 import { postLogin } from "@/services/api/authApi";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 
 function Login() {
@@ -22,12 +23,17 @@ function Login() {
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [buttonState, setButtonState] = useState(true);
   const handleLogin = async (event) => {
     event.preventDefault();
-    if (email != "" && password != "") {
-      event.target.disabled = true;
+    if (email.trim() != "" && password != "") {
+      setButtonState(false);
     }
-    await postLogin(email, password, navigate);
+    const data = await postLogin(email, password, navigate);
+    if (data.code == 400) {
+      toast.error(data.message);
+      setButtonState(true);
+    }
   };
 
 
@@ -129,6 +135,7 @@ function Login() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

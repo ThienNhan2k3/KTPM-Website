@@ -5,6 +5,7 @@ import QuizModal from "../QuizModal/QuizModal";
 import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
 import { name, type } from "tedious/lib/data-types/null";
 import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
+import { postCreateLacXiEvents } from "@/services/api/eventAPI";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
@@ -94,19 +95,19 @@ const Modal = ({ show, onClose }) => {
       console.log("New Event:", new_event);
 
       try {
-        const response = await fetch("http://localhost:5000/Event/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(new_event),
-        });
+        // const response = await fetch("http://localhost:5000/Event/create", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(new_event),
+        // });
   
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
+        // if (!response.ok) {
+        //   throw new Error("Network response was not ok");
+        // }
   
-        const result = await response.json();
+        // const result = await response.json();
         console.log("Success:", result);
   
         // Close the modal
@@ -436,10 +437,10 @@ const Modal = ({ show, onClose }) => {
               )} 
               {selectedType === "Lắc xì" && (
                 <div className="addevent-hiddent-box addevent-form-group">
-                  <label className="btn btn-info" htmlFor="files">
+                  <label className="btn btn-info" htmlFor="items">
                     Items
                   </label>
-                  <input type="file" id="files" name="files" multiple hidden onChange={(event) => {
+                  <input type="file" id="items" name="items" multiple hidden onChange={(event) => {
                     handleChangeItems(event);
                   }}/>    
                 </div>
