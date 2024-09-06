@@ -12,34 +12,38 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 import * as Toast from "@radix-ui/react-toast";
 
+import * as RadioGroup from "@radix-ui/react-radio-group";
+
 import React from "react";
 
 import { baseAPI } from "@/services/api";
 
 const AddDialog = ({ callbackfn }) => {
   const [open1, setOpen1] = React.useState(false);
-  // const [imageError, setImageError] = React.useState(false);
+  const [imageError, setImageError] = React.useState(false);
   const [, setShow] = React.useState(false);
-  // const [, setImage] = React.useState(null);
-  // const [prevImage, setPrevImage] = React.useState(null);
+  const [, setImage] = React.useState(null);
+  const [prevImage, setPrevImage] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [showMessage, setShowMessage] = React.useState(false);
+  const [file, setFile] = React.useState(null);
   const timerRef = React.useRef(0);
   const wait = () => new Promise((resolve) => setTimeout(resolve, 100));
 
   const handleClose = () => {
     setShow(false);
-    // setPrevImage(null);
-    // setImageError(false);
+    setPrevImage(null);
+    setImageError(false);
   };
 
-  // const handleChangeImage = (event) => {
-  //   const [file] = event.target.files;
-  //   if (file) {
-  //     setImage(file);
-  //     setPrevImage(URL.createObjectURL(file));
-  //   }
-  // };
+  const handleChangeImage = (event) => {
+    const [file] = event.target.files;
+    if (file) {
+      setImage(file);
+      setPrevImage(URL.createObjectURL(file));
+      setFile(file);
+    }
+  };
 
   const handleSubmit = (event, data) => {
     event.preventDefault();
@@ -59,12 +63,12 @@ const AddDialog = ({ callbackfn }) => {
     });
 
     // Validate image and qrCode specifically
-    // if (!prevImage) {
-    //   setImageError(true);
-    //   hasError = true;
-    // } else {
-    //   setImageError(false);
-    // }
+    if (!prevImage) {
+      setImageError(true);
+      hasError = true;
+    } else {
+      setImageError(false);
+    }
 
     if (hasError) {
       // Trigger native validation messages
@@ -82,7 +86,7 @@ const AddDialog = ({ callbackfn }) => {
     console.log(data);
 
     baseAPI
-      .post(`http://localhost:5000/voucher/create`, data)
+      .postForm(`/voucher/create`, data, file)
       .then((result) => {
         console.log(result.message);
         if (result.message === "voucher_code") {
@@ -301,94 +305,141 @@ const AddDialog = ({ callbackfn }) => {
                     </Form.Control>
                   </Form.Field>
 
-                  {/* <Form.Field className="FormField" name="image">
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "baseline",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Form.Label className="FormLabel">Hình ảnh</Form.Label>
-                    {imageError && (
-                      <Form.Message className="FormMessage">
-                        <InfoCircledIcon className="FormIcon" />
-                        Trường này không được để trống!
-                      </Form.Message>
-                    )}
-                  </div>
+                  <Form.Field className="FormField" name="image">
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "baseline",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Form.Label className="FormLabel">Hình ảnh</Form.Label>
+                      {imageError && (
+                        <Form.Message className="FormMessage">
+                          <InfoCircledIcon className="FormIcon" />
+                          Trường này không được để trống!
+                        </Form.Message>
+                      )}
+                    </div>
 
-                  <Form.Control asChild>
-                    <div className="ChooseFileSpace">
-                      <label
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          border: "1px solid #3FA2F6",
-                          padding: "5px 15px",
-                          width: "fit-content",
-                          borderRadius: "8px",
-                          cursor: "pointer",
-                        }}
-                        htmlFor="thumbnail-image"
-                      >
-                        {prevImage == null ? (
-                          <>
-                            <div
+                    <Form.Control asChild>
+                      <div className="ChooseFileSpace">
+                        <label
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            border: "1px solid #3FA2F6",
+                            padding: "5px 15px",
+                            width: "fit-content",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                          }}
+                          htmlFor="thumbnail-image"
+                        >
+                          {prevImage == null ? (
+                            <>
+                              <div
+                                style={{
+                                  color: "#69b4f3",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                Choose File
+                              </div>
+                            </>
+                          ) : (
+                            <img
+                              src={prevImage}
+                              alt=""
+                              style={{ width: "150px" }}
+                            />
+                          )}
+                        </label>
+
+                        <label
+                          style={{
+                            marginLeft: "15px",
+                            display: "flex",
+                            alignItems: "end",
+                            width: "180px",
+                            pointerEvents: "none",
+                          }}
+                          htmlFor="thumbnail-image"
+                        >
+                          {prevImage == null ? (
+                            <>
+                              <div>file...name.jpg</div>
+                            </>
+                          ) : (
+                            <span
                               style={{
-                                color: "#69b4f3",
-                                fontWeight: "500",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                height: "24px",
                               }}
                             >
-                              Choose File
-                            </div>
-                          </>
-                        ) : (
-                          <img
-                            src={prevImage}
-                            alt=""
-                            style={{ width: "150px" }}
-                          />
-                        )}
-                      </label>
+                              {prevImage}
+                            </span>
+                          )}
+                        </label>
+                        <input
+                          type="file"
+                          id="thumbnail-image"
+                          name="thumbnail-image"
+                          accept="image/*"
+                          onChange={(event) => handleChangeImage(event)}
+                          style={{ display: "none" }}
+                        />
+                      </div>
+                    </Form.Control>
+                  </Form.Field>
 
-                      <label
-                        style={{
-                          marginLeft: "15px",
-                          display: "flex",
-                          alignItems: "end",
-                          width: "180px",
-                          pointerEvents: "none",
-                        }}
-                        htmlFor="thumbnail-image"
-                      >
-                        {prevImage == null ? (
-                          <>
-                            <div>file...name.jpg</div>
-                          </>
-                        ) : (
-                          <span
-                            style={{
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              height: "24px",
-                            }}
-                          >
-                            {prevImage}
-                          </span>
-                        )}
-                      </label>
-                      <input
-                        type="file"
-                        id="thumbnail-image"
-                        name="thumbnail-image"
-                        accept="image/*"
-                        onChange={(event) => handleChangeImage(event)}
-                        style={{ display: "none" }}
-                      />
+                  <Form.Field className="FormField" name="type">
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "baseline",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Form.Label className="FormLabel">
+                        Hình thức sử dụng
+                      </Form.Label>
                     </div>
-                  </Form.Control>
-                </Form.Field> */}
+                    <Form.Control asChild>
+                      <RadioGroup.Root
+                        className="RadioGroupRoot"
+                        defaultValue="ONLINE"
+                        aria-label="View density"
+                      >
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <RadioGroup.Item
+                            className="RadioGroupItem"
+                            value="ONLINE"
+                            id="ONLINE"
+                          >
+                            <RadioGroup.Indicator className="RadioGroupIndicator" />
+                          </RadioGroup.Item>
+                          <label className="Label-radiogroup" htmlFor="r2">
+                            Online
+                          </label>
+                        </div>
+
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <RadioGroup.Item
+                            className="RadioGroupItem"
+                            value="OFFLINE"
+                            id="OFFLINE"
+                          >
+                            <RadioGroup.Indicator className="RadioGroupIndicator" />
+                          </RadioGroup.Item>
+                          <label className="Label-radiogroup" htmlFor="r1">
+                            Offline
+                          </label>
+                        </div>
+                      </RadioGroup.Root>
+                    </Form.Control>
+                  </Form.Field>
 
                   <Form.Field className="FormField" name="status">
                     <div style={{ display: "flex", alignItems: "center" }}>
@@ -443,7 +494,11 @@ const AddDialog = ({ callbackfn }) => {
       </Dialog.Root>
 
       <Toast.Provider swipeDirection="right">
-        <Toast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
+        <Toast.Root
+          className="ToastRoot UpdateSuccess"
+          open={open}
+          onOpenChange={setOpen}
+        >
           <Toast.Title className="ToastTitle">
             Tạo voucher thành công!
           </Toast.Title>

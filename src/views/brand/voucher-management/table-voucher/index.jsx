@@ -70,7 +70,7 @@ export default function TableVoucher() {
   const getData = () => {
     baseAPI
       .get(
-        `http://localhost:5000/voucher/getVoucherByIdBrand/${"05e44252-ff08-4a0a-b238-93cf3c5382a6"}`,
+        `/voucher/getVoucherByIdBrand/${"05e44252-ff08-4a0a-b238-93cf3c5382a6"}`,
       )
       .then((vouchers) => {
         setData(vouchers);
