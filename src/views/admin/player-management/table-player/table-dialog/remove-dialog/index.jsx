@@ -15,7 +15,7 @@ const RemoveDialog = ({ selectedRow, callbackfn }) => {
   const deleteData = () => {
     console.log(selectedRow?.id);
     baseAPI
-      .del(`http://localhost:5000/account/delete/${"user"}/${selectedRow?.id}`)
+      .del(`/account/delete/${"user"}/${selectedRow?.id}`)
       .then((result) => {
         console.log(result.message);
         if (result.message === "Success") {
@@ -72,7 +72,11 @@ const RemoveDialog = ({ selectedRow, callbackfn }) => {
       </AlertDialog.Portal>
 
       <Toast.Provider swipeDirection="right">
-        <Toast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
+        <Toast.Root
+          className="ToastRoot UpdateSuccess"
+          open={open}
+          onOpenChange={setOpen}
+        >
           <Toast.Title className="ToastTitle">
             Xóa tài khoản thành công!
           </Toast.Title>

@@ -12,6 +12,8 @@ import dayjs from "dayjs";
 
 import * as Toast from "@radix-ui/react-toast";
 
+import * as RadioGroup from "@radix-ui/react-radio-group";
+
 import React from "react";
 
 import { baseAPI } from "@/services/api";
@@ -29,10 +31,7 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
     console.log(data);
 
     baseAPI
-      .put(
-        `http://localhost:5000/voucher/update/${selectedRow.voucher_code}`,
-        data,
-      )
+      .put(`/voucher/update/${selectedRow.voucher_code}`, data)
       .then((result) => {
         console.log(result.message);
         if (result.message === "Success") {
@@ -231,6 +230,54 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
                         )}
                       </label>
                     </div>
+                  </Form.Control>
+                </Form.Field>
+
+                <Form.Field className="FormField" name="type">
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "baseline",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Form.Label className="FormLabel">
+                      Hình thức sử dụng
+                    </Form.Label>
+                  </div>
+                  <Form.Control asChild>
+                    <RadioGroup.Root
+                      className="RadioGroupRoot"
+                      defaultValue={selectedRow?.type}
+                      aria-label="View density"
+                      disabled
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <RadioGroup.Item
+                          className="RadioGroupItem"
+                          value="ONLINE"
+                          id="ONLINE"
+                        >
+                          <RadioGroup.Indicator className="RadioGroupIndicator" />
+                        </RadioGroup.Item>
+                        <label className="Label-radiogroup" htmlFor="r2">
+                          Online
+                        </label>
+                      </div>
+
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <RadioGroup.Item
+                          className="RadioGroupItem"
+                          value="OFFLINE"
+                          id="OFFLINE"
+                        >
+                          <RadioGroup.Indicator className="RadioGroupIndicator" />
+                        </RadioGroup.Item>
+                        <label className="Label-radiogroup" htmlFor="r1">
+                          Offline
+                        </label>
+                      </div>
+                    </RadioGroup.Root>
                   </Form.Control>
                 </Form.Field>
 

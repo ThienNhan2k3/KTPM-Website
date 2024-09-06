@@ -31,10 +31,7 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
     data.status = data.status ? "Active" : "Inactive";
 
     baseAPI
-      .put(
-        `http://localhost:5000/account/update/${"user"}/${selectedRow.id}`,
-        data,
-      )
+      .put(`/account/update/${"user"}/${selectedRow.id}`, data)
       .then((result) => {
         console.log(result.message);
         if (result.message === "Success") {
@@ -74,6 +71,7 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
                     <ChevronDownIcon />
                   </Select.Icon>
                 </Select.Trigger>
+
                 <Select.Portal>
                   <Select.Content className="SelectContent">
                     <Select.Viewport className="SelectViewport">
@@ -83,6 +81,7 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
                           <CheckIcon />
                         </Select.ItemIndicator>
                       </Select.Item>
+
                       <Select.Item value="Người chơi" className="SelectItem">
                         <Select.ItemText>Người chơi</Select.ItemText>
                         <Select.ItemIndicator className="SelectItemIndicator">
@@ -111,7 +110,7 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
                     src={selectedRow?.avatar}
                     alt="VOU"
                   />
-                  <Avatar.Fallback className="AvatarFallback" delayMs={600}>
+                  <Avatar.Fallback className="AvatarFallback" delayMs={100}>
                     VOU
                   </Avatar.Fallback>
                 </Avatar.Root>
@@ -279,6 +278,7 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
                           Nam
                         </label>
                       </div>
+
                       <div
                         style={{
                           display: "flex",

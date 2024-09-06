@@ -55,7 +55,7 @@ export default function TableBrand() {
 
   const getData = () => {
     baseAPI
-      .get(`http://localhost:5000/account/getAll/${"brand"}`)
+      .get(`/account/getAll/${"brand"}`)
       .then((accounts) => {
         setData(accounts);
         // console.log(accounts);
@@ -158,7 +158,7 @@ export default function TableBrand() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "includesString", //using our custom fuzzy filter function
+        filterFn: "equalsString", //using our custom fuzzy filter function
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
@@ -269,6 +269,7 @@ export default function TableBrand() {
                     row={row}
                     onClick={(row) => getDataRow(row)}
                   />
+
                   <EditDialog
                     selectedRow={selectedRow}
                     callbackfn={getData}
