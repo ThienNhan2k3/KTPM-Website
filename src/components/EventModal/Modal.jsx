@@ -4,8 +4,12 @@ import PlusIcon from "@assets/images/plus-icon.png";
 import { set } from "date-fns";
 import QuizModal from "../QuizModal/QuizModal";
 import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
-import { fetchAllActiveVouchers, fetchAllVoucherInEvent } from "@/services/api/voucherApi";
-import { fetchUpdateEvent } from "@/services/api/eventApi";
+import { fetchAllActiveVouchers} from "@/services/api/voucherApi";
+import {  fetchUpdateEvent, 
+          fetchAllVoucherInEvent, 
+          fetchCreateVoucherInEvent, 
+          fetchUpdateVoucherInEvent 
+       } from "@/services/api/eventApi";
 import { fetchQuizByEvent } from "@/services/api/quizApi";
 import { fetchQuestionByQuiz } from "@/services/api/questionApi";
 
@@ -127,6 +131,30 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
         const result = await fetchUpdateEvent(itemData.id, updated_event);
         console.log("Update Success:", result);
 
+        //Update voucher in event
+        console.log("Voucher in event:",data);
+        for(const voucher in data){
+          if (voucher.Voucher) {
+            // If "Voucher" attribute exists, update the voucher in event
+            const voucher_in_event = {
+              id_voucher_code: voucher.id_voucher_code,
+              id_event: voucher.id_event,
+              exp_date: result.end_time,
+              total_quantity: voucher.total_quantity
+            };
+            const voucher_in_event_result = await fetchUpdateVoucherInEvent(voucher.id, voucher_in_event);
+          } else {
+            // If "Voucher" attribute does not exist, create a new voucher in event
+            const voucher_in_event = {
+              id_voucher_code: voucher.voucher_code,
+              id_event: result.id,
+              exp_date: result.end_time,
+              total_quantity: voucher.quantity
+            };
+            const voucher_in_event_result = await fetchCreateVoucherInEvent(voucher_in_event);
+          }
+        }
+
         // Close the modal
         onUpdateEvent(result);
         onClose();
@@ -190,6 +218,19 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
       setCurrentPage(currentPage - 1);
     }
   };
+
+  const handleQuantityChange = (event, item) => {
+    if (item.editable) {
+      const newData = data.map(i => {
+        if (i.voucher_code === item.voucher_code) {
+          return {...i, quantity: Number(event.target.value)};
+        }
+        return i;
+      });
+      setTableData(newData);
+    }
+  };
+  
 
   //For select voucher
   const openVoucherModal = () => {
@@ -395,19 +436,16 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
                   <tbody>
                     {currentItems.map((item) => (
                       <tr key={item.id}>
-                        <td>{item.Voucher.value}%</td>
-                        <td>{item.Voucher.max_discount} vnđ</td>
+                        <td>{item.Voucher?.value ? item.Voucher.value : item.value}%</td>
+                        <td>{item.Voucher?.max_discount ? item.Voucher.max_discount : item.max_discount} vnđ</td>
                         <td>
-                          <input type="text" value={item.total_quantity} onChange={(event) => {
-                            console.log(event.target.value);
-                            const newData = data.map(i => {
-                              if (i.voucher_code === item.voucher_code) {
-                                return {...i, quantity: event.target.value}
-                              }
-                              return i;
-                            })
-                            setTableData(newData)
-                          }}/>
+                          <input 
+                            type="number"
+                            min="0"
+                            value={item.total_quantity || ''} 
+                            onChange={(event) => handleQuantityChange(event, item)}
+                            disabled={!item.editable} // Disable input if not editable
+                          />
                         </td>
                       </tr>
                     ))}
