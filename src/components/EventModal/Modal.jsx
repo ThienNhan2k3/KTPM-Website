@@ -5,13 +5,9 @@ import { set } from "date-fns";
 import QuizModal from "../QuizModal/QuizModal";
 import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
 import { fetchAllActiveVouchers} from "@/services/api/voucherApi";
-import {  fetchUpdateEvent, 
-          fetchAllVoucherInEvent, 
-          fetchCreateVoucherInEvent, 
-          fetchUpdateVoucherInEvent 
-       } from "@/services/api/eventApi";
+import {  fetchUpdateEvent, fetchAllVoucherInEvent, fetchCreateVoucherInEvent, fetchUpdateVoucherInEvent } from "@/services/api/eventApi";
 import { fetchQuizByEvent } from "@/services/api/quizApi";
-import { fetchQuestionByQuiz } from "@/services/api/questionApi";
+import { fetchCreateQuestion, fetchUpdateQuestion, fetchDeleteQuestion, fetchQuestionByQuiz } from "@/services/api/questionApi";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
@@ -33,6 +29,8 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
   const [startDate, setStartDate] = useState(itemData.start_time);
   const [endDate, setEndDate] = useState(itemData.end_time);
   const [quizData, setQuizData] = useState([]);
+  const [ID_quiz, setId_quiz] = useState([]);
+  const [originQuiz, setOriginQuiz] = useState([]);
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
   const [errors, setErrors] = useState({
     eventName: "",
@@ -46,8 +44,9 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
     const fetchVoucherInEventData = async () => {
       try {
         const vouchersInEvent = await fetchAllVoucherInEvent(itemData.id);
-        console.log(vouchersInEvent);
-        setTableData(vouchersInEvent || []); // Set fetched vouchers to table data
+        //console.log(vouchersInEvent);
+        setTableData(vouchersInEvent || []); 
+        //console.log(data);// Set fetched vouchers to table data
       } catch (error) {
         console.error("Error fetching vouchers in event:", error);
       }
@@ -64,8 +63,9 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
 
         if (quiz && quiz.id) {
           const questions = await fetchQuestionByQuiz(quiz.id);
-
+          setId_quiz(quiz.id);
           setQuizData(questions);
+          setOriginQuiz(questions);
         }
       } catch (error) {
         console.error("Error fetching quiz data:", error);
@@ -133,7 +133,7 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
 
         //Update voucher in event
         console.log("Voucher in event:",data);
-        for(const voucher in data){
+        for(const voucher of data){
           if (voucher.Voucher) {
             // If "Voucher" attribute exists, update the voucher in event
             const voucher_in_event = {
@@ -149,9 +149,48 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
               id_voucher_code: voucher.voucher_code,
               id_event: result.id,
               exp_date: result.end_time,
-              total_quantity: voucher.quantity
+              total_quantity: voucher.total_quantity
             };
             const voucher_in_event_result = await fetchCreateVoucherInEvent(voucher_in_event);
+          }
+        }
+
+        // If the selected type is "Quiz", update its questions
+        if (itemData.type === "Quiz") {
+          for(const question of originQuiz) {
+            if(!quizData.includes(question)) {
+              //featch api delete question
+              const result_delete_question = await fetchDeleteQuestion(question.id);
+            }
+          }
+          for (const question of quizData) {
+            if(originQuiz.some(q => q.id === question.id)) {
+              //featch api update question
+              const update_question = {
+                id_quiz: question.id_quiz,
+                ques: question.ques,
+                choice_1: question.choice_1,
+                choice_2: question.choice_2,
+                choice_3: question.choice_3,
+                choice_4: question.choice_4,
+                answer: question.answer
+              };
+              
+              const result_update_question = await fetchUpdateQuestion(question.id, update_question);
+            } else {
+              //featch api create question
+              const new_question = {
+                id_quiz: ID_quiz,
+                ques: question.ques,
+                choice_1: question.choice_1,
+                choice_2: question.choice_2,
+                choice_3: question.choice_3,
+                choice_4: question.choice_4,
+                answer: question.answer
+              };
+              
+              const result_new_question = await fetchCreateQuestion(new_question);
+            }
           }
         }
 
@@ -216,18 +255,6 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleQuantityChange = (event, item) => {
-    if (item.editable) {
-      const newData = data.map(i => {
-        if (i.voucher_code === item.voucher_code) {
-          return {...i, quantity: Number(event.target.value)};
-        }
-        return i;
-      });
-      setTableData(newData);
     }
   };
   
@@ -440,12 +467,20 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
                         <td>{item.Voucher?.max_discount ? item.Voucher.max_discount : item.max_discount} vnđ</td>
                         <td>
                           <input 
-                            type="number"
-                            min="0"
-                            value={item.total_quantity || ''} 
-                            onChange={(event) => handleQuantityChange(event, item)}
-                            disabled={!item.editable} // Disable input if not editable
-                          />
+                          type="number" 
+                          min="0"
+                          value={parseInt(item.total_quantity,10)} 
+                          onChange={(event) => {
+                            console.log(event.target.value);
+                            const newData = data.map(i => {
+                              if (i.id === item.id) {
+                                return {...i, total_quantity: Number(event.target.value)}
+                              }
+                              return i;
+                            })
+                            setTableData(newData)
+                          }
+                          }/>
                         </td>
                       </tr>
                     ))}

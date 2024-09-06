@@ -101,7 +101,7 @@ const Modal = ({ show, onClose, onAddEvent }) => {
         const result = await fetchCreateEvent(new_event);
         console.log("Event creation success:", result);
   
-        // Featch selected voucher
+        // Featch create selected voucher
         if(data.length) {
           for (const voucher of data) {
             const new_voucher_in_event = {
