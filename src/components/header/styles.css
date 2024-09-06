@@ -56,3 +56,20 @@
     justify-content: start;
   }
 }
+
+.dropdown-item {
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  padding: 0 5px;
+  position: relative;
+  padding-left: 25px;
+  user-select: none;
+  outline: none;
+}
+
+.dropdown-item:hover {
+  background-color: #0f67b1;
+  color: white;
+}

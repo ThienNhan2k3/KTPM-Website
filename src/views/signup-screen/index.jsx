@@ -17,7 +17,6 @@ import "./styles.css";
 import { baseAPI } from "@/services/api";
 import NotiDialog from "./noti-dialog";
 
-
 function SignUp() {
   const [showMessage1, setShowMessage1] = useState(false);
   const [showMessage2, setShowMessage2] = useState(false);
@@ -29,7 +28,7 @@ function SignUp() {
     const data = Object.fromEntries(new FormData(event.currentTarget));
 
     baseAPI
-      .post(`http://localhost:5000/account/create/brand`, data)
+      .post(`/account/create/brand`, data)
       .then((result) => {
         console.log(result.message);
         if (result.message === "brand_name, email") {

@@ -79,7 +79,7 @@ function App() {
         <Route
           element={<PrivateRoutes />}
           loader={privateRoutesLoader}
-          errorElement={<h3>You don't have a permision</h3>}
+          errorElement={<h3>You don&apos;t have a permision</h3>}
         >
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />

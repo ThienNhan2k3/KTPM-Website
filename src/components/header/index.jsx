@@ -5,7 +5,7 @@ import threeLine from "@assets/images/three-line.png";
 import { HeaderTitleContext } from "@/services/state/headerTitleContext";
 import { useContext } from "react";
 
-import Dropdown from 'react-bootstrap/Dropdown';
+import Dropdown from "react-bootstrap/Dropdown";
 import { getLogout } from "@/services/api/authApi";
 
 import { useNavigate } from "react-router-dom";
@@ -44,37 +44,37 @@ export default function Header({ linkArray, showSidePanel }) {
             
           </div>
         </div> */}
-      <Dropdown>
-      <Dropdown.Toggle  
-        id="dropdown-basic" 
-        style={{
-          backgroundColor: "transparent", 
-          border: "none", 
-          padding: "0px",
-          height: "40px",
-          width: "40px",
-        }}
-      >
-        <img 
-          src={userPlaceholder} 
-          alt="user placeholder"
-          />
-      </Dropdown.Toggle>
-      
-      
+        <Dropdown>
+          <Dropdown.Toggle
+            id="dropdown-basic"
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              padding: "0px",
+              height: "40px",
+              width: "40px",
+            }}
+          >
+            <img src={userPlaceholder} alt="user placeholder" />
+          </Dropdown.Toggle>
 
-      <Dropdown.Menu>
-        <div class="dropdown-item" onClick={async () => {
-          const data = await getLogout();
-          if (data.code == 200) {
-            navigate("/");
-          }
-        }}>Đăng xuất</div>
-        <Link class="dropdown-item" to="#">Thông tin cá nhân</Link>
-      </Dropdown.Menu>
-    </Dropdown>
-        
-      
+          <Dropdown.Menu>
+            <div
+              className="dropdown-item"
+              onClick={async () => {
+                const data = await getLogout();
+                if (data.code == 200) {
+                  navigate("/");
+                }
+              }}
+            >
+              Đăng xuất
+            </div>
+            <Link class="dropdown-item" to="#">
+              Thông tin cá nhân
+            </Link>
+          </Dropdown.Menu>
+        </Dropdown>
       </header>
     </div>
   );
