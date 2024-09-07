@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Modal.css";
 import PlusIcon from "@assets/images/plus-icon.png";
+import ItemIcon from "@assets/images/item.png";
 import { set } from "date-fns";
 import QuizModal from "../QuizModal/QuizModal";
 import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModal";
@@ -8,6 +9,7 @@ import { fetchAllActiveVouchers} from "@/services/api/voucherApi";
 import {  fetchUpdateEvent, fetchAllVoucherInEvent, fetchCreateVoucherInEvent, fetchUpdateVoucherInEvent } from "@/services/api/eventApi";
 import { fetchQuizByEvent } from "@/services/api/quizApi";
 import { fetchCreateQuestion, fetchUpdateQuestion, fetchDeleteQuestion, fetchQuestionByQuiz } from "@/services/api/questionApi";
+import { fetchGetItemsInEvent, fetchCreateItem, fetchDeleteItem } from "@/services/api/itemApi";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
@@ -32,6 +34,10 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
   const [ID_quiz, setId_quiz] = useState([]);
   const [originQuiz, setOriginQuiz] = useState([]);
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
+  const [items, setItems] = useState([]);
+  const [o_items, setO_Items] = useState([]);
+  const [itemImages, setItemImages] = useState([]);
+
   const [errors, setErrors] = useState({
     eventName: "",
     startDate: "",
@@ -55,25 +61,36 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
     fetchVoucherInEventData();
   }, [itemData]);
 
-  // Fetch quiz data based on id_event
+  //Fetch question or item in event
   useEffect(() => {
-    const fetchQuizData = async () => {
+    const fetchData = async () => {
       try {
-        const quiz = await fetchQuizByEvent(itemData.id);
-
-        if (quiz && quiz.id) {
-          const questions = await fetchQuestionByQuiz(quiz.id);
-          setId_quiz(quiz.id);
-          setQuizData(questions);
-          setOriginQuiz(questions);
+        if (itemData.type === "Quiz") {
+          // fetch question data
+          const quiz = await fetchQuizByEvent(itemData.id);
+          if (quiz && quiz.id) {
+            const questions = await fetchQuestionByQuiz(quiz.id);
+            setId_quiz(quiz.id);
+            setQuizData(questions);
+            setOriginQuiz(questions);
+          }
+        } else if (itemData.type === "Lắc xì") {
+          //fetch item data
+          const itemsInEvent = await fetchGetItemsInEvent(itemData.id);
+          console.error("Items in event:", itemsInEvent);
+          const itemsWithImages = itemsInEvent.map(item => ({ ...item, image: ItemIcon }));
+          setItems(itemsWithImages);
+          setO_Items(itemsWithImages);
+          setItemImages(itemsWithImages.map(item => item.image));
         }
       } catch (error) {
-        console.error("Error fetching quiz data:", error);
+        console.error("Error fetching data:", error);
       }
     };
-
-    fetchQuizData();
+  
+    fetchData();
   }, [itemData]);
+  
 
   // Fetch voucher data
   useEffect(() => {
@@ -133,26 +150,8 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
 
         //Update voucher in event
         console.log("Voucher in event:",data);
-        for(const voucher of data){
-          if (voucher.Voucher) {
-            // If "Voucher" attribute exists, update the voucher in event
-            const voucher_in_event = {
-              id_voucher_code: voucher.id_voucher_code,
-              id_event: voucher.id_event,
-              exp_date: result.end_time,
-              total_quantity: voucher.total_quantity
-            };
-            const voucher_in_event_result = await fetchUpdateVoucherInEvent(voucher.id, voucher_in_event);
-          } else {
-            // If "Voucher" attribute does not exist, create a new voucher in event
-            const voucher_in_event = {
-              id_voucher_code: voucher.voucher_code,
-              id_event: result.id,
-              exp_date: result.end_time,
-              total_quantity: voucher.total_quantity
-            };
-            const voucher_in_event_result = await fetchCreateVoucherInEvent(voucher_in_event);
-          }
+        for (const voucher of data) {
+          await processVoucherInEvent(voucher, result);
         }
 
         // If the selected type is "Quiz", update its questions
@@ -192,6 +191,31 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
               const result_new_question = await fetchCreateQuestion(new_question);
             }
           }
+        } else if (itemData.type == "Lắc xì") {
+          //console.log("Items:", items);
+          for(const item of o_items) {
+            if(!items.includes(item)) {
+              //Delete old item
+              const result_delete_item = await fetchDeleteItem(item.id);
+            }
+          }
+          for (let index = 0; index < items.length; index++) {
+            const item = items[index];
+            if(item.type) {
+              const new_item = {
+                id_event: result.id,
+                name: `Item ${index + 1}`, // Use index to create unique names
+                image: item.name,
+              };
+            
+              try {
+                const new_item_result = await fetchCreateItem(new_item);
+                console.log("Item creation success:", new_item_result);
+              } catch (error) {
+                console.error("Error during item creation:", error);
+              }
+            }
+          }
         }
 
         // Close the modal
@@ -201,15 +225,33 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
       } catch (error) {
         console.error("Error:", error);
       }
-
-
-      // Gather all form data
-      const formData = {
-        selectedVouchers: data,
-        quizData: quizData,
-      };
     }
   };
+
+
+  //process Voucher in Event when submit
+  const processVoucherInEvent = async (voucher, result) => {
+    if (voucher.Voucher) {
+      // Update voucher in event
+      const voucher_in_event = {
+        id_voucher_code: voucher.id_voucher_code,
+        id_event: voucher.id_event,
+        exp_date: result.end_time,
+        total_quantity: voucher.total_quantity
+      };
+      await fetchUpdateVoucherInEvent(voucher.id, voucher_in_event);
+    } else {
+      // Create new voucher in event
+      const voucher_in_event = {
+        id_voucher_code: voucher.voucher_code,
+        id_event: result.id,
+        exp_date: result.end_time,
+        total_quantity: voucher.total_quantity
+      };
+      await fetchCreateVoucherInEvent(voucher_in_event);
+    }
+  };
+  
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -224,14 +266,22 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
     };
   }, [onClose]);
 
+  // Reset to first page whenever data changes
+  useEffect(() => {
+    setCurrentPage(1);  
+  }, [data]);
+  
+
   const handleChangeImage = (event) => {
     const [file] = event.target.files;
-    if (file) {
+    if (file && file.type.startsWith("image/")) {
       setImage(file);
       setPrevImage(URL.createObjectURL(file));
-      setImageError(false);
+    } else {
+      setErrors({ ...errors, image: "Please upload a valid image file." });
     }
   };
+  
 
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
@@ -294,6 +344,18 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
 
   const handleQuizDataChange = (updatedQuizData) => {
     setQuizData(updatedQuizData);
+  };
+
+  //for Item settings
+  const handleChangeItems = (event) => {
+    console.log(event.target.files);
+    console.log(items);
+    const [file] = event.target.files;
+    if (file) {
+      setItems([...items, file]);
+      setItemImages([...itemImages, URL.createObjectURL(file)])
+    }
+    console.log(items);
   };
 
   return (
@@ -530,6 +592,41 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent}) => {
                   )}
                 </div>
               </div>
+
+              {(itemImages.length > 0 && itemData.type !== "Quiz") && (
+                <div className="row g-2">
+                  {itemImages.map((item, index) => (
+                    <div className="card col-4 p-1" key={index} style={{ position: 'relative' }}>
+                      {/* 'X' button for deleting the item */}
+                      <button
+                        style={{
+                          position: 'absolute',
+                          top: '5px',
+                          right: '5px',
+                          backgroundColor: 'red',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '50%',
+                          cursor: 'pointer',
+                          zIndex: 1
+                        }}
+                        onClick={() => {
+                          const updatedItems = items.filter((_, i) => i !== index);
+                          const updatedItemImages = itemImages.filter((_, i) => i !== index);
+                          setItems(updatedItems);
+                          setItemImages(updatedItemImages);
+                        }}
+                      >
+                        X
+                      </button>
+                      <img src={item} style={{ height: "120px", width: "100%" }} className="card-img-top" alt={`Item ${index + 1}`} />
+                      <div className="card-body">
+                        <h5 className="card-title fw-bold">Item {index + 1}</h5>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <div className="editevent-save editevent-form-group" style={{ display: 'flex', justifyContent: 'center' }}>
                 <button className="editevent-save-button" onClick={handleSubmit}>

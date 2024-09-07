@@ -20,7 +20,7 @@ const fetchCreateEvent = async (new_event) => {
         },
       });
       const data = res.data;
-      console.log("Success:", data);
+      //console.log("Success:", data);
       return data;
   } catch (err) {
       console.error(err);
@@ -35,7 +35,7 @@ const fetchUpdateEvent = async (id, update_event) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Event updated successfully:", res.data);
+    //console.log("Event updated successfully:", res.data);
     return res.data;
   } catch (err) {
     console.error("Error updating event:", err);
@@ -62,7 +62,7 @@ const fetchCreateVoucherInEvent = async (new_voucher_in_event) => {
         },
       });
       const data = res.data;
-      console.log("Success:", data);
+      //console.log("Success:", data);
       return data;
   } catch (err) {
       console.error(err);
@@ -76,7 +76,7 @@ const fetchUpdateVoucherInEvent = async (id, update_voucher) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Event updated successfully:", res.data);
+    //console.log("Event updated successfully:", res.data);
     return res.data;
   } catch (err) {
     console.error("Error updating event:", err);
@@ -84,19 +84,5 @@ const fetchUpdateVoucherInEvent = async (id, update_voucher) => {
   }
 };
 
-const fetchCreateItem = async (new_item) => {
-  try {
-      const res = await axios.post("/item/create", new_item, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = res.data;
-      console.log("Success:", data);
-      return data;
-  } catch (err) {
-      console.error(err);
-  }
-}
   
-export { fetchAllEvents, fetchCreateEvent, fetchUpdateEvent, fetchAllVoucherInEvent, fetchCreateVoucherInEvent, fetchUpdateVoucherInEvent, fetchCreateItem};
+export { fetchAllEvents, fetchCreateEvent, fetchUpdateEvent, fetchAllVoucherInEvent, fetchCreateVoucherInEvent, fetchUpdateVoucherInEvent};

@@ -6,9 +6,10 @@ import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModa
 import { name, type } from "tedious/lib/data-types/null";
 import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
 
-import { fetchCreateEvent, fetchCreateVoucherInEvent, fetchCreateItem } from "@/services/api/eventApi";
+import { fetchCreateEvent, fetchCreateVoucherInEvent } from "@/services/api/eventApi";
 import { fetchCreateQuiz } from "@/services/api/quizApi";
 import { fetchCreateQuestion } from "@/services/api/questionApi";
+import { fetchCreateItem } from "@/services/api/itemApi";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
