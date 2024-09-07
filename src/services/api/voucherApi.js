@@ -11,6 +11,27 @@ const fetchAllActiveVouchers = async () => {
     
 }
 
+const fetchCountAllActiveVouchers = async () => {
+    try {
+        const res = await axios.get("/voucher/countAll_active");
+        const data = res.data;
+        return data;
+    } catch (err) {
+        console.error(err);
+    }
+    
+}
+
+const fetchCountAllInactiveVouchers = async () => {
+    try {
+        const res = await axios.get("/voucher/countAll_inactive");
+        const data = res.data;
+        return data;
+    } catch (err) {
+        console.error(err);
+    }
+    
+}
 
 
-export {fetchAllActiveVouchers}
+export {fetchAllActiveVouchers, fetchCountAllActiveVouchers, fetchCountAllInactiveVouchers}
