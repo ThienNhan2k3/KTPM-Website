@@ -279,26 +279,6 @@ const ProfileBrand = () => {
         </div>
 
         <div className="row">
-          <Form.Field className="FormField col" name="password">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                justifyContent: "space-between",
-              }}
-            >
-              <Form.Label className="FormLabel">Mật khẩu</Form.Label>
-            </div>
-            <Form.Control asChild>
-              <input
-                className="Input"
-                type="password"
-                defaultValue={data.password}
-                disabled
-              />
-            </Form.Control>
-          </Form.Field>
-
           <Form.Field className="FormField col" name="phone">
             <div
               style={{
