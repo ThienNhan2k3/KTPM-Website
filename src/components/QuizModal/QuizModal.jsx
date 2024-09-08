@@ -23,8 +23,8 @@ const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
       answer: 0, 
       time_update: new Date().toISOString()
     };
-    
     onQuizDataChange([...quizData, newQuiz]);
+    console.log(quizData);
     setNextId(nextId + 1);
   };
 
@@ -86,7 +86,7 @@ const QuizModal = ({ quizData, onQuizDataChange, onClose }) => {
                   <input
                     type="radio"
                     className="quizbox-radio form-check-input"
-                    checked={quiz.answer === i}
+                    checked={parseInt(quiz.answer, 10) === i}
                     onChange={() => handleQuizChange(quiz.id, 'answer', i)}
                   />
                 </div>

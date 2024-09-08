@@ -42,6 +42,16 @@ const fetchUpdateQuestion = async (id, update_question) => {
   }
 };
 
+const fetchDeleteQuestion = async (id) => {
+  try {
+    const res = await axios.delete(`/question/delete/${id}`);
+    return res.data;
+  } catch (err) {
+    console.error("Error deleting question:", err);
+    return null; // Return null or handle the error appropriately
+  }
+};
+
 const fetchQuestionByQuiz = async (id) => {
   try {
     const res = await axios.get(`/question/get_byQuiz/${id}`);
@@ -52,4 +62,4 @@ const fetchQuestionByQuiz = async (id) => {
   }
 };
 
-export { fetchAllQuestions, fetchCreateQuestion, fetchUpdateQuestion, fetchQuestionByQuiz };
+export { fetchAllQuestions, fetchCreateQuestion, fetchUpdateQuestion, fetchDeleteQuestion, fetchQuestionByQuiz };

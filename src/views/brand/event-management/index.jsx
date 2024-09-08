@@ -8,7 +8,7 @@ import AddEventModal from "../../../components/AddEventModal/Modal";
 import "./styles.css";
 import { makeData } from "./table-event/makeData";
 import { fa } from "@faker-js/faker";
-// import { fetchAllEvents } from "@/services/api/eventApi";
+import { fetchAllEvents } from "@/services/api/eventApi";
 
 const ITEMS_PER_PAGE = 10;
 

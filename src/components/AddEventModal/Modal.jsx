@@ -9,6 +9,7 @@ import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
 import { fetchCreateEvent, fetchCreateVoucherInEvent } from "@/services/api/eventApi";
 import { fetchCreateQuiz } from "@/services/api/quizApi";
 import { fetchCreateQuestion } from "@/services/api/questionApi";
+import { fetchCreateItem } from "@/services/api/itemApi";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
@@ -101,7 +102,7 @@ const Modal = ({ show, onClose, onAddEvent }) => {
         const result = await fetchCreateEvent(new_event);
         console.log("Event creation success:", result);
   
-        // Featch selected voucher
+        // Featch create selected voucher
         if(data.length) {
           for (const voucher of data) {
             const new_voucher_in_event = {
@@ -139,6 +140,23 @@ const Modal = ({ show, onClose, onAddEvent }) => {
             const question_result = await fetchCreateQuestion(new_question);
             console.log("Question creation success:", question_result);
           }
+        } else {
+          for (let index = 0; index < items.length; index++) {
+            const item = items[index];
+            const new_item = {
+              id_event: result.id,
+              name: `Item ${index + 1}`, // Use index to create unique names
+              image: item.name,
+            };
+          
+            try {
+              const new_item_result = await fetchCreateItem(new_item);
+              console.log("Item creation success:", new_item_result);
+            } catch (error) {
+              console.error("Error during item creation:", error);
+            }
+          }
+          
         }
   
         // Call the onAddEvent to update the parent component's state
@@ -239,12 +257,13 @@ const Modal = ({ show, onClose, onAddEvent }) => {
   
   const handleChangeItems = (event) => {
     console.log(event.target.files);
-    
+    console.log(items);
     const [file] = event.target.files;
     if (file) {
       setItems([...items, file]);
       setItemImages([...itemImages, URL.createObjectURL(file)])
     }
+    console.log(items);
   };
 
   const closeQuizModal = () => {
@@ -495,17 +514,40 @@ const Modal = ({ show, onClose, onAddEvent }) => {
           </div>
           
           {(itemImages.length > 0 && selectedType !== "Quiz") && (
-            <div className="row g-2" >
+            <div className="row g-2">
               {itemImages.map((item, index) => (
-              <div className="card col-4 p-1">
-                <img src={item} style={{height: "120px", width: "100%"}} className="card-img-top" alt="..." />
-                <div className="card-body">
-                  <h5 className="card-title fw-bold">Item {index + 1}</h5>
+                <div className="card col-4 p-1" key={index} style={{ position: 'relative' }}>
+                  {/* 'X' button for deleting the item */}
+                  <button
+                    style={{
+                      position: 'absolute',
+                      top: '5px',
+                      right: '5px',
+                      backgroundColor: 'red',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '50%',
+                      cursor: 'pointer',
+                      zIndex: 1
+                    }}
+                    onClick={() => {
+                      const updatedItems = items.filter((_, i) => i !== index);
+                      const updatedItemImages = itemImages.filter((_, i) => i !== index);
+                      setItems(updatedItems);
+                      setItemImages(updatedItemImages);
+                    }}
+                  >
+                    X
+                  </button>
+                  <img src={item} style={{ height: "120px", width: "100%" }} className="card-img-top" alt={`Item ${index + 1}`} />
+                  <div className="card-body">
+                    <h5 className="card-title fw-bold">Item {index + 1}</h5>
+                  </div>
                 </div>
-              </div>
               ))}
             </div>
           )}
+
           <div className="row addevent-form-group" style={{ display: "flex", justifyContent: "center" }}>
             <button className="addevent-save-button" onClick={handleSubmit}>Thêm sự kiện</button>
           </div>
