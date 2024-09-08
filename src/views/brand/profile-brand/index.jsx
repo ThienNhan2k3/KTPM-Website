@@ -38,6 +38,8 @@ const ProfileBrand = () => {
     setShow(false);
   };
 
+  const id = readCookie("id");
+
   const handleChangeImage = (event) => {
     const [file] = event.target.files;
     if (file) {
@@ -48,7 +50,7 @@ const ProfileBrand = () => {
 
   const getData = () => {
     baseAPI
-      .get(`/account/getAccount/${"brand"}/${readCookie("id")}`)
+      .get(`/account/getAccount/${"brand"}/${id}`)
       .then((account) => {
         setData(account);
         // console.log(accounts);
@@ -68,11 +70,7 @@ const ProfileBrand = () => {
 
   const updateData = (data) => {
     baseAPI
-      .putForm(
-        `/account/update/information/brand/${"05e44252-ff08-4a0a-b238-93cf3c5382a6"}`,
-        data,
-        file,
-      )
+      .putForm(`/account/update/information/brand/${id}`, data, file)
       .then((result) => {
         console.log(result.message);
         if (result.message === "Success") {

@@ -34,6 +34,8 @@ const ProfileAdmin = () => {
     setShow(false);
   };
 
+  const id = readCookie("id");
+
   const handleChangeImage = (event) => {
     const [file] = event.target.files;
     if (file) {
@@ -44,7 +46,7 @@ const ProfileAdmin = () => {
 
   const getData = () => {
     baseAPI
-      .get(`/account/getAccount/${"user"}/${readCookie("id")}`)
+      .get(`/account/getAccount/${"user"}/${id}`)
       .then((account) => {
         setData(account);
         console.log(account);
@@ -58,11 +60,7 @@ const ProfileAdmin = () => {
 
   const updateData = (data) => {
     baseAPI
-      .putForm(
-        `/account/update/information/user/${"985d94b0-b101-435c-9f5d-96c22e814068"}`,
-        data,
-        file,
-      )
+      .putForm(`/account/update/information/user/${id}`, data, file)
       .then((result) => {
         console.log(result.message);
         if (result.message === "Success") {

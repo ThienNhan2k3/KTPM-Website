@@ -24,6 +24,20 @@ export default function Header({ linkArray, showSidePanel }) {
     setOpen(isOpen);
   };
 
+  const checkType = async () => {
+    const type = readCookie("type");
+    console.log(type);
+    if (type !== "") {
+      return type;
+    } else {
+      const data = await getLogout();
+      if (data.code == 200) {
+        navigate("/");
+      }
+      return type;
+    }
+  };
+
   return (
     <div className="header-bar">
       <header
@@ -83,7 +97,7 @@ export default function Header({ linkArray, showSidePanel }) {
 
             <Link
               class="dropdown-item"
-              to={`/${readCookie("type")}/profile`}
+              to={`/${checkType()}/profile`}
               onClick={() => setOpen(false)}
             >
               Thông tin cá nhân
@@ -91,7 +105,7 @@ export default function Header({ linkArray, showSidePanel }) {
 
             <Link
               class="dropdown-item"
-              to={`/${readCookie("type")}/changepassword`}
+              to={`/${checkType()}/changepassword`}
               onClick={() => setOpen(false)}
             >
               Thay đổi mật khẩu
