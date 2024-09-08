@@ -277,26 +277,6 @@ const ProfileAdmin = () => {
           </Form.Control>
         </Form.Field>
 
-        <Form.Field className="FormField" name="password">
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-            }}
-          >
-            <Form.Label className="FormLabel">Mật khẩu</Form.Label>
-          </div>
-          <Form.Control asChild>
-            <input
-              className="Input"
-              type="password"
-              defaultValue={data.password}
-              disabled
-            />
-          </Form.Control>
-        </Form.Field>
-
         <Form.Field className="FormField" name="email">
           <div
             style={{
