@@ -10,12 +10,13 @@ import { getLogout } from "@/services/api/authApi";
 
 import { useNavigate } from "react-router-dom";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import readCookie from "../../services/api/read_cookie";
 
 export default function Header({ linkArray, showSidePanel }) {
   const { headerTitle, setHeaderTitle } = useContext(HeaderTitleContext);
+  const [type, setType] = useState("");
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
@@ -25,18 +26,21 @@ export default function Header({ linkArray, showSidePanel }) {
   };
 
   const checkType = async () => {
-    const type = readCookie("type");
+    const type = await readCookie("type");
     console.log(type);
     if (type !== "") {
-      return type;
+      setType(type);
     } else {
       const data = await getLogout();
       if (data.code == 200) {
         navigate("/");
       }
-      return type;
     }
   };
+
+  useEffect(() => {
+    checkType();
+  }, []); // Chỉ chạy một lần khi component được mount
 
   return (
     <div className="header-bar">
@@ -97,7 +101,7 @@ export default function Header({ linkArray, showSidePanel }) {
 
             <Link
               class="dropdown-item"
-              to={`/${checkType()}/profile`}
+              to={`/${type}/profile`}
               onClick={() => setOpen(false)}
             >
               Thông tin cá nhân
@@ -105,7 +109,7 @@ export default function Header({ linkArray, showSidePanel }) {
 
             <Link
               class="dropdown-item"
-              to={`/${checkType()}/changepassword`}
+              to={`/${type}/changepassword`}
               onClick={() => setOpen(false)}
             >
               Thay đổi mật khẩu
