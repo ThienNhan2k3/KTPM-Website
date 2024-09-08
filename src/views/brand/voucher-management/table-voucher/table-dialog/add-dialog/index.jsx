@@ -18,6 +18,8 @@ import React from "react";
 
 import { baseAPI } from "@/services/api";
 
+import readCookie from "../../../../../../services/api/read_cookie";
+
 const AddDialog = ({ callbackfn }) => {
   const [open1, setOpen1] = React.useState(false);
   const [imageError, setImageError] = React.useState(false);
@@ -86,7 +88,7 @@ const AddDialog = ({ callbackfn }) => {
     console.log(data);
 
     baseAPI
-      .postForm(`/voucher/create`, data, file)
+      .postForm(`/voucher/create/${readCookie("id")}`, data, file)
       .then((result) => {
         console.log(result.message);
         if (result.message === "voucher_code") {

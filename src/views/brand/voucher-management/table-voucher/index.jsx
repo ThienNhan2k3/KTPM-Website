@@ -27,6 +27,7 @@ import RemoveDialog from "./table-dialog/remove-dialog";
 import Pagination from "./pagination";
 import { baseAPI } from "@/services/api";
 import dayjs from "dayjs";
+import readCookie from "../../../../services/api/read_cookie";
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -67,11 +68,11 @@ export default function TableVoucher() {
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [data, setData] = React.useState([]);
 
+  //${"05e44252-ff08-4a0a-b238-93cf3c5382a6"}
+
   const getData = () => {
     baseAPI
-      .get(
-        `/voucher/getVoucherByIdBrand/${"05e44252-ff08-4a0a-b238-93cf3c5382a6"}`,
-      )
+      .get(`/voucher/getVoucherByIdBrand/${readCookie("id")}`)
       .then((vouchers) => {
         setData(vouchers);
       })

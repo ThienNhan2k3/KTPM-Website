@@ -5,14 +5,38 @@ import threeLine from "@assets/images/three-line.png";
 import { HeaderTitleContext } from "@/services/state/headerTitleContext";
 import { useContext } from "react";
 
-import Dropdown from 'react-bootstrap/Dropdown';
+import Dropdown from "react-bootstrap/Dropdown";
 import { getLogout } from "@/services/api/authApi";
 
 import { useNavigate } from "react-router-dom";
 
+import React from "react";
+
+import readCookie from "../../services/api/read_cookie";
+
 export default function Header({ linkArray, showSidePanel }) {
   const { headerTitle, setHeaderTitle } = useContext(HeaderTitleContext);
   const navigate = useNavigate();
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleToggle = (isOpen) => {
+    setOpen(isOpen);
+  };
+
+  const checkType = async () => {
+    const type = readCookie("type");
+    console.log(type);
+    if (type !== "") {
+      return type;
+    } else {
+      const data = await getLogout();
+      if (data.code == 200) {
+        navigate("/");
+      }
+      return type;
+    }
+  };
 
   return (
     <div className="header-bar">
@@ -44,37 +68,50 @@ export default function Header({ linkArray, showSidePanel }) {
             
           </div>
         </div> */}
-      <Dropdown>
-      <Dropdown.Toggle  
-        id="dropdown-basic" 
-        style={{
-          backgroundColor: "transparent", 
-          border: "none", 
-          padding: "0px",
-          height: "40px",
-          width: "40px",
-        }}
-      >
-        <img 
-          src={userPlaceholder} 
-          alt="user placeholder"
-          />
-      </Dropdown.Toggle>
-      
-      
+        <Dropdown show={open} onToggle={handleToggle}>
+          <Dropdown.Toggle
+            id="dropdown-basic"
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              padding: "0px",
+              height: "40px",
+              width: "40px",
+            }}
+          >
+            <img src={userPlaceholder} alt="user placeholder" />
+          </Dropdown.Toggle>
 
-      <Dropdown.Menu>
-        <div class="dropdown-item" onClick={async () => {
-          const data = await getLogout();
-          if (data.code == 200) {
-            navigate("/");
-          }
-        }}>Đăng xuất</div>
-        <Link class="dropdown-item" to="#">Thông tin cá nhân</Link>
-      </Dropdown.Menu>
-    </Dropdown>
-        
-      
+          <Dropdown.Menu className="dropdown-menu">
+            <div
+              className="dropdown-item"
+              onClick={async () => {
+                const data = await getLogout();
+                if (data.code == 200) {
+                  navigate("/");
+                }
+              }}
+            >
+              Đăng xuất
+            </div>
+
+            <Link
+              class="dropdown-item"
+              to={`/${checkType()}/profile`}
+              onClick={() => setOpen(false)}
+            >
+              Thông tin cá nhân
+            </Link>
+
+            <Link
+              class="dropdown-item"
+              to={`/${checkType()}/changepassword`}
+              onClick={() => setOpen(false)}
+            >
+              Thay đổi mật khẩu
+            </Link>
+          </Dropdown.Menu>
+        </Dropdown>
       </header>
     </div>
   );

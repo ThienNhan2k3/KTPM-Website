@@ -17,13 +17,12 @@ import { postLogin } from "@/services/api/authApi";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
-
 function Login() {
   const navigate = useNavigate();
-  
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [buttonState, setButtonState] = useState(true);
+  const [, setButtonState] = useState(true);
   const handleLogin = async (event) => {
     event.preventDefault();
     if (email.trim() != "" && password != "") {
@@ -35,8 +34,6 @@ function Login() {
       setButtonState(true);
     }
   };
-
-
 
   return (
     <div className="login-screen container-fluid p-0 m-0 vh-100 d-flex flex-column justify-content-center">
@@ -95,9 +92,15 @@ function Login() {
                 </Form.Message>
               </div>
               <Form.Control asChild>
-                <input className="Input" type="email" value={email} onChange={(event) => {
-                  setEmail(event.target.value);
-                }} required />
+                <input
+                  className="Input"
+                  type="email"
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                  }}
+                  required
+                />
               </Form.Control>
             </Form.Field>
 
@@ -116,14 +119,22 @@ function Login() {
                 </Form.Message>
               </div>
               <Form.Control asChild>
-                <input className="Input" type="password" required value={password} onChange={(event) => {
-                  setPassword(event.target.value);
-                }} />
+                <input
+                  className="Input"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(event) => {
+                    setPassword(event.target.value);
+                  }}
+                />
               </Form.Control>
             </Form.Field>
 
             <Form.Submit asChild>
-              <button className="LoginTitle" onClick={handleLogin}>Đăng nhập</button>
+              <button className="LoginTitle" onClick={handleLogin}>
+                Đăng nhập
+              </button>
             </Form.Submit>
           </Form.Root>
 
