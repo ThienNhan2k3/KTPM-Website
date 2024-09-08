@@ -57,6 +57,17 @@
   }
 }
 
+.dropdown-menu {
+  min-width: 200px;
+  background-color: white;
+  border-radius: 6px;
+  overflow: hidden;
+  padding: 5px;
+  box-shadow:
+    2px 3px 30px -8px rgba(22, 23, 24, 0.5),
+    -2px -2px 20px -10px rgba(22, 23, 24, 0.5);
+}
+
 .dropdown-item {
   border-radius: 3px;
   display: flex;
@@ -67,6 +78,7 @@
   padding-left: 25px;
   user-select: none;
   outline: none;
+  cursor: pointer;
 }
 
 .dropdown-item:hover {

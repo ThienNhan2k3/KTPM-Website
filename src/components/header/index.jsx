@@ -10,9 +10,19 @@ import { getLogout } from "@/services/api/authApi";
 
 import { useNavigate } from "react-router-dom";
 
+import React from "react";
+
+import readCookie from "../../services/api/read_cookie";
+
 export default function Header({ linkArray, showSidePanel }) {
   const { headerTitle, setHeaderTitle } = useContext(HeaderTitleContext);
   const navigate = useNavigate();
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleToggle = (isOpen) => {
+    setOpen(isOpen);
+  };
 
   return (
     <div className="header-bar">
@@ -44,7 +54,7 @@ export default function Header({ linkArray, showSidePanel }) {
             
           </div>
         </div> */}
-        <Dropdown>
+        <Dropdown show={open} onToggle={handleToggle}>
           <Dropdown.Toggle
             id="dropdown-basic"
             style={{
@@ -58,7 +68,7 @@ export default function Header({ linkArray, showSidePanel }) {
             <img src={userPlaceholder} alt="user placeholder" />
           </Dropdown.Toggle>
 
-          <Dropdown.Menu>
+          <Dropdown.Menu className="dropdown-menu">
             <div
               className="dropdown-item"
               onClick={async () => {
@@ -70,8 +80,21 @@ export default function Header({ linkArray, showSidePanel }) {
             >
               Đăng xuất
             </div>
-            <Link class="dropdown-item" to="#">
+
+            <Link
+              class="dropdown-item"
+              to={`/${readCookie("type")}/profile`}
+              onClick={() => setOpen(false)}
+            >
               Thông tin cá nhân
+            </Link>
+
+            <Link
+              class="dropdown-item"
+              to={`/${readCookie("type")}/changepassword`}
+              onClick={() => setOpen(false)}
+            >
+              Thay đổi mật khẩu
             </Link>
           </Dropdown.Menu>
         </Dropdown>

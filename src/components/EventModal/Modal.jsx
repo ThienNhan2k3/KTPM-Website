@@ -7,9 +7,9 @@ import VoucherSelectionModal from "../VoucherSelectionModal/VoucherSelectionModa
 import { fetchAllActiveVouchers } from "@/services/api/voucherApi";
 import {
   fetchUpdateEvent,
-  fetchAllVoucherInEvent,
+  // fetchAllVoucherInEvent,
   fetchCreateVoucherInEvent,
-  fetchUpdateVoucherInEvent,
+  // fetchUpdateVoucherInEvent,
 } from "@/services/api/eventApi";
 import { fetchQuizByEvent } from "@/services/api/quizApi";
 import { fetchQuestionByQuiz } from "@/services/api/questionApi";

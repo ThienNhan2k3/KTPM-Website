@@ -25,7 +25,7 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
     data.status = data.status ? "Active" : "Inactive";
 
     baseAPI
-      .put(`/account/update/${"brand"}/${selectedRow.id}`, data)
+      .put(`/account/update/status/${"brand"}/${selectedRow.id}`, data)
       .then((result) => {
         console.log(result.message);
         if (result.message === "Success") {

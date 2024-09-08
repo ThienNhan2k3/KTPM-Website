@@ -219,7 +219,7 @@ function SignUp() {
             </div>
 
             <div className="row">
-              <Form.Field className="FormField" name="address">
+              <Form.Field className="FormField col" name="address">
                 <div
                   style={{
                     display: "flex",

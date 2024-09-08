@@ -62,6 +62,23 @@ const put = async (url, payload) => {
   }
 };
 
+const putForm = async (url, data, file) => {
+  try {
+    const form = new FormData();
+    form.append("my_data", JSON.stringify(data));
+    form.append("my_image", file);
+
+    const rawResult = await axios.put(url, form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return await rawResult.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 const del = async (url) => {
   try {
     const rawResult = await axios.delete(url);
@@ -71,4 +88,4 @@ const del = async (url) => {
   }
 };
 
-export const baseAPI = { get, post, put, del, postForm };
+export const baseAPI = { get, post, put, del, postForm, putForm };
