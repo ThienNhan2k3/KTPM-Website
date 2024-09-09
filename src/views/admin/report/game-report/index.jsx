@@ -7,7 +7,7 @@ import { changeHeaderTitle } from '@/lib/utils';
 import { useState, useEffect } from "react"
 
 import {generateDataForNumBrands} from "./makeData";
-import { convertToChartData } from '@/lib/utils';
+import { convertToPlayTimeChartData } from '@/lib/utils';
 
 export default function GameReport() {
     changeHeaderTitle("Thống kê trò chơi");

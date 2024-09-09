@@ -20,7 +20,7 @@ export default function BaseChart({title, data, yLabels, xLabel, colors}) {
           >
               <defs>
                   {colors.map(color => (
-                    <linearGradient id={`colorUv-${color.name}`} x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient key={`colorUv-${color.name}`} id={`colorUv-${color.name}`} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor={color.value} stopOpacity={0.8}/>
                     <stop offset="95%" stopColor={color.value} stopOpacity={0.2}/>
                     </linearGradient>
