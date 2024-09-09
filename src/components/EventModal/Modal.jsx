@@ -161,7 +161,7 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
         id_game: itemData.id_game, //"0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
         id_brand: itemData.id_brand, //"0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
         name: eventName,
-        image: image.name,
+        //image: image.name,
         start_time: startDate,
         end_time: endDate,
       };
@@ -474,11 +474,11 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
                     }}
                     htmlFor="thumbnail-image"
                   >
-                    {prevImage == null ? (
+                    {itemData.image == null ? (
                       <div className="editevent-add-image-button">Thêm ảnh</div>
                     ) : (
                       <img
-                        src={prevImage}
+                        src={itemData.image}
                         alt="Preview"
                         style={{ width: "150px" }}
                       />
@@ -495,7 +495,7 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
                     }}
                     htmlFor="thumbnail-image"
                   >
-                    {prevImage == null ? (
+                    {itemData.image == null ? (
                       <div>file...name.jpg</div>
                     ) : (
                       <span
@@ -505,7 +505,7 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
                           height: "24px",
                         }}
                       >
-                        {prevImage}
+                        {itemData.image}
                       </span>
                     )}
                   </label>
@@ -519,11 +519,12 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
                   />
                 </div>
                 {errors.image && (
-                  <span className="editevent-error-text" style={{}}>
+                  <span className="editevent-error-text">
                     {errors.image}
                   </span>
                 )}
               </div>
+
 
               <div
                 className="row editevent-voucher editevent-form-group container"

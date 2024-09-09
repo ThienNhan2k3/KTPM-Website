@@ -10,6 +10,8 @@ import { fetchCreateEvent, fetchCreateVoucherInEvent } from "@/services/api/even
 import { fetchCreateQuiz } from "@/services/api/quizApi";
 import { fetchCreateQuestion } from "@/services/api/questionApi";
 import { fetchCreateItem } from "@/services/api/itemApi";
+import { baseAPI } from "@/services/api";
+import { Item } from "@radix-ui/react-context-menu";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
@@ -46,6 +48,7 @@ const Modal = ({ show, onClose, onAddEvent }) => {
 
   // Fetch voucher data
   useEffect(() => {
+    console.log("Image:", ItemData.image);
     const fetchVoucherData = async () => {
       try {
         const data = await fetchAllActiveVouchers();
@@ -90,85 +93,88 @@ const Modal = ({ show, onClose, onAddEvent }) => {
         id_game: "550e8400-e29b-41d4-a716-446655440000",  //fake id
         id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
         name: eventName,
-        image: image.name,
+        //image: image.name,
         start_time: startDate,
         end_time: endDate
       };
       
       console.log("New Event:", new_event);
   
-      try {
-        // Create the event and get the result
-        const result = await fetchCreateEvent(new_event);
-        console.log("Event creation success:", result);
-  
-        // Featch create selected voucher
-        if(data.length) {
-          for (const voucher of data) {
-            const new_voucher_in_event = {
-              id_voucher_code: voucher.voucher_code,
-              id_event: result.id,
-              exp_date: result.end_time,
-              total_quantity: voucher.quantity
+      baseAPI
+        .postForm("/event/create", new_event, image)
+        .then(async (result) => {
+          console.log("Event creation success:", result);
+          
+          try {
+            // Featch create selected voucher
+            if(data.length) {
+              for (const voucher of data) {
+                const new_voucher_in_event = {
+                  id_voucher_code: voucher.voucher_code,
+                  id_event: result.id,
+                  exp_date: result.end_time,
+                  total_quantity: voucher.quantity
+                }
+
+                const voucher_in_event_result = await fetchCreateVoucherInEvent(new_voucher_in_event);
+              }
             }
 
-            const voucher_in_event_result = await fetchCreateVoucherInEvent(new_voucher_in_event);
-          }
-        }
-
-        // If the selected type is "Quiz", create the quiz and its questions
-        if (selectedType === "Quiz") {
-          const new_quiz = {
-            id_event: result.id, 
-            id_game: "550e8400-e29b-41d4-a716-446655440000"  //fake id
-          };
-  
-          const quiz_result = await fetchCreateQuiz(new_quiz);
-          console.log("Quiz creation success:", quiz_result);
-          console.log(quizData);
-          for (const question of quizData) {
-            const new_question = {
-              id_quiz: quiz_result.id,
-              ques: question.ques,
-              choice_1: question.choice_1,
-              choice_2: question.choice_2,
-              choice_3: question.choice_3,
-              choice_4: question.choice_4,
-              answer: question.answer
-            };
-            
-            const question_result = await fetchCreateQuestion(new_question);
-            console.log("Question creation success:", question_result);
-          }
-        } else {
-          for (let index = 0; index < items.length; index++) {
-            const item = items[index];
-            const new_item = {
-              id_event: result.id,
-              name: `Item ${index + 1}`, // Use index to create unique names
-              image: item.name,
-            };
-          
-            try {
-              const new_item_result = await fetchCreateItem(new_item);
-              console.log("Item creation success:", new_item_result);
-            } catch (error) {
-              console.error("Error during item creation:", error);
+            // If the selected type is "Quiz", create the quiz and its questions
+            if (selectedType === "Quiz") {
+              const new_quiz = {
+                id_event: result.id, 
+                id_game: "550e8400-e29b-41d4-a716-446655440000"  //fake id
+              };
+      
+              const quiz_result = await fetchCreateQuiz(new_quiz);
+              console.log("Quiz creation success:", quiz_result);
+              console.log(quizData);
+              for (const question of quizData) {
+                const new_question = {
+                  id_quiz: quiz_result.id,
+                  ques: question.ques,
+                  choice_1: question.choice_1,
+                  choice_2: question.choice_2,
+                  choice_3: question.choice_3,
+                  choice_4: question.choice_4,
+                  answer: question.answer
+                };
+                
+                const question_result = await fetchCreateQuestion(new_question);
+                console.log("Question creation success:", question_result);
+              }
+            } else {
+              for (let index = 0; index < items.length; index++) {
+                const item = items[index];
+                const new_item = {
+                  id_event: result.id,
+                  name: `Item ${index + 1}`, // Use index to create unique names
+                  image: item.name,
+                };
+              
+                try {
+                  const new_item_result = await fetchCreateItem(new_item);
+                  console.log("Item creation success:", new_item_result);
+                } catch (error) {
+                  console.error("Error during item creation:", error);
+                }
+              }
+              
             }
+    
+            // Call the onAddEvent to update the parent component's state
+            onAddEvent(result);
+      
+            // Close the modal and notify the user
+            onClose();
+            alert("New event created successfully!");
+    
+          } catch (error) {
+            console.error("Error during event creation:", error);
           }
-          
-        }
-  
-        // Call the onAddEvent to update the parent component's state
-        onAddEvent(result);
-  
-        // Close the modal and notify the user
-        onClose();
-        alert("New event created successfully!");
-  
-      } catch (error) {
-        console.error("Error during event creation:", error);
-      }
+        })
+        .catch((err) => console.log(err));
     }
   };
   
@@ -339,9 +345,11 @@ const Modal = ({ show, onClose, onAddEvent }) => {
             </div>
           </div>
 
-          <div className="addevent-form-group">
-            <label><strong>Hình ảnh:</strong></label>
-            <div className="row addevent-image-input">
+          <div className="editevent-form-group">
+            <label>
+              <strong>Hình ảnh:</strong>
+            </label>
+            <div className="row editevent-image-input">
               <label
                 style={{
                   width: "fit-content",
@@ -352,13 +360,16 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                   borderRadius: "8px",
                   cursor: "pointer",
                 }}
-                className="col"
                 htmlFor="thumbnail-image"
               >
-                {prevImage == null ? (
-                  <div className="addevent-add-image-button">Thêm ảnh</div>
+                {ItemData.image == null ? (
+                  <div className="editevent-add-image-button">Thêm ảnh</div>
                 ) : (
-                  <img src={prevImage} alt="Preview" style={{ width: "150px" }} />
+                  <img
+                    src={ItemData.image}
+                    alt="Preview"
+                    style={{ width: "150px" }}
+                  />
                 )}
               </label>
 
@@ -366,18 +377,23 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 style={{
                   marginLeft: "15px",
                   display: "flex",
-                  alignItems: "center",
+                  alignItems: "end",
                   width: "180px",
                   pointerEvents: "none",
                 }}
-                className="col"
                 htmlFor="thumbnail-image"
               >
-                {prevImage == null ? (
+                {ItemData.image == null ? (
                   <div>file...name.jpg</div>
                 ) : (
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", height: "24px" }}>
-                    {prevImage}
+                  <span
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      height: "24px",
+                    }}
+                  >
+                    {ItemData.image}
                   </span>
                 )}
               </label>
@@ -390,15 +406,13 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 style={{ display: "none" }}
               />
             </div>
-            {errors.image && 
-              <span className="addevent-error-text"
-                style={{
-                }}
-              >
+            {errors.image && (
+              <span className="editevent-error-text">
                 {errors.image}
               </span>
-            }
+            )}
           </div>
+
 
           <div className="row addevent-voucher addevent-form-group container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="col">
