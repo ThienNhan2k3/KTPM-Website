@@ -27,6 +27,8 @@ import TableContextMenu from "./context-menu";
 import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
 
+import io from "socket.io-client";
+
 const fuzzyFilter = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
   addMeta({ itemRank });
@@ -54,6 +56,11 @@ export default function TableBrand() {
   const [data, setData] = React.useState([]);
 
   const getData = () => {
+    const newSocket = io(`http://localhost:5000`);
+    newSocket?.on("message", (message) => {
+      console.log("message:::", message);
+    });
+
     baseAPI
       .get(`/account/getAll/${"brand"}`)
       .then((accounts) => {

@@ -28,7 +28,7 @@ function SignUp() {
     const data = Object.fromEntries(new FormData(event.currentTarget));
 
     baseAPI
-      .post(`/account/create/brand`, data)
+      .post(`/create/brand`, data)
       .then((result) => {
         console.log(result.message);
         if (result.message === "brand_name, email") {
