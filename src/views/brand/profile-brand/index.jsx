@@ -424,6 +424,12 @@ const ProfileBrand = () => {
                 className="Input"
                 type="text"
                 value={markerPos[1]}
+                onChange={(event) => {
+                  console.log("Change");
+                  if (event.target.value != null) {
+                    setMarkerPos([markerPos[0], Number(event.target.value)]);
+                  }
+                }}
                 required
               />
             </Form.Control>
