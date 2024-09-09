@@ -217,6 +217,10 @@ export default function TablePlayer() {
         <AddDialog callbackfn={getData} />
       </div>
       <div className="h-2" />
+      <p className="custom-notice">
+        *Nhấp chuột phải vào các dòng trong bảng để chọn thao tác chỉnh sửa hoặc
+        xóa thông tin.
+      </p>
       <table className="table-player">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
