@@ -10,6 +10,7 @@ import { fetchCreateEvent, fetchCreateVoucherInEvent } from "@/services/api/even
 import { fetchCreateQuiz } from "@/services/api/quizApi";
 import { fetchCreateQuestion } from "@/services/api/questionApi";
 import { fetchCreateItem } from "@/services/api/itemApi";
+import { baseAPI } from "@/services/api";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
@@ -84,91 +85,97 @@ const Modal = ({ show, onClose, onAddEvent }) => {
     if (validateForm()) {
       console.log("Form submitted");
   
+      const game = selectedType === "Quiz" 
+        ? "550e8400-e29b-41d4-a716-446655440000" 
+        : "550e8400-e29b-41d4-a716-446655440001";
+
       // Create a new event object
       const new_event = {
         type: selectedType,
-        id_game: "550e8400-e29b-41d4-a716-446655440000",  //fake id
-        id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        id_game: game,  //based on what kind of event
+        //id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
         name: eventName,
-        image: image.name,
+        //image: image.name,
         start_time: startDate,
         end_time: endDate
       };
       
       console.log("New Event:", new_event);
   
-      try {
-        // Create the event and get the result
-        const result = await fetchCreateEvent(new_event);
-        console.log("Event creation success:", result);
-  
-        // Featch create selected voucher
-        if(data.length) {
-          for (const voucher of data) {
-            const new_voucher_in_event = {
-              id_voucher_code: voucher.voucher_code,
-              id_event: result.id,
-              exp_date: result.end_time,
-              total_quantity: voucher.quantity
+      baseAPI
+        .postForm("/event/create", new_event, image)
+        .then(async (result) => {
+          console.log("Event creation success:", result);
+          
+          try {
+            // Featch create selected voucher
+            if(data.length) {
+              for (const voucher of data) {
+                const new_voucher_in_event = {
+                  id_voucher_code: voucher.voucher_code,
+                  id_event: result.id,
+                  exp_date: result.end_time,
+                  total_quantity: voucher.quantity
+                }
+
+                const voucher_in_event_result = await fetchCreateVoucherInEvent(new_voucher_in_event);
+              }
             }
 
-            const voucher_in_event_result = await fetchCreateVoucherInEvent(new_voucher_in_event);
-          }
-        }
-
-        // If the selected type is "Quiz", create the quiz and its questions
-        if (selectedType === "Quiz") {
-          const new_quiz = {
-            id_event: result.id, 
-            id_game: "550e8400-e29b-41d4-a716-446655440000"  //fake id
-          };
-  
-          const quiz_result = await fetchCreateQuiz(new_quiz);
-          console.log("Quiz creation success:", quiz_result);
-          console.log(quizData);
-          for (const question of quizData) {
-            const new_question = {
-              id_quiz: quiz_result.id,
-              ques: question.ques,
-              choice_1: question.choice_1,
-              choice_2: question.choice_2,
-              choice_3: question.choice_3,
-              choice_4: question.choice_4,
-              answer: question.answer
-            };
-            
-            const question_result = await fetchCreateQuestion(new_question);
-            console.log("Question creation success:", question_result);
-          }
-        } else {
-          for (let index = 0; index < items.length; index++) {
-            const item = items[index];
-            const new_item = {
-              id_event: result.id,
-              name: `Item ${index + 1}`, // Use index to create unique names
-              image: item.name,
-            };
-          
-            try {
-              const new_item_result = await fetchCreateItem(new_item);
-              console.log("Item creation success:", new_item_result);
-            } catch (error) {
-              console.error("Error during item creation:", error);
+            // If the selected type is "Quiz", create the quiz and its questions
+            if (selectedType === "Quiz") {
+              const new_quiz = {
+                id_event: result.id, 
+                id_game: "550e8400-e29b-41d4-a716-446655440000"  //fake id
+              };
+      
+              const quiz_result = await fetchCreateQuiz(new_quiz);
+              console.log("Quiz creation success:", quiz_result);
+              console.log(quizData);
+              for (const question of quizData) {
+                const new_question = {
+                  id_quiz: quiz_result.id,
+                  ques: question.ques,
+                  choice_1: question.choice_1,
+                  choice_2: question.choice_2,
+                  choice_3: question.choice_3,
+                  choice_4: question.choice_4,
+                  answer: question.answer
+                };
+                
+                const question_result = await fetchCreateQuestion(new_question);
+                console.log("Question creation success:", question_result);
+              }
+            } else {
+              for (let index = 0; index < items.length; index++) {
+                const item = items[index];
+                const new_item = {
+                  id_event: result.id,
+                  name: `Item ${index + 1}`, // Use index to create unique names
+                };
+              
+                try {
+                  const new_item_result = await fetchCreateItem(new_item, item);
+                  console.log("Item creation success:", new_item_result);
+                } catch (error) {
+                  console.error("Error during item creation:", error);
+                }
+              }
+              
             }
+    
+            // Call the onAddEvent to update the parent component's state
+            onAddEvent(result);
+      
+            // Close the modal and notify the user
+            onClose();
+            alert("New event created successfully!");
+    
+          } catch (error) {
+            console.error("Error during event creation:", error);
           }
-          
-        }
-  
-        // Call the onAddEvent to update the parent component's state
-        onAddEvent(result);
-  
-        // Close the modal and notify the user
-        onClose();
-        alert("New event created successfully!");
-  
-      } catch (error) {
-        console.error("Error during event creation:", error);
-      }
+        })
+        .catch((err) => console.log(err));
     }
   };
   

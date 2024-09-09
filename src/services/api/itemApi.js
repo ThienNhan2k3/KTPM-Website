@@ -12,11 +12,14 @@ const fetchGetItemsInEvent = async (id_event) => {
     
   }
   
-  const fetchCreateItem = async (new_item) => {
+  const fetchCreateItem = async (new_item, image) => {
     try {
-        const res = await axios.post("/item/create", new_item, {
+        const form = new FormData();
+        form.append("my_data", JSON.stringify(new_item));
+        form.append("my_image", image);
+        const res = await axios.post("/item/create", form, {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         });
         const data = res.data;

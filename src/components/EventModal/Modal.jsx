@@ -91,14 +91,10 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
         } else if (itemData.type === "Lắc xì") {
           //fetch item data
           const itemsInEvent = await fetchGetItemsInEvent(itemData.id);
-          console.error("Items in event:", itemsInEvent);
-          const itemsWithImages = itemsInEvent.map((item) => ({
-            ...item,
-            image: ItemIcon,
-          }));
-          setItems(itemsWithImages);
-          setO_Items(itemsWithImages);
-          setItemImages(itemsWithImages.map((item) => item.image));
+        console.error("Items in event:", itemsInEvent);
+        setItems(itemsInEvent);
+        setO_Items(itemsInEvent);
+        setItemImages(itemsInEvent.map((item) => item.image)); 
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -142,7 +138,6 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
         endDate.trim() === ""
           ? "Ngày kết thúc không được bỏ trống!"
           : validateDate(endDate),
-      image: !image ? "Ảnh không được để trống!" : "",
     };
 
     setErrors(newErrors);
@@ -161,7 +156,7 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
         id_game: itemData.id_game, //"0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
         id_brand: itemData.id_brand, //"0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
         name: eventName,
-        image: image.name,
+        //image: image.name,
         start_time: startDate,
         end_time: endDate,
       };
@@ -233,12 +228,11 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
             if (item.type) {
               const new_item = {
                 id_event: result.id,
-                name: `Item ${index + 1}`, // Use index to create unique names
-                image: item.name,
+                name: `Item ${index + 1}`,
               };
 
               try {
-                const new_item_result = await fetchCreateItem(new_item);
+                const new_item_result = await fetchCreateItem(new_item, item);
                 console.log("Item creation success:", new_item_result);
               } catch (error) {
                 console.error("Error during item creation:", error);
@@ -474,11 +468,11 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
                     }}
                     htmlFor="thumbnail-image"
                   >
-                    {prevImage == null ? (
+                    {itemData.image == null ? (
                       <div className="editevent-add-image-button">Thêm ảnh</div>
                     ) : (
                       <img
-                        src={prevImage}
+                        src={itemData.image}
                         alt="Preview"
                         style={{ width: "150px" }}
                       />
@@ -495,7 +489,7 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
                     }}
                     htmlFor="thumbnail-image"
                   >
-                    {prevImage == null ? (
+                    {itemData.image == null ? (
                       <div>file...name.jpg</div>
                     ) : (
                       <span
@@ -505,25 +499,18 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
                           height: "24px",
                         }}
                       >
-                        {prevImage}
+                        {itemData.image}
                       </span>
                     )}
                   </label>
-                  <input
-                    type="file"
-                    id="thumbnail-image"
-                    name="thumbnail-image"
-                    accept="image/*"
-                    onChange={handleChangeImage}
-                    style={{ display: "none" }}
-                  />
                 </div>
                 {errors.image && (
-                  <span className="editevent-error-text" style={{}}>
+                  <span className="editevent-error-text">
                     {errors.image}
                   </span>
                 )}
               </div>
+
 
               <div
                 className="row editevent-voucher editevent-form-group container"
