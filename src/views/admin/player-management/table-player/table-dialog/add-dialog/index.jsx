@@ -97,7 +97,7 @@ const AddDialog = ({ callbackfn }) => {
             }}
           >
             <img src={add} alt="" />
-            Thêm người chơi
+            Thêm tài khoản
           </button>
         </Dialog.Trigger>
 
@@ -597,7 +597,7 @@ const AddDialog = ({ callbackfn }) => {
                   <Form.Submit asChild>
                     <div className="FormSubmit">
                       <button className="design-save-button rounded-3">
-                        Lưu người chơi
+                        Lưu tài khoản
                       </button>
                     </div>
                   </Form.Submit>
