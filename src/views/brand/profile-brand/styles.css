@@ -1,0 +1,21 @@
+.ProfilePageDesign {
+  width: 900px;
+}
+
+.FormRootProfile {
+  padding: 0;
+  padding-bottom: 10px;
+}
+
+.AvatarRootProfile {
+  width: 90px;
+  height: 90px;
+  border-radius: 100%;
+  background-color: #96c9f4;
+  cursor: pointer;
+}
+
+.MapDesign {
+  width: 100%;
+  margin-bottom: 10px;
+}

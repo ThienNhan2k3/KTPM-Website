@@ -10,7 +10,6 @@ import { makeData } from "./table-event/makeData";
 import { fa } from "@faker-js/faker";
 import { fetchAllEvents } from "@/services/api/eventApi";
 
-
 const ITEMS_PER_PAGE = 10;
 
 export default function EventManagement() {
@@ -60,8 +59,8 @@ export default function EventManagement() {
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
-    setCurrentPage(0); 
-    setPageInput("1"); 
+    setCurrentPage(0);
+    setPageInput("1");
   };
 
   const handleSort = (type) => {
@@ -69,16 +68,16 @@ export default function EventManagement() {
     const filtered = data.filter(
       (item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.type.toLowerCase().includes(searchTerm.toLowerCase())
+        item.type.toLowerCase().includes(searchTerm.toLowerCase()),
     );
-  
+
     let sorted;
-    if ((type === 'Quiz' && !quiz) || (type === 'Lắc Xì' && !lx)) {
+    if ((type === "Quiz" && !quiz) || (type === "Lắc Xì" && !lx)) {
       // If the type is selected and not active, activate it
-      if (type === 'Quiz') {
+      if (type === "Quiz") {
         setQuiz(true);
         setLx(false);
-      } else if (type === 'Lắc Xì') {
+      } else if (type === "Lắc Xì") {
         setQuiz(false);
         setLx(true);
       }
@@ -90,17 +89,16 @@ export default function EventManagement() {
       setLx(false);
       sorted = filtered; // No specific type filtering
     }
-  
+
     setSortedData(sorted);
     setCurrentPage(0); // Reset to first page on sort
     setPageInput("1"); // Reset input field to 1
   };
-  
 
   const filteredData = sortedData.filter(
     (item) =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.type.toLowerCase().includes(searchTerm.toLowerCase())
+      item.type.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const offset = currentPage * ITEMS_PER_PAGE;
@@ -126,7 +124,7 @@ export default function EventManagement() {
   };
 
   const handleAddEvent = (newEvent) => {
-    console.log('updated event: ', newEvent);
+    console.log("updated event: ", newEvent);
     const updatedData = [...data, newEvent]; // Add new event to data array
     setData(updatedData);
     setSortedData(updatedData);
@@ -136,7 +134,7 @@ export default function EventManagement() {
 
   const updateEventInList = (updatedEvent) => {
     const updatedEvents = data.map((event) =>
-      event.id === updatedEvent.id ? updatedEvent : event
+      event.id === updatedEvent.id ? updatedEvent : event,
     );
     setData(updatedEvents);
     setSortedData(updatedEvents);
@@ -168,24 +166,42 @@ export default function EventManagement() {
             </button>
           </div>
         </div>
-        <button className="mx-2 EventManagement-quiz-button" onClick={() => handleSort("Quiz")}>Quiz</button>
-        <button className="mx-2 EventManagement-lx-button" onClick={() => handleSort("Lắc Xì")}>Lắc Xì</button>
+        <button
+          className="mx-2 EventManagement-quiz-button"
+          onClick={() => handleSort("Quiz")}
+        >
+          Quiz
+        </button>
+        <button
+          className="mx-2 EventManagement-lx-button"
+          onClick={() => handleSort("Lắc Xì")}
+        >
+          Lắc Xì
+        </button>
         <button
           className="EventManagement-add-button"
-          style={{ marginLeft: "10px", display: 'flex', alignItems: 'center' }}
+          style={{ marginLeft: "10px", display: "flex", alignItems: "center" }}
           onClick={handleOpenAddEventModal}
         >
-          <img src={PlusIcon} alt="Add" style={{ marginRight: '5px' }} /> Thêm
+          <img src={PlusIcon} alt="Add" style={{ marginRight: "5px" }} /> Thêm
         </button>
       </div>
       <table className="table EventManagement-table-bordered my-3">
         <thead>
           <tr>
-            <th scope="col" style={{ width: "5%" }}>ID</th>
+            <th scope="col" style={{ width: "5%" }}>
+              ID
+            </th>
             <th scope="col">Tên sự kiện</th>
-            <th scope="col" style={{ width: "12%" }}>Loại trò chơi</th>
-            <th scope="col" style={{ width: "19%" }}>Ngày bắt đầu</th>
-            <th scope="col" style={{ width: "19%" }}>Ngày kết thúc</th>
+            <th scope="col" style={{ width: "12%" }}>
+              Loại trò chơi
+            </th>
+            <th scope="col" style={{ width: "19%" }}>
+              Ngày bắt đầu
+            </th>
+            <th scope="col" style={{ width: "19%" }}>
+              Ngày kết thúc
+            </th>
             <th scope="col" style={{ width: "5%" }}></th>
           </tr>
         </thead>
@@ -228,7 +244,13 @@ export default function EventManagement() {
           ))}
         </tbody>
       </table>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <div>
           <input
             className="EventManagement-pagination-textbox"
@@ -261,16 +283,16 @@ export default function EventManagement() {
           forcePage={currentPage} // Force the component to reflect the currentPage
         />
       </div>
-      <EventModal 
-        show={showModal} 
-        onClose={handleCloseModal} 
-        itemData={selectedItem} 
+      <EventModal
+        show={showModal}
+        onClose={handleCloseModal}
+        itemData={selectedItem}
         onUpdateEvent={updateEventInList}
       />
-      <AddEventModal 
-        show={showAddEventModal} 
-        onClose={handleCloseAddEventModal} 
-        onAddEvent={handleAddEvent} 
+      <AddEventModal
+        show={showAddEventModal}
+        onClose={handleCloseAddEventModal}
+        onAddEvent={handleAddEvent}
       />
     </div>
   );

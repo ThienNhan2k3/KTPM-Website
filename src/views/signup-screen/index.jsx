@@ -17,7 +17,6 @@ import "./styles.css";
 import { baseAPI } from "@/services/api";
 import NotiDialog from "./noti-dialog";
 
-
 function SignUp() {
   const [showMessage1, setShowMessage1] = useState(false);
   const [showMessage2, setShowMessage2] = useState(false);
@@ -29,7 +28,7 @@ function SignUp() {
     const data = Object.fromEntries(new FormData(event.currentTarget));
 
     baseAPI
-      .post(`http://localhost:5000/account/create/brand`, data)
+      .post(`/create/brand`, data)
       .then((result) => {
         console.log(result.message);
         if (result.message === "brand_name, email") {
@@ -220,7 +219,7 @@ function SignUp() {
             </div>
 
             <div className="row">
-              <Form.Field className="FormField" name="address">
+              <Form.Field className="FormField col" name="address">
                 <div
                   style={{
                     display: "flex",
@@ -298,6 +297,15 @@ function SignUp() {
                     className="Input"
                     type="text"
                     value={markerPos[1]}
+                    onChange={(event) => {
+                      console.log("Change");
+                      if (event.target.value != null) {
+                        setMarkerPos([
+                          markerPos[0],
+                          Number(event.target.value),
+                        ]);
+                      }
+                    }}
                     required
                   />
                 </Form.Control>

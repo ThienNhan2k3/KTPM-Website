@@ -16,13 +16,12 @@
 
 //   return () => initData();
 // }, []);
+import axios from "@/services/api/customize-axios";
 
 const get = async (url) => {
   try {
-    const rawResult = await fetch(url, {
-      method: "GET",
-    });
-    return await rawResult.json();
+    const rawResult = await axios.get(url);
+    return await rawResult.data;
   } catch (e) {
     console.error(e);
   }
@@ -30,15 +29,25 @@ const get = async (url) => {
 
 const post = async (url, payload) => {
   try {
-    const rawResult = await fetch(url, {
+    const rawResult = await axios.post(url, payload);
+    return await rawResult.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const postForm = async (url, data, file) => {
+  try {
+    const form = new FormData();
+    form.append("my_data", JSON.stringify(data));
+    form.append("my_image", file);
+
+    const rawResult = await axios.post(url, form, {
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
-      method: "POST",
-      body: JSON.stringify(payload),
     });
-    return await rawResult.json();
+    return await rawResult.data;
   } catch (e) {
     console.error(e);
   }
@@ -46,15 +55,25 @@ const post = async (url, payload) => {
 
 const put = async (url, payload) => {
   try {
-    const rawResult = await fetch(url, {
+    const rawResult = await axios.put(url, payload);
+    return await rawResult.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const putForm = async (url, data, file) => {
+  try {
+    const form = new FormData();
+    form.append("my_data", JSON.stringify(data));
+    form.append("my_image", file);
+
+    const rawResult = await axios.put(url, form, {
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
-      method: "PUT",
-      body: JSON.stringify(payload),
     });
-    return await rawResult.json();
+    return await rawResult.data;
   } catch (e) {
     console.error(e);
   }
@@ -62,13 +81,11 @@ const put = async (url, payload) => {
 
 const del = async (url) => {
   try {
-    const rawResult = await fetch(url, {
-      method: "DELETE",
-    });
-    return await rawResult.json();
+    const rawResult = await axios.delete(url);
+    return await rawResult.data;
   } catch (e) {
     console.error(e);
   }
 };
 
-export const baseAPI = { get, post, put, del };
+export const baseAPI = { get, post, put, del, postForm, putForm };

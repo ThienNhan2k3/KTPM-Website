@@ -11,9 +11,20 @@ const fetchAllActiveVouchers = async () => {
     
 }
 
-const fetchAllVoucherInEvent = async (id_event) => {
+const fetchCountAllActiveVouchers = async () => {
     try {
-        const res = await axios.get(`/voucher_in_event/getVoucherByIdEvent/${id_event}`);
+        const res = await axios.get("/voucher/countAll_active");
+        const data = res.data;
+        return data;
+    } catch (err) {
+        console.error(err);
+    }
+    
+}
+
+const fetchCountAllInactiveVouchers = async () => {
+    try {
+        const res = await axios.get("/voucher/countAll_inactive");
         const data = res.data;
         return data;
     } catch (err) {
@@ -23,4 +34,4 @@ const fetchAllVoucherInEvent = async (id_event) => {
 }
 
 
-export {fetchAllActiveVouchers, fetchAllVoucherInEvent}
+export {fetchAllActiveVouchers, fetchCountAllActiveVouchers, fetchCountAllInactiveVouchers}

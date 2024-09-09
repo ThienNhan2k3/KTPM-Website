@@ -27,6 +27,8 @@ import TableContextMenu from "./context-menu";
 import EditDialog from "./table-dialog/edit-dialog";
 import RemoveDialog from "./table-dialog/remove-dialog";
 
+import io from "socket.io-client";
+
 const fuzzyFilter = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
   addMeta({ itemRank });
@@ -54,8 +56,13 @@ export default function TableBrand() {
   const [data, setData] = React.useState([]);
 
   const getData = () => {
+    const newSocket = io(`http://localhost:5000`);
+    newSocket?.on("message", (message) => {
+      console.log("message:::", message);
+    });
+
     baseAPI
-      .get(`http://localhost:5000/account/getAll/${"brand"}`)
+      .get(`/account/getAll/${"brand"}`)
       .then((accounts) => {
         setData(accounts);
         // console.log(accounts);
@@ -158,7 +165,7 @@ export default function TableBrand() {
             {info.getValue()}
           </div>
         ),
-        filterFn: "includesString", //using our custom fuzzy filter function
+        filterFn: "equalsString", //using our custom fuzzy filter function
         sortingFn: fuzzySort, //sort by fuzzy rank (falls back to alphanumeric)
       },
       {
@@ -269,6 +276,7 @@ export default function TableBrand() {
                     row={row}
                     onClick={(row) => getDataRow(row)}
                   />
+
                   <EditDialog
                     selectedRow={selectedRow}
                     callbackfn={getData}

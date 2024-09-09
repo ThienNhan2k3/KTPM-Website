@@ -15,7 +15,7 @@ const RemoveDialog = ({ selectedRow, callbackfn }) => {
   const deleteData = () => {
     console.log(selectedRow?.id);
     baseAPI
-      .del(`http://localhost:5000/voucher/delete/${selectedRow?.voucher_code}`)
+      .del(`/voucher/delete/${selectedRow?.voucher_code}`)
       .then((result) => {
         console.log(result.message);
         if (result.message === "Success") {
@@ -72,14 +72,17 @@ const RemoveDialog = ({ selectedRow, callbackfn }) => {
       </AlertDialog.Portal>
 
       <Toast.Provider swipeDirection="right">
-        <Toast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
-          <Toast.Title className="ToastTitle">
-            Xóa tài khoản thành công!
+        <Toast.Root
+          className="ToastRoot UpdateSuccess"
+          open={open}
+          onOpenChange={setOpen}
+        >
+          <Toast.Title className="ToastTitleSuccess">
+            Xóa voucher thành công!
           </Toast.Title>
           <Toast.Description asChild>
             <span className="ToastDescription">
-              Tài khoản của thương hiệu đã bị vô hiệu hoá thành công trong hệ
-              thống.
+              Voucher của bạn đã bị vô hiệu hóa thành công trong hệ thống.
             </span>
           </Toast.Description>
           <Toast.Action

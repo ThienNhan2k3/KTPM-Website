@@ -35,6 +35,7 @@ const AddDialog = ({ callbackfn }) => {
   const [open, setOpen] = React.useState(false);
   const [showMessage1, setShowMessage1] = React.useState(false);
   const [showMessage2, setShowMessage2] = React.useState(false);
+  const [file, setFile] = React.useState(null);
   const timerRef = React.useRef(0);
   const handleShow = () => setShow(true);
   const wait = () => new Promise((resolve) => setTimeout(resolve, 100));
@@ -48,16 +49,15 @@ const AddDialog = ({ callbackfn }) => {
     const [file] = event.target.files;
     if (file) {
       setPrevImage(URL.createObjectURL(file));
+      setFile(file);
     }
   };
 
   const saveData = (data) => {
     data.status = data.status ? "Active" : "Inactive";
 
-    console.log(data);
-
     baseAPI
-      .post(`http://localhost:5000/account/create/user`, data)
+      .postForm(`/account/create/user`, data, file)
       .then((result) => {
         console.log(result.message);
         if (result.message === "user_name, email") {
@@ -629,7 +629,11 @@ const AddDialog = ({ callbackfn }) => {
       </Dialog.Root>
 
       <Toast.Provider swipeDirection="right">
-        <Toast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
+        <Toast.Root
+          className="ToastRoot UpdateSuccess"
+          open={open}
+          onOpenChange={setOpen}
+        >
           <Toast.Title className="ToastTitle">
             Tạo tài khoản thành công!
           </Toast.Title>

@@ -10,6 +10,8 @@ import * as Form from "@radix-ui/react-form";
 
 import * as Toast from "@radix-ui/react-toast";
 
+import * as Avatar from "@radix-ui/react-avatar";
+
 import React from "react";
 
 import { baseAPI } from "@/services/api";
@@ -23,10 +25,7 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
     data.status = data.status ? "Active" : "Inactive";
 
     baseAPI
-      .put(
-        `http://localhost:5000/account/update/${"brand"}/${selectedRow.id}`,
-        data,
-      )
+      .put(`/account/update/status/${"brand"}/${selectedRow.id}`, data)
       .then((result) => {
         console.log(result.message);
         if (result.message === "Success") {
@@ -36,13 +35,13 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
           timerRef.current = window.setTimeout(() => {
             setOpen1(true);
           }, 100);
+          callbackfn();
         } else if (result.message === "Fail") {
           setOpen2(false);
           window.clearTimeout(timerRef.current);
           timerRef.current = window.setTimeout(() => {
             setOpen2(true);
           }, 100);
-          callbackfn();
         }
       })
       .catch((err) => console.log(err));
@@ -74,6 +73,19 @@ const EditDialog = ({ selectedRow, onSubmit, callbackfn }) => {
               </Select.Content>
             </Select.Portal>
           </Select.Root>
+
+          <div className="AvatarSpace" style={{ pointerEvents: "none" }}>
+            <Avatar.Root className="AvatarRoot">
+              <Avatar.Image
+                className="AvatarImage"
+                src={selectedRow?.avatar}
+                alt="VOU"
+              />
+              <Avatar.Fallback className="AvatarFallback" delayMs={100}>
+                VOU
+              </Avatar.Fallback>
+            </Avatar.Root>
+          </div>
 
           <Form.Root
             className="FormRoot"

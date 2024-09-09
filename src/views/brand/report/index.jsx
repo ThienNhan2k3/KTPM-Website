@@ -4,6 +4,8 @@ import './styles.css';
 import Checkmark from "@assets/images/checked-mark.png";
 import Loading from "@assets/images/loading.png";
 
+import { fetchCountAllActiveVouchers, fetchCountAllInactiveVouchers } from "@/services/api/voucherApi";
+
 const LineChart = ({ data }) => {
   const chartContainer = useRef(null);
   const chartInstance = useRef(null);
@@ -71,6 +73,25 @@ export default function BrandReports() {
     values: [4, 5.5, 6, 7, 8, 12, 19, 3, 5, 30, 11, 40]
   });
 
+  const [activeVouchersCount, setActiveVouchersCount] = useState(null);
+  const [inactiveVouchersCount, setInactiveVouchersCount] = useState(null); // Store count of active vouchers
+
+  useEffect(() => {
+    // Fetch the count of active vouchers when the component mounts
+    const fetchActiveVouchers = async () => {
+      try {
+        const active_response = await fetchCountAllActiveVouchers();
+        const inactive_response = await fetchCountAllInactiveVouchers();
+        setActiveVouchersCount(active_response.activeVouchersCount);
+        setInactiveVouchersCount(inactive_response.inactiveVouchersCount); // Set the active voucher count
+      } catch (error) {
+        console.error("Error fetching active vouchers count", error);
+      }
+    };
+
+    fetchActiveVouchers();
+  }, []);
+
   return (
     <div className='brand-report-screen-col'> 
       <div className="brand-report-screen-row">
@@ -115,7 +136,9 @@ export default function BrandReports() {
           <div className="brand-report-screen-box">
             <div className="brand-report-screen-box1-content">
               <div className="brand-report-screen-col">
-                <div className="brand-report-screen-box-number">2024</div>
+              <div className="brand-report-screen-box-number">
+                  {inactiveVouchersCount !== null ? inactiveVouchersCount : 'Loading...'}
+                </div>
                 <div className="brand-report-screen-box-label">Voucher được khai thác</div>
               </div>
               <div className="brand-report-screen-box-icon">
@@ -127,7 +150,10 @@ export default function BrandReports() {
           <div className="brand-report-screen-box">
             <div className="brand-report-screen-box2-content">
               <div className="brand-report-screen-col">
-                <div className="brand-report-screen-box-number">2024</div>
+                {/* Dynamically display the count of active vouchers */}
+                <div className="brand-report-screen-box-number">
+                  {activeVouchersCount !== null ? activeVouchersCount : 'Loading...'}
+                </div>
                 <div className="brand-report-screen-box-label">Voucher còn lại</div>
               </div>
               <div className="brand-report-screen-box-icon">

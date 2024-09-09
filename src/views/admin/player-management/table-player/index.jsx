@@ -58,7 +58,7 @@ export default function TablePlayer() {
 
   const getData = () => {
     baseAPI
-      .get(`http://localhost:5000/account/getAll/${"user"}`)
+      .get(`/account/getAll/${"user"}`)
       .then((accounts) => {
         setData(accounts);
         // console.log(accounts);
