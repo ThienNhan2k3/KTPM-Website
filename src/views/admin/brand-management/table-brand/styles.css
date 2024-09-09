@@ -140,6 +140,12 @@
   color: white;
 }
 
+.custom-notice {
+  font-family: "Times New Roman", Times, serif;
+  font-style: italic;
+  color: blue;
+}
+
 button,
 fieldset,
 input {
