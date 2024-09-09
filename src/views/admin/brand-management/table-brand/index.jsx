@@ -56,9 +56,26 @@ export default function TableBrand() {
   const [data, setData] = React.useState([]);
 
   const getData = () => {
-    const newSocket = io(`http://localhost:5000`);
-    newSocket?.on("message", (message) => {
-      console.log("message:::", message);
+    console.log("GetData");
+    const newSocket = io(`http://localhost:5000`, {
+      transports: [ "websocket" ], // or [ "websocket", "polling" ] (the order matters)
+      withCredentials: true
+
+    });
+    console.log(newSocket);
+    newSocket.emit("refreshUserTable", () => {
+      console.log("emit refreshUserTable");
+    });
+
+    newSocket.on("dbChange", () => {
+      console.log("dbChange");
+      baseAPI
+      .get(`/account/getAll/${"brand"}`)
+      .then((accounts) => {
+        setData(accounts);
+        // console.log(accounts);
+      })
+      .catch((err) => console.log(err));
     });
 
     baseAPI
