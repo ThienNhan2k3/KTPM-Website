@@ -11,7 +11,6 @@ import { fetchCreateQuiz } from "@/services/api/quizApi";
 import { fetchCreateQuestion } from "@/services/api/questionApi";
 import { fetchCreateItem } from "@/services/api/itemApi";
 import { baseAPI } from "@/services/api";
-import { Item } from "@radix-ui/react-context-menu";
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("/");
@@ -48,7 +47,6 @@ const Modal = ({ show, onClose, onAddEvent }) => {
 
   // Fetch voucher data
   useEffect(() => {
-    console.log("Image:", ItemData.image);
     const fetchVoucherData = async () => {
       try {
         const data = await fetchAllActiveVouchers();
@@ -87,11 +85,15 @@ const Modal = ({ show, onClose, onAddEvent }) => {
     if (validateForm()) {
       console.log("Form submitted");
   
+      const game = selectedType === "Quiz" 
+        ? "550e8400-e29b-41d4-a716-446655440000" 
+        : "550e8400-e29b-41d4-a716-446655440001";
+
       // Create a new event object
       const new_event = {
         type: selectedType,
-        id_game: "550e8400-e29b-41d4-a716-446655440000",  //fake id
-        id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
+        id_game: game,  //based on what kind of event
+        //id_brand: "0665b99d-13f5-48a5-a416-14b43b47d690",  //fake id
         name: eventName,
         //image: image.name,
         start_time: startDate,
@@ -150,11 +152,10 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 const new_item = {
                   id_event: result.id,
                   name: `Item ${index + 1}`, // Use index to create unique names
-                  image: item.name,
                 };
               
                 try {
-                  const new_item_result = await fetchCreateItem(new_item);
+                  const new_item_result = await fetchCreateItem(new_item, item);
                   console.log("Item creation success:", new_item_result);
                 } catch (error) {
                   console.error("Error during item creation:", error);
@@ -345,11 +346,9 @@ const Modal = ({ show, onClose, onAddEvent }) => {
             </div>
           </div>
 
-          <div className="editevent-form-group">
-            <label>
-              <strong>Hình ảnh:</strong>
-            </label>
-            <div className="row editevent-image-input">
+          <div className="addevent-form-group">
+            <label><strong>Hình ảnh:</strong></label>
+            <div className="row addevent-image-input">
               <label
                 style={{
                   width: "fit-content",
@@ -360,16 +359,13 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                   borderRadius: "8px",
                   cursor: "pointer",
                 }}
+                className="col"
                 htmlFor="thumbnail-image"
               >
-                {ItemData.image == null ? (
-                  <div className="editevent-add-image-button">Thêm ảnh</div>
+                {prevImage == null ? (
+                  <div className="addevent-add-image-button">Thêm ảnh</div>
                 ) : (
-                  <img
-                    src={ItemData.image}
-                    alt="Preview"
-                    style={{ width: "150px" }}
-                  />
+                  <img src={prevImage} alt="Preview" style={{ width: "150px" }} />
                 )}
               </label>
 
@@ -377,23 +373,18 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 style={{
                   marginLeft: "15px",
                   display: "flex",
-                  alignItems: "end",
+                  alignItems: "center",
                   width: "180px",
                   pointerEvents: "none",
                 }}
+                className="col"
                 htmlFor="thumbnail-image"
               >
-                {ItemData.image == null ? (
+                {prevImage == null ? (
                   <div>file...name.jpg</div>
                 ) : (
-                  <span
-                    style={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      height: "24px",
-                    }}
-                  >
-                    {ItemData.image}
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", height: "24px" }}>
+                    {prevImage}
                   </span>
                 )}
               </label>
@@ -406,13 +397,15 @@ const Modal = ({ show, onClose, onAddEvent }) => {
                 style={{ display: "none" }}
               />
             </div>
-            {errors.image && (
-              <span className="editevent-error-text">
+            {errors.image && 
+              <span className="addevent-error-text"
+                style={{
+                }}
+              >
                 {errors.image}
               </span>
-            )}
+            }
           </div>
-
 
           <div className="row addevent-voucher addevent-form-group container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="col">

@@ -91,14 +91,10 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
         } else if (itemData.type === "Lắc xì") {
           //fetch item data
           const itemsInEvent = await fetchGetItemsInEvent(itemData.id);
-          console.error("Items in event:", itemsInEvent);
-          const itemsWithImages = itemsInEvent.map((item) => ({
-            ...item,
-            image: ItemIcon,
-          }));
-          setItems(itemsWithImages);
-          setO_Items(itemsWithImages);
-          setItemImages(itemsWithImages.map((item) => item.image));
+        console.error("Items in event:", itemsInEvent);
+        setItems(itemsInEvent);
+        setO_Items(itemsInEvent);
+        setItemImages(itemsInEvent.map((item) => item.image)); 
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -142,7 +138,6 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
         endDate.trim() === ""
           ? "Ngày kết thúc không được bỏ trống!"
           : validateDate(endDate),
-      image: !image ? "Ảnh không được để trống!" : "",
     };
 
     setErrors(newErrors);
@@ -233,12 +228,11 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
             if (item.type) {
               const new_item = {
                 id_event: result.id,
-                name: `Item ${index + 1}`, // Use index to create unique names
-                image: item.name,
+                name: `Item ${index + 1}`,
               };
 
               try {
-                const new_item_result = await fetchCreateItem(new_item);
+                const new_item_result = await fetchCreateItem(new_item, item);
                 console.log("Item creation success:", new_item_result);
               } catch (error) {
                 console.error("Error during item creation:", error);
@@ -509,14 +503,6 @@ const Modal = ({ show, onClose, itemData, onUpdateEvent }) => {
                       </span>
                     )}
                   </label>
-                  <input
-                    type="file"
-                    id="thumbnail-image"
-                    name="thumbnail-image"
-                    accept="image/*"
-                    onChange={handleChangeImage}
-                    style={{ display: "none" }}
-                  />
                 </div>
                 {errors.image && (
                   <span className="editevent-error-text">
