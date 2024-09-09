@@ -212,11 +212,11 @@ const ChangePassword = () => {
           onOpenChange={setOpen2}
         >
           <Toast.Title className="ToastTitleFail">
-            Cập nhật tài khoản không thành công!
+            Cập nhật mật khẩu không thành công!
           </Toast.Title>
           <Toast.Description asChild>
             <span className="ToastDescription">
-              Tài khoản của người dùng không được cập nhật trong hệ thống.
+              Mật khẩu của bạn không được cập nhật trong hệ thống.
             </span>
           </Toast.Description>
           <Toast.Action
