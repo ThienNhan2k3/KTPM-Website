@@ -5,6 +5,7 @@ import Checkmark from "@assets/images/checked-mark.png";
 import Loading from "@assets/images/loading.png";
 
 import { fetchCountAllActiveVouchers, fetchCountAllInactiveVouchers } from "@/services/api/voucherApi";
+import { fetchAllEvents } from "@/services/api/eventApi";
 
 const LineChart = ({ data }) => {
   const chartContainer = useRef(null);
@@ -73,8 +74,24 @@ export default function BrandReports() {
     values: [4, 5.5, 6, 7, 8, 12, 19, 3, 5, 30, 11, 40]
   });
 
+  const [event, setEvent] = useState([]);
+
   const [activeVouchersCount, setActiveVouchersCount] = useState(null);
   const [inactiveVouchersCount, setInactiveVouchersCount] = useState(null); // Store count of active vouchers
+
+  //get all event data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchAllEvents();
+        setEvent(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     // Fetch the count of active vouchers when the component mounts
@@ -96,35 +113,22 @@ export default function BrandReports() {
     <div className='brand-report-screen-col'> 
       <div className="brand-report-screen-row">
         <div className='brand-report-screen-type-button-group'>
-          <button className='brand-report-screen-type-button'
-            style={{
-              backgroundColor: "#0F67B1"
-            }}
-          >
-            Voucher
-          </button>
-          <button className='brand-report-screen-type-button'
-            style={{
-              backgroundColor: "#2EE982"
-            }}
-          >
-            Ngân sách
-          </button>
+          
         </div>
 
         <div className='brand-report-screen-select-group'>
           <select className='brand-report-select'>
             <option disabled selected>Sự kiện</option>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            {event.map((item, index) => (
+              <option key={index} value={item}>
+                {item.name}
+              </option>
+            ))}
           </select>
           <select className='brand-report-select'>
             <option disabled selected>Trò chơi</option>
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="opel">Opel</option>
-            <option value="audi">Audi</option>
+            <option value="volvo">Quiz</option>
+            <option value="saab">Lắc xì</option>
           </select>
         </div>
       </div>
